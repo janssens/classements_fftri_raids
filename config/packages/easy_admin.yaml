@@ -1,0 +1,7 @@
+easy_admin:
+    entities:
+        - App\Entity\Licencie
+        - App\Entity\Ligue
+        - App\Entity\Equipe
+        - App\Entity\Epreuve
+        - App\Entity\Club
