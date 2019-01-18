@@ -15,5 +15,4 @@
 /.web-server-pid
 ###< symfony/web-server-bundle ###
 
-.env.dist
 /.idea/

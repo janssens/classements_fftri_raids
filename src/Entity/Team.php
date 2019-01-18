@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\LigueRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\TeamRepository")
  */
-class Ligue
+class Team
 {
     /**
      * @ORM\Id()
@@ -24,7 +24,22 @@ class Ligue
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Athlete", mappedBy="ligue")
+     * @ORM\Column(type="integer")
+     */
+    private $position;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $gender;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Race", inversedBy="teams")
+     */
+    private $race;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Athlete", mappedBy="teams")
      */
     private $athletes;
 
@@ -50,6 +65,42 @@ class Ligue
         return $this;
     }
 
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): self
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    public function getGender(): ?int
+    {
+        return $this->gender;
+    }
+
+    public function setGender(int $gender): self
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getRace(): ?Race
+    {
+        return $this->race;
+    }
+
+    public function setRace(?Race $race): self
+    {
+        $this->race = $race;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Athlete[]
      */
@@ -62,7 +113,7 @@ class Ligue
     {
         if (!$this->athletes->contains($athlete)) {
             $this->athletes[] = $athlete;
-            $athlete->setLigue($this);
+            $athlete->addTeam($this);
         }
 
         return $this;
@@ -72,10 +123,7 @@ class Ligue
     {
         if ($this->athletes->contains($athlete)) {
             $this->athletes->removeElement($athlete);
-            // set the owning side to null (unless already changed)
-            if ($athlete->getLigue() === $this) {
-                $athlete->setLigue(null);
-            }
+            $athlete->removeTeam($this);
         }
 
         return $this;
