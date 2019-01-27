@@ -55,9 +55,15 @@ class Athlete
      */
     private $registrations;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Ranking", mappedBy="athlete")
+     */
+    private $rankins;
+
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
+        $this->rankins = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -154,6 +160,14 @@ class Athlete
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Ranking[]
+     */
+    public function getRankins(): Collection
+    {
+        return $this->rankins;
     }
 
 }

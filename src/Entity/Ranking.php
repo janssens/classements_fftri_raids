@@ -36,7 +36,7 @@ class Ranking
     private $category;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Season")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Season", inversedBy="rankings")
      */
     private $season;
 
@@ -139,4 +139,21 @@ class Ranking
 
         return $this;
     }
+
+    public function getPoints(): ?int
+    {
+        return $this->points;
+    }
+
+    public function getAthlete(): ?Athlete
+    {
+        return $this->athlete;
+    }
+
+
+    public function getSeason(): ?Season
+    {
+        return $this->season;
+    }
+
 }

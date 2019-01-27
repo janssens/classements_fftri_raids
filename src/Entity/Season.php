@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,6 +27,16 @@ class Season
      * @ORM\Column(type="datetime")
      */
     private $end_date;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Ranking", mappedBy="season")
+     */
+    private $rankins;
+
+    public function __construct()
+    {
+        $this->rankins = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -54,4 +66,13 @@ class Season
 
         return $this;
     }
+
+    /**
+     * @return Collection|Ranking[]
+     */
+    public function getRankins(): Collection
+    {
+        return $this->rankins;
+    }
+
 }
