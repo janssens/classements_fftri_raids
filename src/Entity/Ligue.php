@@ -24,13 +24,13 @@ class Ligue
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Athlete", mappedBy="ligue")
+     * @ORM\OneToMany(targetEntity="App\Entity\Registration", mappedBy="ligue")
      */
-    private $athletes;
+    private $registrations;
 
     public function __construct()
     {
-        $this->athletes = new ArrayCollection();
+        $this->registrations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -51,30 +51,30 @@ class Ligue
     }
 
     /**
-     * @return Collection|Athlete[]
+     * @return Collection|Registration[]
      */
-    public function getAthletes(): Collection
+    public function getRegistrations(): Collection
     {
-        return $this->athletes;
+        return $this->registrations;
     }
 
-    public function addAthlete(Athlete $athlete): self
+    public function addRegistration(Registration $registration): self
     {
-        if (!$this->athletes->contains($athlete)) {
-            $this->athletes[] = $athlete;
-            $athlete->setLigue($this);
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations[] = $registration;
+            $registration->setLigue($this);
         }
 
         return $this;
     }
 
-    public function removeAthlete(Athlete $athlete): self
+    public function removeRegistration(Registration $registration): self
     {
-        if ($this->athletes->contains($athlete)) {
-            $this->athletes->removeElement($athlete);
+        if ($this->registrations->contains($registration)) {
+            $this->registrations->removeElement($registration);
             // set the owning side to null (unless already changed)
-            if ($athlete->getLigue() === $this) {
-                $athlete->setLigue(null);
+            if ($registration->getLigue() === $this) {
+                $registration->setLigue(null);
             }
         }
 

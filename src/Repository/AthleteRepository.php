@@ -36,15 +36,16 @@ class AthleteRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?Athlete
+    public function findOneByLastnameAndDob($lastname, $dob): ?Athlete
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('a.lastname = :val')
+            ->andWhere('a.dob = :dob')
+            ->setParameter('val', $lastname)
+            ->setParameter('dob', $dob)
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-    */
 }

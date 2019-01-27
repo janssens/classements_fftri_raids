@@ -29,23 +29,24 @@ class Team
     private $position;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $gender;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Race", inversedBy="teams")
      */
     private $race;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Athlete", mappedBy="teams")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Registration", mappedBy="teams")
      */
-    private $athletes;
+    private $registrations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Outsider", mappedBy="team",orphanRemoval=true, cascade={"remove"})
+     */
+    private $outsiders;
 
     public function __construct()
     {
-        $this->athletes = new ArrayCollection();
+        $this->registrations = new ArrayCollection();
+        $this->outsiders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -77,18 +78,6 @@ class Team
         return $this;
     }
 
-    public function getGender(): ?int
-    {
-        return $this->gender;
-    }
-
-    public function setGender(int $gender): self
-    {
-        $this->gender = $gender;
-
-        return $this;
-    }
-
     public function getRace(): ?Race
     {
         return $this->race;
@@ -102,28 +91,59 @@ class Team
     }
 
     /**
-     * @return Collection|Athlete[]
+     * @return Collection|Registration[]
      */
-    public function getAthletes(): Collection
+    public function getRegistrations(): Collection
     {
-        return $this->athletes;
+        return $this->registrations;
     }
 
-    public function addAthlete(Athlete $athlete): self
+    public function addRegistration(Registration $registration): self
     {
-        if (!$this->athletes->contains($athlete)) {
-            $this->athletes[] = $athlete;
-            $athlete->addTeam($this);
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations[] = $registration;
+            $registration->addTeam($this);
         }
 
         return $this;
     }
 
-    public function removeAthlete(Athlete $athlete): self
+    public function removeRegistration(Registration $registration): self
     {
-        if ($this->athletes->contains($athlete)) {
-            $this->athletes->removeElement($athlete);
-            $athlete->removeTeam($this);
+        if ($this->registrations->contains($registration)) {
+            $this->registrations->removeElement($registration);
+            $registration->removeTeam($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Outsider[]
+     */
+    public function getOutsiders(): Collection
+    {
+        return $this->outsiders;
+    }
+
+    public function addOutsider(Outsider $outsider): self
+    {
+        if (!$this->outsiders->contains($outsider)) {
+            $this->outsiders[] = $outsider;
+            $outsider->setTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOutsider(Outsider $outsider): self
+    {
+        if ($this->outsiders->contains($outsider)) {
+            $this->outsiders->removeElement($outsider);
+            // set the owning side to null (unless already changed)
+            if ($outsider->getTeam() === $this) {
+                $outsider->setTeam(null);
+            }
         }
 
         return $this;

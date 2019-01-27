@@ -39,9 +39,14 @@ class Race
     private $date;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Team", mappedBy="race")
+     * @ORM\OneToMany(targetEntity="App\Entity\Team", mappedBy="race", orphanRemoval=true, cascade={"remove"})
      */
     private $teams;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $athletes_per_team;
 
     public function __construct()
     {
@@ -128,6 +133,18 @@ class Race
                 $team->setRace(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAthletesPerTeam(): ?int
+    {
+        return $this->athletes_per_team;
+    }
+
+    public function setAthletesPerTeam(int $athletes_per_team): self
+    {
+        $this->athletes_per_team = $athletes_per_team;
 
         return $this;
     }

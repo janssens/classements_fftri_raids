@@ -14,11 +14,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Athlete
 {
-    const TYPE_A = 1;
-    const TYPE_B = 2;
-    const TYPE_C = 3;
-    const TYPE_D = 4;
-    const TYPE_H = 7;
+    const FEMALE = 2;
+    const MALE = 1;
 
     /**
      * @ORM\Id()
@@ -26,11 +23,6 @@ class Athlete
      * @ORM\Column(type="integer")
      */
     private $id;
-
-    /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
-    private $number;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
@@ -53,55 +45,24 @@ class Athlete
     private $gender;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $type;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $dob;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\OneToMany(targetEntity="App\Entity\Registration", mappedBy="athlete",cascade={"persist"})
+     * @ORM\OrderBy({"date" = "DESC"})
      */
-    private $created_at;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Team", inversedBy="athletes")
-     */
-    private $teams;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Club", inversedBy="Athletes")
-     */
-    private $club;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Ligue", inversedBy="athletes")
-     */
-    private $ligue;
+    private $registrations;
 
     public function __construct()
     {
-        $this->teams = new ArrayCollection();
+        $this->registrations = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getNumber(): ?string
-    {
-        return $this->number;
-    }
-
-    public function setNumber(string $number): self
-    {
-        $this->number = $number;
-
-        return $this;
     }
 
     public function getEmail(): ?string
@@ -152,18 +113,6 @@ class Athlete
         return $this;
     }
 
-    public function getType(): ?int
-    {
-        return $this->type;
-    }
-
-    public function setType(int $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getDob(): ?\DateTimeInterface
     {
         return $this->dob;
@@ -176,65 +125,35 @@ class Athlete
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
     /**
-     * @return Collection|Team[]
+     * @return Collection|Registration[]
      */
-    public function getTeams(): Collection
+    public function getRegistrations(): Collection
     {
-        return $this->teams;
+        return $this->registrations;
     }
 
-    public function addTeam(Team $team): self
+    public function addRegistration(Registration $registration): self
     {
-        if (!$this->teams->contains($team)) {
-            $this->teams[] = $team;
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations[] = $registration;
+            $registration->setAthlete($this);
         }
 
         return $this;
     }
 
-    public function removeTeam(Team $team): self
+    public function removeRegistration(Registration $registration): self
     {
-        if ($this->teams->contains($team)) {
-            $this->teams->removeElement($team);
+        if ($this->registrations->contains($registration)) {
+            $this->registrations->removeElement($registration);
+            // set the owning side to null (unless already changed)
+            if ($registration->getAthlete() === $this) {
+                $registration->setAthlete(null);
+            }
         }
 
         return $this;
     }
 
-    public function getClub(): ?Club
-    {
-        return $this->club;
-    }
-
-    public function setClub(?Club $club): self
-    {
-        $this->club = $club;
-
-        return $this;
-    }
-
-    public function getLigue(): ?Ligue
-    {
-        return $this->ligue;
-    }
-
-    public function setLigue(?Ligue $ligue): self
-    {
-        $this->ligue = $ligue;
-
-        return $this;
-    }
 }
