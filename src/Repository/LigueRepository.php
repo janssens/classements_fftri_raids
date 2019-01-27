@@ -36,11 +36,11 @@ class LigueRepository extends ServiceEntityRepository
     }
     */
 
-    public function findOneByName($name): ?Ligue
+    public function findOneBySlug($slug): ?Ligue
     {
         return $this->createQueryBuilder('l')
-            ->andWhere('l.name = :val')
-            ->setParameter('val', $name)
+            ->andWhere('l.slug = :val')
+            ->setParameter('val', $slug)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()

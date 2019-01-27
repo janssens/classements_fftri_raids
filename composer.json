@@ -12,7 +12,7 @@
         "symfony/console": "*",
         "symfony/expression-language": "*",
         "symfony/flex": "^1.1",
-        "symfony/form": "*",
+        "symfony/form": "4.1.9",
         "symfony/framework-bundle": "*",
         "symfony/monolog-bundle": "^3.1",
         "symfony/orm-pack": "*",
@@ -21,7 +21,7 @@
         "symfony/serializer-pack": "*",
         "symfony/swiftmailer-bundle": "^3.1",
         "symfony/twig-bundle": "*",
-        "symfony/validator": "*",
+        "symfony/validator": "4.1.9",
         "symfony/web-link": "*",
         "symfony/yaml": "*"
     },

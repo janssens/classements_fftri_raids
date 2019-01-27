@@ -42,6 +42,8 @@ class ImportData extends CsvCommand
         $limit= $input->getOption('limit');
         $default_mapping= $input->getOption('default_mapping');
 
+        $delimiter = $this->checkDelimiter($file,$delimiter,$input,$output);
+
         $output->writeln([
             '====================================',
             'Import registrations data from a csv',
@@ -49,17 +51,18 @@ class ImportData extends CsvCommand
         ]);
 
         $this->setNeededFields(array(
-            'number' => array('label' => 'numero de licence','index'=>1),
-            'firstname' => array('label' => 'prénom','index'=>2),
-            'lastname' => array('label' => 'nom','index'=>3),
-            'dob' => array('label' => 'date de naissance','index'=>4),
-            'sex' => array('label' => 'genre (homme/femme)','index'=>5),
-            'email' => array('label' => 'e-mail','index'=>6),
-            'ligue' => array('label' => 'nom de la ligue','index'=>7),
-            'club' => array('label' => 'club','index'=>8),
-            'type' => array('label' => 'type de licence','index'=>9),
-            'date' => array('label' => 'date de validation de la licence','index'=>-1,"required" => false,"default" => date_create_from_format('d/m/Y H:i:s','01/01/2019 00:00:00')),
-            'ask_date' => array('label' => 'date de demande de la licence','index'=>-1,"required" => false,"default" => date_create_from_format('d/m/Y H:i:s','01/01/2019 00:00:00')),
+            'number' => array('label' => 'Numero de licence','index'=>3),
+            'firstname' => array('label' => 'Prénom','index'=>4),
+            'lastname' => array('label' => 'Nom','index'=>5),
+            'dob' => array('label' => 'Date de naissance (d/m/Y)','index'=>6),
+            'sex' => array('label' => 'Genre (f/m)','index'=>7),
+            'email' => array('label' => 'Email','index'=>18),
+            'ligue' => array('label' => 'Ligue','index'=>33),
+            'club' => array('label' => 'Club','index'=>34),
+            'type' => array('label' => 'Type de licence','index'=>35),
+            'is_long' => array('label' => 'Licence longue (Oui/Non)','index'=>36,"required" => false,"default" =>'non'),
+            'date' => array('label' => 'Date de validation de la licence (d/m/Y)','index'=>40,"required" => false,"default" => date_create_from_format('d/m/Y H:i:s','01/01/2019 00:00:00')),
+            'ask_date' => array('label' => 'Date de demande de la licence (d/m/Y)','index'=>41,"required" => false,"default" => date_create_from_format('d/m/Y H:i:s','01/01/2019 00:00:00')),
         ));
 
         if (!$default_mapping)
@@ -83,6 +86,7 @@ class ImportData extends CsvCommand
                 if ($limit and $limit <= $row){
                     break;
                 }
+                $data = array_map("utf8_encode", $data); //utf8
                 if ($row > 1) { //skip first line
                     $progress->advance();
 
@@ -91,19 +95,20 @@ class ImportData extends CsvCommand
 
                     if ($date && $number) {
                         $registration_exist = $em->getRepository(Registration::class)
-                            ->findOneBy(array('number'=>$number),array('date'=>'DESC'));
-                            //->findOneByDateAndNumber($date, $number);
-                        if ($registration_exist && $registration_exist->getId()) {
-                            continue;
+                            ->findOneByDateAndNumber($date,$number);
+                        if ($registration_exist) { //update
+                            $registration = $registration_exist;
+                            $output->writeln('<info>Registration exist, update</info>',OutputInterface::VERBOSITY_DEBUG);
+                        }else{//new registration
+                            $registration = new Registration();
+                            $registration->setDate($date);
+                            $registration->setNumber($number);
                         }
 
                         $ask_date = date_create_from_format('d/m/Y',$this->getField('ask_date',$data));
 
-                        //new registration
-                        $registration = new Registration();
-                        $registration->setDate($date);
                         $registration->setAskDate($ask_date);
-                        $registration->setNumber($number);
+
                         switch ($this->getField('type',$data)[0]){
                             case 'a':
                                 $registration->setType(Registration::TYPE_A);
@@ -124,32 +129,40 @@ class ImportData extends CsvCommand
                                 $registration->setType(Registration::TYPE_NULL);
                         }
 
+                        $registration->setIsLong(($this->getField('is_long',$data) == "oui"));
+
                         $club_name = $this->getField('club',$data);
                         if ($club_name) {
                             //club
+                            $slug = $this->createSlug($club_name);
                             $club_exist = $em->getRepository(Club::class)
-                                ->findOneByName($club_name);
+                                ->findOneBySlug($slug);
                             if ($club_exist && $club_exist->getId()) {
                                 $club = $club_exist;
                             } else {
                                 $club = new Club();
+                                $club->setSlug($slug);
                                 $club->setName($club_name);
                                 $em->persist($club);
+                                $em->flush(); //persist new club
                             }
                             $registration->setClub($club);
                         }
 
                         $ligue_name = $this->getField('ligue',$data);
                         if ($ligue_name) {
-                            //club
+                            //ligue
+                            $slug = $this->createSlug($ligue_name);
                             $ligue_exist = $em->getRepository(Ligue::class)
-                                ->findOneByName($ligue_name);
+                                ->findOneBySlug($slug);
                             if ($ligue_exist && $ligue_exist->getId()) {
                                 $ligue = $ligue_exist;
                             } else {
                                 $ligue = new Ligue();
                                 $ligue->setName($ligue_name);
+                                $ligue->setSlug($slug);
                                 $em->persist($ligue);
+                                $em->flush(); //persist new ligue
                             }
                             $registration->setLigue($ligue);
                         }
@@ -198,11 +211,19 @@ class ImportData extends CsvCommand
             }
             fclose($handle);
             $output->writeln("");
-            $output->writeln("<info>Flush</info>");
+            $output->writeln("<info>Flushing ... </info>");
             $em->flush();
         }
         //$progress->finish();
         $output->writeln('');
+
+    }
+
+
+    public static function createSlug($str, $delimiter = '-'){
+
+        $slug = strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $str))))), $delimiter));
+        return $slug;
 
     }
 }

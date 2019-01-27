@@ -37,11 +37,11 @@ class ClubRepository extends ServiceEntityRepository
     */
 
 
-    public function findOneByName($name): ?Club
+    public function findOneBySlug($slug): ?Club
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.name = :val')
-            ->setParameter('val', $name)
+            ->andWhere('c.slug = :val')
+            ->setParameter('val', $slug)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()

@@ -3,29 +3,17 @@
 {% block title %}Race{% endblock %}
 
 {% block body %}
-    <h1>Race</h1>
+    <h1>Race #{{ race.id }}</h1>
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ race.id }}</td>
-            </tr>
             <tr>
                 <th>Name</th>
                 <td>{{ race.name }}</td>
             </tr>
             <tr>
-                <th>Lat</th>
-                <td>{{ race.lat }}</td>
-            </tr>
-            <tr>
-                <th>Lon</th>
-                <td>{{ race.lon }}</td>
-            </tr>
-            <tr>
                 <th>Date</th>
-                <td>{{ race.date ? race.date|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ race.date ? race.date|date('Y-m-d') : '' }}</td>
             </tr>
             <tr>
                 <th>Athletes_per_team</th>
@@ -36,10 +24,11 @@
 
     <ul>
         {% for team in race.teams %}
-            <li>#{{ team.position }} {{ team.name }} </li>
+            <li><a href="{{ path("team_show",{"id":team.id}) }}">#{{ team.position }} {{ team.name }}</a> </li>
             <ul>
                 {% for registration in team.registrations %}
-                    <li><b>{{ registration.athlete.firstname }} {{ registration.athlete.lastname }}</b> [ {{ registration.number }} ]</li>
+                    <li><b>{{ registration.athlete.firstname }} {{ registration.athlete.lastname }}</b> [ <a
+                                href="{{ path('registration_show',{'id':registration.id}) }}">{{ registration.number }}</a> ]</li>
                 {% endfor %}
                 {% for outsider in team.outsiders %}
                     <li {% if outsider.number %}style="color: red"{% endif %}>{{ outsider.firstname }} {{ outsider.lastname }}{% if outsider.number %} [ {{ outsider.number }} ]{% endif %}</li>

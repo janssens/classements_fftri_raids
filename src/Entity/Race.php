@@ -40,8 +40,15 @@ class Race
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Team", mappedBy="race", orphanRemoval=true, cascade={"remove"})
+     * @ORM\OrderBy({"position" = "ASC"})
      */
     private $teams;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\OfficialTeam", mappedBy="race")
+     * @ORM\OrderBy({"position" = "ASC"})
+     */
+    private $official_teams;
 
     /**
      * @ORM\Column(type="integer")
@@ -51,6 +58,12 @@ class Race
     public function __construct()
     {
         $this->teams = new ArrayCollection();
+        $this->official_teams = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 
     public function getId(): ?int
@@ -148,4 +161,13 @@ class Race
 
         return $this;
     }
+
+    /**
+     * @return Collection|OfficialTeam[]
+     */
+    public function getOfficialTeams(): Collection
+    {
+        return $this->official_teams;
+    }
+
 }

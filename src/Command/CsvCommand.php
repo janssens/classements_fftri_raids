@@ -8,12 +8,46 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
 
 abstract class CsvCommand extends ContainerAwareCommand
 {
     private $_neededFields;
 
     const DEFAULT_LABEL = '-- N/A --';
+
+    /**
+     * @param string $file
+     * @param string $delimiter
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function checkDelimiter($file,$delimiter,InputInterface $input,OutputInterface $output,$nbOfColumn = 2){
+        $f = fopen($file, 'r');
+        $line = fgets($f);
+        fclose($f);
+        $chosen = false;
+        while (!$chosen){
+            $count = substr_count($line, $delimiter);
+            if ($count <= $nbOfColumn){
+                $output->writeln('<fg=red>Hum, delimiter </><fg=cyan>'.$delimiter.'</><fg=red> does not seams to be the good one</>');
+                $output->writeln('<info>First line is : <fg=yellow>'.$line.'</></info>');
+
+                $helper = $this->getHelper('question');
+                $confirm = new ConfirmationQuestion('Change it ? ', true);
+
+                if (!$helper->ask($input, $output, $confirm)) {
+                    $chosen = true;
+                }else{
+                    $question = new Question('New delimiter: ');
+                    $delimiter = $helper->ask($input, $output, $question);
+                }
+            }else{
+                $chosen = true;
+            }
+        }
+        return $delimiter;
+    }
 
     /**
      * @param string $file
@@ -32,6 +66,7 @@ abstract class CsvCommand extends ContainerAwareCommand
                 if (10 <= $row){
                     break;
                 }
+                $data = array_map("utf8_encode", $data); //utf8
                 if ($row == 1) {
                     $head = $data;
                 }else{
@@ -50,6 +85,9 @@ abstract class CsvCommand extends ContainerAwareCommand
             }
             array_push( $chooses,self::DEFAULT_LABEL);
             $output->writeln('<question>Please select witch field is user for <fg=red;bg=yellow> '.$value['label'].' </></question>');
+            if (count($chooses)>6){
+                usleep(5000);
+            }
             $default = array_search(self::DEFAULT_LABEL,$chooses);
             if (isset($value['index']))
                 $default = $value['index'];

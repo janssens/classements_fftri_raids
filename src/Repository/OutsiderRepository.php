@@ -45,7 +45,7 @@ class OutsiderRepository extends ServiceEntityRepository
             ->andWhere('r.date >= :dstart')
             ->andWhere('r.date <= :dend')
             ->andWhere('o.number like :val')
-            ->setParameter('dend', date_create_from_format('d/m/Y H:i:s','31/12/'.$registration->getDate()->format('Y').'29:59:59'))//todo: date end taking acompte of licence longue
+            ->setParameter('dend', $registration->getEndDate())
             ->setParameter('dstart', $registration->getDate())
             ->setParameter('val', substr($registration->getNumber(),0,6).'%')
             ->orderBy('o.id', 'ASC')

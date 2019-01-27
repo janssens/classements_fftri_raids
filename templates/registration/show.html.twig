@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registration{% endblock %}
+
+{% block body %}
+    <h1>Registration</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ registration.id }}</td>
+            </tr>
+            <tr>
+                <th>Number</th>
+                <td>{{ registration.number }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ registration.type }}</td>
+            </tr>
+            <tr>
+                <th>Ask_date</th>
+                <td>{{ registration.askDate ? registration.askDate|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ registration.date ? registration.date|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>EndDate</th>
+                <td>{{ registration.endDate ? registration.endDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Is_long</th>
+                <td>{{ registration.isLong ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Athlete</th>
+                <td><a href="{{ path("athlete_show",{"id":registration.athlete.id}) }}">{{ registration.athlete.firstname }} {{ registration.athlete.lastname }}</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('registration_index') }}">back to list</a>
+
+    <a href="{{ path('registration_edit', {'id': registration.id}) }}">edit</a>
+
+    {{ include('registration/_delete_form.html.twig') }}
+{% endblock %}

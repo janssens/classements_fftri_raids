@@ -19,7 +19,7 @@ class Ligue
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=100)
      */
     private $name;
 
@@ -27,6 +27,11 @@ class Ligue
      * @ORM\OneToMany(targetEntity="App\Entity\Registration", mappedBy="ligue")
      */
     private $registrations;
+
+    /**
+     * @ORM\Column(type="string", length=100, unique=true)
+     */
+    private $slug;
 
     public function __construct()
     {
@@ -77,6 +82,18 @@ class Ligue
                 $registration->setLigue(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

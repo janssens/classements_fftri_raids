@@ -72,6 +72,11 @@ class Registration
      */
     private $teams;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_long;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
@@ -121,6 +126,13 @@ class Registration
         $this->date = $date;
 
         return $this;
+    }
+
+    public function getEndDate(): ?\DateTimeInterface
+    {
+//        if ($this->is_long)
+//            return date_create_from_format('d/m/Y H:i:s','31/12/'.(intval($this->getDate()->format('Y'))+1).' 23:59:59');
+        return date_create_from_format('d/m/Y H:i:s','31/12/'.$this->getDate()->format('Y').' 23:59:59');
     }
 
     public function getClub(): ?Club
@@ -193,6 +205,18 @@ class Registration
         if ($this->teams->contains($team)) {
             $this->teams->removeElement($team);
         }
+
+        return $this;
+    }
+
+    public function getIsLong(): ?bool
+    {
+        return $this->is_long;
+    }
+
+    public function setIsLong(bool $is_long): self
+    {
+        $this->is_long = $is_long;
 
         return $this;
     }

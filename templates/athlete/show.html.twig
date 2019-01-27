@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Athlete{% endblock %}
+
+{% block body %}
+    <h1>Athlete</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ athlete.id }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ athlete.email }}</td>
+            </tr>
+            <tr>
+                <th>Firstname</th>
+                <td>{{ athlete.firstname }}</td>
+            </tr>
+            <tr>
+                <th>Lastname</th>
+                <td>{{ athlete.lastname }}</td>
+            </tr>
+            <tr>
+                <th>Gender</th>
+                <td>{{ athlete.gender }}</td>
+            </tr>
+            <tr>
+                <th>Dob</th>
+                <td>{{ athlete.dob ? athlete.dob|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('athlete_index') }}">back to list</a>
+
+    <a href="{{ path('athlete_edit', {'id': athlete.id}) }}">edit</a>
+
+    {{ include('athlete/_delete_form.html.twig') }}
+{% endblock %}
