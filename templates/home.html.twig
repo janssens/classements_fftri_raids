@@ -2,10 +2,26 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Your lucky number is hello</h1>
-    <ul>
-    {% for race in races %}
-        <li><a href="{{ path('race',{'id':race.id}) }}">{{ race.name }}</a></li>
+    <h1></h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Prenom</th>
+            <th>Nom</th>
+            <th>Points</th>
+            <th>Category</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    {% for rank in rankings %}
+        <tr>
+            <td><a href="{{ path('athlete_show',{"id":rank.athlete.id}) }}">{{ rank.athlete.firstname | capitalize }}</a></td>
+            <td><a href="{{ path('athlete_show',{"id":rank.athlete.id}) }}">{{ rank.athlete.lastname | upper }}</a></td>
+            <td>{{ rank.points }}</td>
+            <td>{{ rank.categoryHuman }}</td>
+        </tr>
     {% endfor %}
-    </ul>
+    </table>
 {% endblock %}

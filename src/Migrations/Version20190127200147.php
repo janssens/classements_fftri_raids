@@ -29,6 +29,7 @@ final class Version20190127200147 extends AbstractMigration
              JOIN race ON t.race_id = race.id
              JOIN registration AS r ON r.id = rt.registration_id
              JOIN athlete AS a ON a.id = r.athlete_id
+             WHERE r.type in (1,2,5,6,8,9)
             GROUP BY rt.team_id
             HAVING COUNT(*) = number_of_athlete;');
 

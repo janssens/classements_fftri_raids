@@ -41,19 +41,16 @@ class OfficialTeam
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Race", inversedBy="official_teams")
+     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
      */
     private $race;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Team")
+     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
      */
     private $team;
 
-
-    public function __construct()
-    {
-        $this->registrations = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -94,6 +91,19 @@ class OfficialTeam
     public function getGender(): ?string
     {
         return $this->gender;
+    }
+
+    public function getCategoryHuman(): ?string
+    {
+        switch ($this->gender){
+            case OfficialTeam::GENDER_MALE:
+                return 'Homme';
+            case OfficialTeam::GENDER_FEMALE:
+                return 'Femme';
+            case OfficialTeam::GENDER_MIXED:
+            default:
+                return 'Mixte';
+        }
     }
 
     public function getTeam(): ?Team

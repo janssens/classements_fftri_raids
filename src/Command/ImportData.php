@@ -61,8 +61,8 @@ class ImportData extends CsvCommand
             'club' => array('label' => 'Club','index'=>34),
             'type' => array('label' => 'Type de licence','index'=>35),
             'is_long' => array('label' => 'Licence longue (Oui/Non)','index'=>36,"required" => false,"default" =>'non'),
-            'date' => array('label' => 'Date de validation de la licence (d/m/Y)','index'=>40,"required" => false,"default" => date_create_from_format('d/m/Y H:i:s','01/01/2019 00:00:00')),
-            'ask_date' => array('label' => 'Date de demande de la licence (d/m/Y)','index'=>41,"required" => false,"default" => date_create_from_format('d/m/Y H:i:s','01/01/2019 00:00:00')),
+            'date' => array('label' => 'Date de validation de la licence (d/m/Y)','index'=>40,"required" => false,"default" => '01/01/2019'),
+            'ask_date' => array('label' => 'Date de demande de la licence (d/m/Y)','index'=>41,"required" => false,"default" => '01/01/2019'),
         ));
 
         if (!$default_mapping)
@@ -122,8 +122,32 @@ class ImportData extends CsvCommand
                             case 'd':
                                 $registration->setType(Registration::TYPE_D);
                                 break;
+                            case 'e':
+                                $registration->setType(Registration::TYPE_E);
+                                break;
+                            case 'f':
+                                $registration->setType(Registration::TYPE_F);
+                                break;
+                            case 'g':
+                                $registration->setType(Registration::TYPE_G);
+                                break;
                             case 'h':
                                 $registration->setType(Registration::TYPE_H);
+                                break;
+                            case 'i':
+                                $registration->setType(Registration::TYPE_I);
+                                break;
+                            case 'j':
+                                $registration->setType(Registration::TYPE_J);
+                                break;
+                            case 'k':
+                                $registration->setType(Registration::TYPE_K);
+                                break;
+                            case 'l':
+                                $registration->setType(Registration::TYPE_L);
+                                break;
+                            case 'm':
+                                $registration->setType(Registration::TYPE_M);
                                 break;
                             default:
                                 $registration->setType(Registration::TYPE_NULL);

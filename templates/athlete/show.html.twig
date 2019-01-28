@@ -38,5 +38,20 @@
 
     <a href="{{ path('athlete_edit', {'id': athlete.id}) }}">edit</a>
 
+    <ul>
+    {% for registration in athlete.registrations %}
+        <li>{{ registration.number }} {{ registration.date|date('Y-m-d') }}</li>
+        {% for team in registration.teams %}
+            <li>{{ team.race.name }} - {{ team.name }} {% if (team.officialTeamRanking) %}(#{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }} = {{ team.officialTeamRanking.points }}pts{% endif %})</li>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+
+    <ul>
+        {% for ranking in athlete.rankings %}
+            <li>{{ ranking.season }} categorie {{ ranking.categoryHuman }} ({{ ranking.points }}pts)</li>
+        {% endfor %}
+    </ul>
+
     {{ include('athlete/_delete_form.html.twig') }}
 {% endblock %}

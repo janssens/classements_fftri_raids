@@ -40,10 +40,6 @@ class Ranking
      */
     private $season;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Registration")
-     */
-    private $registrations;
 
     public function __construct()
     {
@@ -63,14 +59,6 @@ class Ranking
     public function getRace(): ?Race
     {
         return $this->race;
-    }
-
-    /**
-     * @return Collection|Registration[]
-     */
-    public function getRegistrations(): Collection
-    {
-        return $this->registrations;
     }
 
     /**
@@ -108,6 +96,19 @@ class Ranking
         return $this->category;
     }
 
+    public function getCategoryHuman(): ?string
+    {
+        switch ($this->category){
+            case OfficialTeam::GENDER_MALE:
+                return 'Homme';
+            case OfficialTeam::GENDER_FEMALE:
+                return 'Femme';
+            case OfficialTeam::GENDER_MIXED:
+            default:
+                return 'Mixte';
+        }
+    }
+
     public function setCategory(string $category): self
     {
         $this->category = $category;
@@ -118,24 +119,6 @@ class Ranking
     public function setTeam(?Team $team): self
     {
         $this->team = $team;
-
-        return $this;
-    }
-
-    public function addRegistration(Registration $registration): self
-    {
-        if (!$this->registrations->contains($registration)) {
-            $this->registrations[] = $registration;
-        }
-
-        return $this;
-    }
-
-    public function removeRegistration(Registration $registration): self
-    {
-        if ($this->registrations->contains($registration)) {
-            $this->registrations->removeElement($registration);
-        }
 
         return $this;
     }

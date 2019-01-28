@@ -30,12 +30,18 @@ class Season
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Ranking", mappedBy="season")
+     * @ORM\OrderBy({"points" = "DESC"})
      */
-    private $rankins;
+    private $rankings;
 
     public function __construct()
     {
-        $this->rankins = new ArrayCollection();
+        $this->rankings = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return "Saison ".$this->getStartDate()->format('Y')."-".$this->getEndDate()->format('Y');
     }
 
     public function getId(): ?int
@@ -70,9 +76,9 @@ class Season
     /**
      * @return Collection|Ranking[]
      */
-    public function getRankins(): Collection
+    public function getRankings(): Collection
     {
-        return $this->rankins;
+        return $this->rankings;
     }
 
 }

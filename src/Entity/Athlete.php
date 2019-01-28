@@ -58,7 +58,7 @@ class Athlete
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Ranking", mappedBy="athlete")
      */
-    private $rankins;
+    private $rankings;
 
     public function __construct()
     {
@@ -165,9 +165,9 @@ class Athlete
     /**
      * @return Collection|Ranking[]
      */
-    public function getRankins(): Collection
+    public function getRankings(): Collection
     {
-        return $this->rankins;
+        return $this->rankings;
     }
 
 }

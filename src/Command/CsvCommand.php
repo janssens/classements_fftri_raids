@@ -84,7 +84,7 @@ abstract class CsvCommand extends ContainerAwareCommand
                 unset($chooses[$k]);
             }
             array_push( $chooses,self::DEFAULT_LABEL);
-            $output->writeln('<question>Please select witch field is user for <fg=red;bg=yellow> '.$value['label'].' </></question>');
+            $output->writeln('<question>Please select witch field is user for <fg=cyan;bg=black> '.$value['label'].' </></question>');
             if (count($chooses)>6){
                 usleep(5000);
             }
@@ -102,8 +102,7 @@ abstract class CsvCommand extends ContainerAwareCommand
             $chosen = false;
             while (!$chosen) {
                 $field = $helper->ask($input, $output, $question);
-                $field_index = array_search($field, $head);
-                if ($field_index<0) {
+                if (!($field_index = array_search($field, $head))&&$field_index!=0) {
                     if (isset($value['required'])&&!$value['required']){
                         $chosen = true;
                         $field_index = -1;
@@ -125,10 +124,8 @@ abstract class CsvCommand extends ContainerAwareCommand
                     }
                 }
             }
-            if ($field_index>=0) {
-                $fields[$key]['index'] = $field_index;
-                $used_keys[] = $field_index;
-            }
+            $fields[$key]['index'] = $field_index;
+            $used_keys[] = $field_index;
             $output->writeln(['','']);
         }
         $this->setNeededFields($fields); // "save"

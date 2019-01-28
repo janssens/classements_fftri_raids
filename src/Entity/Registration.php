@@ -18,11 +18,19 @@ use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
  */
 class Registration
 {
-    const TYPE_A = 1;
-    const TYPE_B = 2;
-    const TYPE_C = 3;
-    const TYPE_D = 4;
-    const TYPE_H = 7;
+    const TYPE_A = 1; //A - Lic. club - Compétition - Jeune
+    const TYPE_B = 2; //B - Lic. club - Compétition - S. & V.
+    const TYPE_C = 3; //C - Lic. club - Loisir - Jeune
+    const TYPE_D = 4; //D - Licence club - Loisir - S. & V.
+    const TYPE_E = 5; //E - Paratriathlon - Lic. club - Comp�tition - Jeune
+    const TYPE_F = 6; //F - Paratriathlon - Lic. club - Comp�tition  - S. & V.
+    const TYPE_G = 7; //G - Lic. club - Dirigeant
+    const TYPE_H = 8; //H - Lic. Individuelle - Comp�tition - S. & V.
+    const TYPE_I = 9; //I - Paratriathlon  - Lic. individuelle - Comp�tition  - S. & V.
+    const TYPE_J = 10; //J - Lic. individuelle - Dirigeant
+    const TYPE_K = 11; //K - Paratriathlon- Lic. club - Loisir - Jeune
+    const TYPE_L = 12; //L - Paratriathlon- Lic. Club - Loisir - S. & V.
+    const TYPE_M = 13; //M - Lic. club - Action
     const TYPE_NULL = 0;
 
     /**

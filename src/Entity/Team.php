@@ -43,6 +43,16 @@ class Team
      */
     private $outsiders;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\OfficialTeam", mappedBy="team")
+     */
+    private $official_team;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\OfficialTeamRanking", mappedBy="team")
+     */
+    private $official_team_ranking;
+
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
@@ -88,6 +98,16 @@ class Team
         $this->race = $race;
 
         return $this;
+    }
+
+    public function getOfficialTeam(): ?OfficialTeam
+    {
+        return $this->official_team;
+    }
+
+    public function getOfficialTeamRanking(): ?OfficialTeamRanking
+    {
+        return $this->official_team_ranking;
     }
 
     /**
