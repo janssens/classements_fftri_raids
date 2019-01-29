@@ -86,7 +86,7 @@ abstract class CsvCommand extends ContainerAwareCommand
             array_push( $chooses,self::DEFAULT_LABEL);
             $output->writeln('<question>Please select witch field is user for <fg=cyan;bg=black> '.$value['label'].' </></question>');
             if (count($chooses)>6){
-                usleep(5000);
+                usleep(500000);
             }
             $default = array_search(self::DEFAULT_LABEL,$chooses);
             if (isset($value['index']))
