@@ -3,31 +3,26 @@
 {% block title %}Race{% endblock %}
 
 {% block body %}
-    <h1>Race #{{ race.id }}</h1>
+    <h1>{{ race.name }}</h1>
+    <h2>{{ race.date ? race.date|date('Y-m-d') : '' }}</h2>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Name</th>
-                <td>{{ race.name }}</td>
-            </tr>
-            <tr>
-                <th>Date</th>
-                <td>{{ race.date ? race.date|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Athletes_per_team</th>
-                <td>{{ race.athletesPerTeam }}</td>
-            </tr>
-        </tbody>
-    </table>
+    {% if race.championships | length %}
+        <h3>Course de championnat</h3>
+        <p>Cette course apparait dans les championnats suivants</p>
+        <ul>
+        {% for championship in race.championships %}
+            <li><a href="{{ path('championship_show',{'id':championship.id}) }}">{{ championship.name }}</a> {{ championship.season }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 
+    <h3>Equipes</h3>
     <ul>
         {% for team in race.teams %}
             <li><a href="{{ path("team_show",{"id":team.id}) }}">#{{ team.position }} {{ team.name }}</a> </li>
             <ul>
                 {% for registration in team.registrations %}
-                    <li><b><a href="{{ path('athlete_show',{'id':registration.athlete.id}) }}">{{ registration.athlete.firstname }} {{ registration.athlete.lastname }}</a></b> [ {{ registration.number }} ]</li>
+                    <li><b><a href="{{ path('athlete_show',{'id':registration.athlete.id}) }}">{{ registration.athlete.firstname }} {{ registration.athlete.lastname }}</a></b>{% if is_granted('ROLE_ADMIN') %} [ {{ registration.number }} ]{% endif %}</li>
                 {% endfor %}
                 {% for outsider in team.outsiders %}
                     <li {% if outsider.number %}style="color: red"{% endif %}>{{ outsider.firstname }} {{ outsider.lastname }}{% if outsider.number %} [ {{ outsider.number }} ]{% endif %}</li>
@@ -36,9 +31,12 @@
         {% endfor %}
     </ul>
 
+    {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('race_index') }}">back to list</a>
-
     <a href="{{ path('race_edit', {'id': race.id}) }}">edit</a>
+    {% endif %}
 
-    {{ include('race/_delete_form.html.twig') }}
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        {{ include('race/_delete_form.html.twig') }}
+    {% endif %}
 {% endblock %}

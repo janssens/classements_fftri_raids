@@ -10,18 +10,21 @@
             <tr>
                 <th>Id</th>
                 <th>Name</th>
+                {% if is_granted('ROLE_ADMIN') %}
                 <th>actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
         {% for championship in championships %}
             <tr>
                 <td>{{ championship.id }}</td>
-                <td>{{ championship.name }}</td>
+                <td><a href="{{ path('championship_show', {'id': championship.id}) }}">{{ championship.name }}</a></td>
+                {% if is_granted('ROLE_ADMIN') %}
                 <td>
-                    <a href="{{ path('championship_show', {'id': championship.id}) }}">show</a>
                     <a href="{{ path('championship_edit', {'id': championship.id}) }}">edit</a>
                 </td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>
@@ -30,6 +33,7 @@
         {% endfor %}
         </tbody>
     </table>
-
+    {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('championship_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}

@@ -39,8 +39,16 @@ abstract class CsvCommand extends ContainerAwareCommand
                 if (!$helper->ask($input, $output, $confirm)) {
                     $chosen = true;
                 }else{
-                    $question = new Question('New delimiter: ');
+                    $possible_values = array(',',';',"\t");
+                    $default = '';
+                    foreach (count_chars($line, 1) as $i => $val) {
+                        if (in_array(chr($i),$possible_values)){
+                            $default = chr($i);
+                        }
+                    }
+                    $question = new Question('New delimiter: ',$default);
                     $delimiter = $helper->ask($input, $output, $question);
+                    $output->writeln('Using: ' . $delimiter);
                 }
             }else{
                 $chosen = true;
@@ -85,8 +93,11 @@ abstract class CsvCommand extends ContainerAwareCommand
             }
             array_push( $chooses,self::DEFAULT_LABEL);
             $output->writeln('<question>Please select witch field is user for <fg=cyan;bg=black> '.$value['label'].' </></question>');
+            if (isset($value['tips'])){
+                $output->writeln('<fg=cyan;>'.$value['tips'].' </>');
+            }
             if (count($chooses)>6){
-                usleep(500000);
+                usleep(0.8*1000000);
             }
             $default = array_search(self::DEFAULT_LABEL,$chooses);
             if (isset($value['index']))
@@ -102,7 +113,8 @@ abstract class CsvCommand extends ContainerAwareCommand
             $chosen = false;
             while (!$chosen) {
                 $field = $helper->ask($input, $output, $question);
-                if (!($field_index = array_search($field, $head))&&$field_index!=0) {
+                $field_index = array_search($field, $head);
+                if ($field_index===false) {
                     if (isset($value['required'])&&!$value['required']){
                         $chosen = true;
                         $field_index = -1;

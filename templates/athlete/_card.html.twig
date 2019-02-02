@@ -1,0 +1,33 @@
+
+
+<table class="table">
+    <tbody>
+    <tr>
+        <td style="text-align: center">
+            <a href="{{ path('athlete_show',{"id":athlete.id}) }}">
+                <img src="{{ gravatar(athlete.email,200,'g','mp') }}" />
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center">
+            <strong>{{ athlete.firstname | capitalize }} {{ athlete.lastname | upper }}</strong>
+        </td>
+    </tr>
+    {% if is_granted('ROLE_ADMIN') %}
+        <tr>
+            <td>{{ athlete.email }}</td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td>Licencié{% if athlete.gender == 2 %}e{% endif %} FFTRI</td>
+    </tr>
+    <tr>
+        {% if is_granted('ROLE_ADMIN') %}
+            <td>{{ athlete.dob ? athlete.dob|date('Y-m-d') : '' }}</td>
+        {% else %}
+            <td>Né{% if athlete.gender == 2 %}e{% endif %} en {{ athlete.dob ? athlete.dob|date('Y') : '' }}</td>
+        {% endif %}
+    </tr>
+    </tbody>
+</table>

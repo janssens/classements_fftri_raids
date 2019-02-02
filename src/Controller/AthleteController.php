@@ -26,29 +26,6 @@ class AthleteController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="athlete_new", methods={"GET","POST"})
-     */
-    public function new(Request $request): Response
-    {
-        $athlete = new Athlete();
-        $form = $this->createForm(AthleteType::class, $athlete);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($athlete);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('athlete_index');
-        }
-
-        return $this->render('athlete/new.html.twig', [
-            'athlete' => $athlete,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
      * @Route("/{id}", name="athlete_show", methods={"GET"})
      */
     public function show(Athlete $athlete): Response

@@ -40,6 +40,11 @@ class Championship
      */
     private $rankings;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $registration_due_date;
+
     public function __construct()
     {
         $this->races = new ArrayCollection();
@@ -104,6 +109,18 @@ class Championship
         if ($this->races->contains($race)) {
             $this->races->removeElement($race);
         }
+
+        return $this;
+    }
+
+    public function getRegistrationDueDate(): ?\DateTimeInterface
+    {
+        return $this->registration_due_date;
+    }
+
+    public function setRegistrationDueDate(\DateTimeInterface $registration_due_date): self
+    {
+        $this->registration_due_date = $registration_due_date;
 
         return $this;
     }

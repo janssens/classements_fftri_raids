@@ -3,28 +3,46 @@
 {% block title %}Team{% endblock %}
 
 {% block body %}
-    <h1>Team</h1>
+    <h1>Team {{ team.name }}</h1>
 
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ team.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ team.name }}</td>
-            </tr>
-            <tr>
-                <th>Position</th>
+                <th>Scratch</th>
                 <td>{{ team.position }}</td>
+            </tr>
+            {% if (team.officialTeamRanking) %}
+            <tr>
+                <th>Classement fftri</th>
+                <td>{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }}</td>
+            </tr>
+            <tr>
+                <th>points fftri</th>
+                <td>{{ team.officialTeamRanking.points }}pts</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>Course</th>
+                <td><a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race }}</a> {{ team.race.date | date('d-m-Y') }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('team_index') }}">back to list</a>
+    <table>
+        <tbody>
+            <tr>
+                {% for registration in team.registrations %}
+                    <td>{{ include('athlete/_card.html.twig',{'athlete':registration.athlete}) }}</td>
+                {% endfor %}
+                {% for outsider in team.outsiders %}
+                    </td>{{ include('outsider/_card.html.twig',{'outsider':outsider}) }}</td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
 
-    <a href="{{ path('team_edit', {'id': team.id}) }}">edit</a>
-
-    {{ include('team/_delete_form.html.twig') }}
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <a href="{{ path('team_edit', {'id': team.id}) }}">edit</a>
+        {{ include('team/_delete_form.html.twig') }}
+    {% endif %}
 {% endblock %}

@@ -3,24 +3,12 @@
 {% block title %}Championship{% endblock %}
 
 {% block body %}
-    <h1>Championship</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ championship.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ championship.name }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <h1>{{ championship.name }} {{ championship.season }}</h1>
 
     <table>
         <thead>
         <tr>
+            <th>Position</th>
             <th>Prenom</th>
             <th>Nom</th>
             <th>Points</th>
@@ -30,19 +18,26 @@
         <tbody>
 
         </tbody>
+        {% set i = 1 %}
         {% for rank in championship.rankings %}
+            {% if not app.request.get('category') or app.request.get('category') == rank.category %}
             <tr>
+                <td>{{ i }}</td>
                 <td><a href="{{ path('athlete_show',{"id":rank.athlete.id}) }}">{{ rank.athlete.firstname | capitalize }}</a></td>
                 <td><a href="{{ path('athlete_show',{"id":rank.athlete.id}) }}">{{ rank.athlete.lastname | upper }}</a></td>
                 <td>{{ rank.points }}</td>
-                <td>{{ rank.categoryHuman }}</td>
+                <td><a href="{% if not app.request.get('category') %}?category={{ rank.category }}{% else %}?{% endif %}">{{ rank.categoryHuman }}</a></td>
             </tr>
+                {% set i = i + 1 %}
+            {% endif %}
         {% endfor %}
     </table>
 
     <a href="{{ path('championship_index') }}">back to list</a>
 
-    <a href="{{ path('championship_edit', {'id': championship.id}) }}">edit</a>
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <a href="{{ path('championship_edit', {'id': championship.id}) }}">edit</a>
+        {{ include('championship/_delete_form.html.twig') }}
+    {% endif %}
 
-    {{ include('championship/_delete_form.html.twig') }}
 {% endblock %}

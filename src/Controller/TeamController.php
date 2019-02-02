@@ -25,28 +25,6 @@ class TeamController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/new", name="team_new", methods={"GET","POST"})
-     */
-    public function new(Request $request): Response
-    {
-        $team = new Team();
-        $form = $this->createForm(TeamType::class, $team);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($team);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('team_index');
-        }
-
-        return $this->render('team/new.html.twig', [
-            'team' => $team,
-            'form' => $form->createView(),
-        ]);
-    }
 
     /**
      * @Route("/{id}", name="team_show", methods={"GET"})

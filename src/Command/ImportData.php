@@ -202,15 +202,14 @@ class ImportData extends CsvCommand
                             ->findOneByLastnameAndDob($lastname, $dob);
                         if ($athlete_exist) {
                             $athlete = $athlete_exist;
-                            $athlete->addRegistration($registration);
-			                $athlete->setEmail($email); //change email (maybe new ?)
-
                             //already up to date at registration date ?
                             $same_year_registration_exist = $em->getRepository(Registration::class)
                                 ->findOneByYearAndAthlete(intval($date->format('Y')),$athlete);
                             if ($same_year_registration_exist) {
                                 $registration->setStartDate(date_create_from_format('d/m/Y H:i:s','01/01/'.(intval($date->format('Y'))+1).' 00:00:00'));
                             }
+                            $athlete->addRegistration($registration);
+                            $athlete->setEmail($email); //change email (maybe new ?)
                         } else {
                             $athlete = new Athlete();
                             $athlete->setEmail($email);

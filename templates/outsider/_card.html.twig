@@ -1,0 +1,17 @@
+<table class="table">
+    <tbody>
+    <tr>
+        <td style="text-align: center">
+            <img src="{{ gravatar('',200,'g','mp') }}" />
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center">
+            <strong>{{ outsider.firstname | capitalize }} {{ outsider.lastname | upper }}</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>Non Licencié{% if outsider.gender == 2 %}e{% endif %} FFTRI</td>
+    </tr>
+    </tbody>
+</table>

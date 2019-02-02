@@ -5,15 +5,21 @@
 {% block body %}
     <h1>Athlete index</h1>
 
+    {% if is_granted('ROLE_ADMIN') %}
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
+                {% if is_granted('ROLE_ADMIN') %}
                 <th>Email</th>
+                {% endif %}
                 <th>Firstname</th>
                 <th>Lastname</th>
                 <th>Gender</th>
+                {% if is_granted('ROLE_ADMIN') %}
                 <th>Dob</th>
+                {% endif %}
+
                 <th>actions</th>
             </tr>
         </thead>
@@ -21,14 +27,20 @@
         {% for athlete in athletes %}
             <tr>
                 <td>{{ athlete.id }}</td>
+                {% if is_granted('ROLE_ADMIN') %}
                 <td>{{ athlete.email }}</td>
+                {% endif %}
                 <td>{{ athlete.firstname }}</td>
                 <td>{{ athlete.lastname }}</td>
                 <td>{{ athlete.gender }}</td>
+                {% if is_granted('ROLE_ADMIN') %}
                 <td>{{ athlete.dob ? athlete.dob|date('Y-m-d H:i:s') : '' }}</td>
+                {% endif %}
                 <td>
                     <a href="{{ path('athlete_show', {'id': athlete.id}) }}">show</a>
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
                     <a href="{{ path('athlete_edit', {'id': athlete.id}) }}">edit</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
@@ -38,6 +50,6 @@
         {% endfor %}
         </tbody>
     </table>
+    {% endif %}
 
-    <a href="{{ path('athlete_new') }}">Create new</a>
 {% endblock %}
