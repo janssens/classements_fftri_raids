@@ -55,10 +55,16 @@ class Race
      */
     private $athletes_per_team;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Championship", mappedBy="races")
+     */
+    private $championships;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
         $this->official_teams = new ArrayCollection();
+        $this->championships = new ArrayCollection();
     }
 
     public function __toString()
@@ -168,6 +174,34 @@ class Race
     public function getOfficialTeams(): Collection
     {
         return $this->official_teams;
+    }
+
+    /**
+     * @return Collection|Championship[]
+     */
+    public function getChampionships(): Collection
+    {
+        return $this->championships;
+    }
+
+    public function addChampionship(Championship $championship): self
+    {
+        if (!$this->championships->contains($championship)) {
+            $this->championships[] = $championship;
+            $championship->addRace($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChampionship(Championship $championship): self
+    {
+        if ($this->championships->contains($championship)) {
+            $this->championships->removeElement($championship);
+            $championship->removeRace($this);
+        }
+
+        return $this;
     }
 
 }

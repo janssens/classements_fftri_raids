@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Athlete;
 use App\Entity\Race;
 use App\Entity\Registration;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -46,6 +47,20 @@ class RegistrationRepository extends ServiceEntityRepository
             ->setParameter('date_start', date_create_from_format('d/m/Y H:i:s',$date->format('d/m/Y').' 00:00:00'))
             ->setParameter('date_end', date_create_from_format('d/m/Y H:i:s',$date->format('d/m/Y').' 23:59:59'))
             ->setParameter('nb', $number)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    public function findOneByYearAndAthlete($year,Athlete $athlete): ?Registration
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.start_date BETWEEN :date_start AND :date_end')
+            ->andWhere('r.athlete = :athlete')
+            ->setParameter('date_start', date_create_from_format('d/m/Y H:i:s','01/01/'.$year.' 00:00:00'))
+            ->setParameter('date_end', date_create_from_format('d/m/Y H:i:s','31/12/'.$year.' 23:59:59'))
+            ->setParameter('athlete', $athlete)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()

@@ -27,8 +27,7 @@
             <li><a href="{{ path("team_show",{"id":team.id}) }}">#{{ team.position }} {{ team.name }}</a> </li>
             <ul>
                 {% for registration in team.registrations %}
-                    <li><b>{{ registration.athlete.firstname }} {{ registration.athlete.lastname }}</b> [ <a
-                                href="{{ path('registration_show',{'id':registration.id}) }}">{{ registration.number }}</a> ]</li>
+                    <li><b><a href="{{ path('athlete_show',{'id':registration.athlete.id}) }}">{{ registration.athlete.firstname }} {{ registration.athlete.lastname }}</a></b> [ {{ registration.number }} ]</li>
                 {% endfor %}
                 {% for outsider in team.outsiders %}
                     <li {% if outsider.number %}style="color: red"{% endif %}>{{ outsider.firstname }} {{ outsider.lastname }}{% if outsider.number %} [ {{ outsider.number }} ]{% endif %}</li>

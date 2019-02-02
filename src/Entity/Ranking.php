@@ -36,9 +36,9 @@ class Ranking
     private $category;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Season", inversedBy="rankings")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Championship", inversedBy="rankings")
      */
-    private $season;
+    private $championship;
 
 
     public function __construct()
@@ -49,46 +49,6 @@ class Ranking
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getPosition(): ?int
-    {
-        return $this->position;
-    }
-
-    public function getRace(): ?Race
-    {
-        return $this->race;
-    }
-
-    /**
-     * @return Collection|Outsider[]
-     */
-    public function getOutsiders(): Collection
-    {
-        return $this->outsiders;
-    }
-
-    public function getNumberOfAthlete(): ?int
-    {
-        return $this->number_of_athlete;
-    }
-
-    public function getGender(): ?string
-    {
-        return $this->gender;
-    }
-
-    public function getTeam(): ?Team
-    {
-        return $this->team;
-    }
-
-    public function setPosition(int $position): self
-    {
-        $this->position = $position;
-
-        return $this;
     }
 
     public function getCategory(): ?string
@@ -133,10 +93,9 @@ class Ranking
         return $this->athlete;
     }
 
-
-    public function getSeason(): ?Season
+    public function getChampionship(): ?Championship
     {
-        return $this->season;
+        return $this->championship;
     }
 
 }

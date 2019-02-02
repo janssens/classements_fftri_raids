@@ -12,20 +12,23 @@
                 <th>Name</th>
                 <th>Date</th>
                 <th>Athletes_per_team</th>
-                <th>actions</th>
+                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                    <th>actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
         {% for race in races %}
             <tr>
                 <td>{{ race.id }}</td>
-                <td>{{ race.name }}</td>
-                <td>{{ race.date ? race.date|date('Y-m-d') : '' }}</td>
+                <td><a href="{{ path('race_show', {'id': race.id}) }}">{{ race.name }}</a></td>
+                <td>{{ race.date ? race.date|date('d M Y') : '' }}</td>
                 <td>{{ race.athletesPerTeam }}</td>
+                {% if is_granted('ROLE_SUPER_ADMIN') %}
                 <td>
-                    <a href="{{ path('race_show', {'id': race.id}) }}">show</a>
                     <a href="{{ path('race_edit', {'id': race.id}) }}">edit</a>
                 </td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>

@@ -7,6 +7,8 @@
         "ext-iconv": "*",
         "egyg33k/csv-bundle": "^1.0",
         "friendsofsymfony/user-bundle": "^2.1",
+        "ornicar/gravatar-bundle": "^1.3",
+        "semantic/ui": "^2.4",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/asset": "*",
         "symfony/console": "*",

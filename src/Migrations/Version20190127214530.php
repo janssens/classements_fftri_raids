@@ -30,7 +30,7 @@ final class Version20190127214530 extends AbstractMigration
             JOIN athlete AS a ON a.id = r.athlete_id
             JOIN race ON race.id = team.race_id
             LEFT JOIN season ON race.date > season.start_date AND race.date < season.end_date
-            LEFT JOIN scale AS scale ON scale.position = (SELECT count(*)+1 FROM view_official_team AS subo where team.position < subo.position AND subo.race_id = team.race_id and subo.gender = team.gender)
+            LEFT JOIN scale AS scale ON scale.position = (SELECT count(*)+1 FROM view_official_team AS subo where team.position > subo.position AND subo.race_id = team.race_id and subo.gender = team.gender)
             GROUP BY athlete_id,team.gender,season.id;');
 
         $this->addSql('CREATE VIEW view_official_team_ranking AS 

@@ -2,6 +2,7 @@
 // src/Controller/DefaultController.php
 namespace App\Controller;
 
+use App\Entity\Championship;
 use App\Entity\Race;
 use App\Entity\Ranking;
 use App\Entity\Season;
@@ -18,7 +19,7 @@ class DefaultController extends AbstractController
     {
         $em = $this->container->get('doctrine')->getManager();
 
-        $rankings = $em->getRepository(Season::class)->find(1)->getRankings();
+        $rankings = $em->getRepository(Championship::class)->find(1)->getRankings();
         return $this->render('home.html.twig', [
             'rankings' => $rankings,
         ]);

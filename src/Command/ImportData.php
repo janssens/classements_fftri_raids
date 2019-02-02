@@ -51,18 +51,18 @@ class ImportData extends CsvCommand
         ]);
 
         $this->setNeededFields(array(
-            'number' => array('label' => 'Numero de licence','index'=>3),
-            'firstname' => array('label' => 'Prénom','index'=>4),
-            'lastname' => array('label' => 'Nom','index'=>5),
-            'dob' => array('label' => 'Date de naissance (d/m/Y)','index'=>6),
-            'sex' => array('label' => 'Genre (f/m)','index'=>7),
-            'email' => array('label' => 'Email','index'=>18),
-            'ligue' => array('label' => 'Ligue','index'=>33),
-            'club' => array('label' => 'Club','index'=>34),
-            'type' => array('label' => 'Type de licence','index'=>35),
-            'is_long' => array('label' => 'Licence longue (Oui/Non)','index'=>36,"required" => false,"default" =>'non'),
-            'date' => array('label' => 'Date de validation de la licence (d/m/Y)','index'=>40,"required" => false,"default" => '01/01/2019'),
-            'ask_date' => array('label' => 'Date de demande de la licence (d/m/Y)','index'=>41,"required" => false,"default" => '01/01/2019'),
+            'number' => array('label' => 'Numero de licence','index'=>2),
+            'firstname' => array('label' => 'Prénom','index'=>3),
+            'lastname' => array('label' => 'Nom','index'=>4),
+            'dob' => array('label' => 'Date de naissance (d/m/Y)','index'=>5),
+            'sex' => array('label' => 'Genre (f/m)','index'=>6),
+            'email' => array('label' => 'Email','index'=>17),
+            'ligue' => array('label' => 'Ligue','index'=>32),
+            'club' => array('label' => 'Club','index'=>33),
+            'type' => array('label' => 'Type de licence','index'=>34),
+            'is_long' => array('label' => 'Licence longue (Oui/Non)','index'=>35,"required" => false,"default" =>'non'),
+            'date' => array('label' => 'Date de validation de la licence (d/m/Y)','index'=>39,"required" => false,"default" => '01/01/2019'),
+            'ask_date' => array('label' => 'Date de demande de la licence (d/m/Y)','index'=>40,"required" => false,"default" => '01/01/2019'),
         ));
 
         if (!$default_mapping)
@@ -106,8 +106,10 @@ class ImportData extends CsvCommand
                         }
 
                         $ask_date = date_create_from_format('d/m/Y',$this->getField('ask_date',$data));
-
                         $registration->setAskDate($ask_date);
+
+                        $registration->setDate($date);
+                        $registration->setStartDate($date);
 
                         switch ($this->getField('type',$data)[0]){
                             case 'a':
@@ -199,9 +201,16 @@ class ImportData extends CsvCommand
                         $athlete_exist = $em->getRepository(Athlete::class)
                             ->findOneByLastnameAndDob($lastname, $dob);
                         if ($athlete_exist) {
-                            //todo update date if new
                             $athlete = $athlete_exist;
                             $athlete->addRegistration($registration);
+			                $athlete->setEmail($email); //change email (maybe new ?)
+
+                            //already up to date at registration date ?
+                            $same_year_registration_exist = $em->getRepository(Registration::class)
+                                ->findOneByYearAndAthlete(intval($date->format('Y')),$athlete);
+                            if ($same_year_registration_exist) {
+                                $registration->setStartDate(date_create_from_format('d/m/Y H:i:s','01/01/'.(intval($date->format('Y'))+1).' 00:00:00'));
+                            }
                         } else {
                             $athlete = new Athlete();
                             $athlete->setEmail($email);

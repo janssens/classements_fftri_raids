@@ -29,14 +29,14 @@ class Season
     private $end_date;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Ranking", mappedBy="season")
-     * @ORM\OrderBy({"points" = "DESC"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Championship", mappedBy="season", orphanRemoval=true)
      */
-    private $rankings;
+    private $championships;
 
     public function __construct()
     {
         $this->rankings = new ArrayCollection();
+        $this->championships = new ArrayCollection();
     }
 
     public function __toString()
@@ -74,11 +74,34 @@ class Season
     }
 
     /**
-     * @return Collection|Ranking[]
+     * @return Collection|Championship[]
      */
-    public function getRankings(): Collection
+    public function getChampionships(): Collection
     {
-        return $this->rankings;
+        return $this->championships;
+    }
+
+    public function addChampionship(Championship $championship): self
+    {
+        if (!$this->championships->contains($championship)) {
+            $this->championships[] = $championship;
+            $championship->setSeason($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChampionship(Championship $championship): self
+    {
+        if ($this->championships->contains($championship)) {
+            $this->championships->removeElement($championship);
+            // set the owning side to null (unless already changed)
+            if ($championship->getSeason() === $this) {
+                $championship->setSeason(null);
+            }
+        }
+
+        return $this;
     }
 
 }

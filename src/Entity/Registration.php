@@ -85,6 +85,11 @@ class Registration
      */
     private $is_long;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $start_date;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
@@ -138,9 +143,9 @@ class Registration
 
     public function getEndDate(): ?\DateTimeInterface
     {
-//        if ($this->is_long)
-//            return date_create_from_format('d/m/Y H:i:s','31/12/'.(intval($this->getDate()->format('Y'))+1).' 23:59:59');
-        return date_create_from_format('d/m/Y H:i:s','31/12/'.$this->getDate()->format('Y').' 23:59:59');
+        if ($this->is_long)
+            return date_create_from_format('d/m/Y H:i:s','31/12/'.(intval($this->getStartDate()->format('Y'))+1).' 23:59:59');
+        return date_create_from_format('d/m/Y H:i:s','31/12/'.($this->getStartDate()->format('Y')).' 23:59:59');
     }
 
     public function getClub(): ?Club
@@ -225,6 +230,18 @@ class Registration
     public function setIsLong(bool $is_long): self
     {
         $this->is_long = $is_long;
+
+        return $this;
+    }
+
+    public function getStartDate(): ?\DateTimeInterface
+    {
+        return $this->start_date;
+    }
+
+    public function setStartDate(\DateTimeInterface $start_date): self
+    {
+        $this->start_date = $start_date;
 
         return $this;
     }
