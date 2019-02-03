@@ -87,10 +87,10 @@ class ImportData extends CsvCommand
 
         $em = $this->getContainer()->get('doctrine')->getManager();
 
-        $row = 0;
         if (($handle = fopen($file, "r")) !== FALSE) {
-            $progress->advance($start);
-            while ((--$start > 0) && (fgets($handle, 4096) !== false)) { }
+            $progress->advance($start-1);
+            $row = $start-1;
+            while ((--$start > 0) && (fgets($handle, 10000) !== FALSE)) { }
 
             while (($data = fgetcsv($handle, 10000, $delimiter)) !== FALSE) {
                 $row++;
@@ -98,7 +98,7 @@ class ImportData extends CsvCommand
                     break;
                 }
                 $data = array_map("utf8_encode", $data); //utf8
-                //if ($row > $start) { //skip first line
+                if ($row > $start+1) { //skip first line
                     $progress->advance();
 
                     $date = date_create_from_format('d/m/Y',$this->getField('date',$data));
@@ -250,7 +250,7 @@ class ImportData extends CsvCommand
                         }
                     }
                     $em->flush();
-                //}
+                }
             }
             fclose($handle);
             $output->writeln("");
