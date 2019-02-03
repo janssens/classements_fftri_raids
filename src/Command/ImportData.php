@@ -29,6 +29,7 @@ class ImportData extends CsvCommand
             ->addArgument('file', InputArgument::REQUIRED, 'Csv file source')
             ->addOption('delimiter','d',InputOption::VALUE_OPTIONAL,'csv delimiter',';')
             ->addOption('limit','l',InputOption::VALUE_OPTIONAL,'limit')
+            ->addOption('start','s',InputOption::VALUE_OPTIONAL,'start at',1)
             ->addOption('dry_run',null,InputOption::VALUE_NONE,'dry run')
             ->addOption('default_mapping',null,InputOption::VALUE_NONE,'')
         ;
@@ -40,6 +41,7 @@ class ImportData extends CsvCommand
         $delimiter= $input->getOption('delimiter');
         $dry_run= $input->getOption('dry_run');
         $limit= $input->getOption('limit');
+        $start=$input->getOption('start');
         $default_mapping= $input->getOption('default_mapping');
 
         $delimiter = $this->checkDelimiter($file,$delimiter,$input,$output);
@@ -73,6 +75,12 @@ class ImportData extends CsvCommand
             $lines = min($lines,$limit);
         }
         $output->writeln("<info>Dealing with $lines lines</info>");
+        if ($start<1 or $start > $lines) {
+            $start = 1;
+        }
+        if ($start != 1){
+            $output->writeln("<info>Starting at $start</info>");
+        }
 
         $progress = new ProgressBar($output);
         $progress->setMaxSteps($lines);
@@ -81,13 +89,16 @@ class ImportData extends CsvCommand
 
         $row = 0;
         if (($handle = fopen($file, "r")) !== FALSE) {
+            $progress->advance($start);
+            while ((--$start > 0) && (fgets($handle, 4096) !== false)) { }
+
             while (($data = fgetcsv($handle, 10000, $delimiter)) !== FALSE) {
                 $row++;
                 if ($limit and $limit <= $row){
                     break;
                 }
                 $data = array_map("utf8_encode", $data); //utf8
-                if ($row > 1) { //skip first line
+                //if ($row > $start) { //skip first line
                     $progress->advance();
 
                     $date = date_create_from_format('d/m/Y',$this->getField('date',$data));
@@ -238,13 +249,11 @@ class ImportData extends CsvCommand
                             $output->writeln('<error>No registration number</error>');
                         }
                     }
-
-                }
+                    $em->flush();
+                //}
             }
             fclose($handle);
             $output->writeln("");
-            $output->writeln("<info>Flushing ... </info>");
-            $em->flush();
         }
         //$progress->finish();
         $output->writeln('');
