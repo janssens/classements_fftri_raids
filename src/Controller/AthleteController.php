@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\Athlete;
 use App\Form\AthleteType;
 use App\Repository\AthleteRepository;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/athlete")
@@ -17,6 +19,7 @@ class AthleteController extends AbstractController
 {
     /**
      * @Route("/", name="athlete_index", methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function index(AthleteRepository $athleteRepository): Response
     {
@@ -30,13 +33,27 @@ class AthleteController extends AbstractController
      */
     public function show(Athlete $athlete): Response
     {
+        $teams = null;
+        foreach ($athlete->getRegistrations() as $registration){
+            if ($registration->getTeams()){
+                if ($teams){
+                    foreach ($registration->getTeams() as $team){
+                        $teams->add($team);
+                    }
+                }else{
+                    $teams = $registration->getTeams();
+                }
+            }
+        }
         return $this->render('athlete/show.html.twig', [
             'athlete' => $athlete,
+            'teams' => $teams
         ]);
     }
 
     /**
      * @Route("/{id}/edit", name="athlete_edit", methods={"GET","POST"})
+     * @@IsGranted("ROLE_ADMIN")
      */
     public function edit(Request $request, Athlete $athlete): Response
     {
@@ -59,6 +76,7 @@ class AthleteController extends AbstractController
 
     /**
      * @Route("/{id}", name="athlete_delete", methods={"DELETE"})
+     * @@IsGranted("ROLE_SUPER_ADMIN")
      */
     public function delete(Request $request, Athlete $athlete): Response
     {

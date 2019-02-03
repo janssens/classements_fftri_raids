@@ -3,40 +3,24 @@
 {% block title %}Race index{% endblock %}
 
 {% block body %}
-    <h1>Race index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Date</th>
-                <th>Athletes_per_team</th>
-                {% if is_granted('ROLE_SUPER_ADMIN') %}
-                    <th>actions</th>
-                {% endif %}
-            </tr>
-        </thead>
-        <tbody>
+    <h1>Index des courses</h1>
+        <ul>
         {% for race in races %}
-            <tr>
-                <td>{{ race.id }}</td>
-                <td><a href="{{ path('race_show', {'id': race.id}) }}">{{ race.name }}</a></td>
-                <td>{{ race.date ? race.date|date('d M Y') : '' }}</td>
-                <td>{{ race.athletesPerTeam }}</td>
+            <li>
+                <a href="{{ path('race_show', {'id': race.id}) }}">{{ race.name }}</a>
+                {{ race.date ? race.date|date('d M Y') : '' }}
                 {% if is_granted('ROLE_SUPER_ADMIN') %}
-                <td>
                     <a href="{{ path('race_edit', {'id': race.id}) }}">edit</a>
-                </td>
                 {% endif %}
-            </tr>
+            </li>
         {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
+            <li>
+                no records found
+            </li>
         {% endfor %}
-        </tbody>
-    </table>
+        </ul>
 
+    {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('race_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}

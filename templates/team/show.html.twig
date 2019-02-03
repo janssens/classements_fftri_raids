@@ -4,7 +4,7 @@
 
 {% block body %}
     <h1>Team {{ team.name }}</h1>
-
+    <h2><a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race }}</a> {{ team.race.date | date('d M Y') }}</h2>
     <table class="table">
         <tbody>
             <tr>
@@ -13,18 +13,14 @@
             </tr>
             {% if (team.officialTeamRanking) %}
             <tr>
-                <th>Classement fftri</th>
+                <th>Classement FFTRI</th>
                 <td>{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }}</td>
             </tr>
             <tr>
-                <th>points fftri</th>
+                <th>Points FFTRI</th>
                 <td>{{ team.officialTeamRanking.points }}pts</td>
             </tr>
             {% endif %}
-            <tr>
-                <th>Course</th>
-                <td><a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race }}</a> {{ team.race.date | date('d-m-Y') }}</td>
-            </tr>
         </tbody>
     </table>
 
@@ -35,7 +31,7 @@
                     <td>{{ include('athlete/_card.html.twig',{'athlete':registration.athlete}) }}</td>
                 {% endfor %}
                 {% for outsider in team.outsiders %}
-                    </td>{{ include('outsider/_card.html.twig',{'outsider':outsider}) }}</td>
+                    <td>{{ include('outsider/_card.html.twig',{'outsider':outsider}) }}</td>
                 {% endfor %}
             </tr>
         </tbody>

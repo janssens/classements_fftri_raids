@@ -5,35 +5,39 @@
 {% block body %}
     <h1>Athlete</h1>
 
-    {{ include('athlete/_card.html.twig') }}
+    {% if teams | length or is_granted('ROLE_ADMIN') %}
+        {{ include('athlete/_card.html.twig') }}
 
-    {% if is_granted('ROLE_SUPER_ADMIN') %}
-        <a href="{{ path('athlete_edit', {'id': athlete.id}) }}">edit</a>
-        <a href="{{ path('athlete_index') }}">back to list</a>
-    {% endif %}
-
-    <h3>Courses</h3>
-    <ul>
-    {% for registration in athlete.registrations %}
-        {% if is_granted('ROLE_ADMIN') %}
-        <li>{{ registration.number }} <small>{{ registration.startDate|date('d-m-Y') }} -> {{ registration.endDate|date('d-m-Y') }} ({{ registration.date|date('d-m-Y') }})</small></li>
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
+            <a href="{{ path('athlete_edit', {'id': athlete.id}) }}">edit</a>
+            <a href="{{ path('athlete_index') }}">back to list</a>
         {% endif %}
-        {% for team in registration.teams %}
-            <li><a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race.name }}</a> - <a href="{{ path('team_show',{'id':team.id}) }}">{{ team.name }}</a> {% if (team.officialTeamRanking) %}(#{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }} = {{ team.officialTeamRanking.points }}pts){% endif %}</li>
-        {% endfor %}
-    {% endfor %}
-    </ul>
 
-    {% if athlete.rankings | length %}
-        <h3>Championnats</h3>
+        <h3>Courses</h3>
         <ul>
-            {% for ranking in athlete.rankings %}
-                <li><a href="{{ path('championship_show',{'id':ranking.championship.id}) }}">{{ ranking.championship.name }}</a> {{ ranking.championship.season }} <a href="{{ path('championship_show',{'id':ranking.championship.id,'category':ranking.category}) }}">categorie {{ ranking.categoryHuman }}</a> ({{ ranking.points }}pts)</li>
+        {% for registration in athlete.registrations %}
+            {% if is_granted('ROLE_ADMIN') %}
+            <li>{{ registration.number }} <small>{{ registration.startDate|date('d-m-Y') }} -> {{ registration.endDate|date('d-m-Y') }} ({{ registration.date|date('d-m-Y') }})</small></li>
+            {% endif %}
+            {% for team in registration.teams %}
+                <li><a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race.name }}</a> - <a href="{{ path('team_show',{'id':team.id}) }}">{{ team.name }}</a> {% if (team.officialTeamRanking) %}(#{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }} = {{ team.officialTeamRanking.points }}pts){% endif %}</li>
             {% endfor %}
+        {% endfor %}
         </ul>
-    {% endif %}
-    {% if is_granted('ROLE_SUPER_ADMIN') %}
-    {{ include('athlete/_delete_form.html.twig') }}
+
+        {% if athlete.rankings | length %}
+            <h3>Championnats</h3>
+            <ul>
+                {% for ranking in athlete.rankings %}
+                    <li><a href="{{ path('championship_show',{'id':ranking.championship.id}) }}">{{ ranking.championship.name }}</a> {{ ranking.championship.season }} <a href="{{ path('championship_show',{'id':ranking.championship.id,'category':ranking.category}) }}">categorie {{ ranking.categoryHuman }}</a> ({{ ranking.points }}pts)</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
+        {{ include('athlete/_delete_form.html.twig') }}
+        {% endif %}
+    {% else %}
+        Cet athlète n'a participé à aucune course
     {% endif %}
 {% endblock %}
 

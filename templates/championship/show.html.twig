@@ -3,7 +3,7 @@
 {% block title %}Championship{% endblock %}
 
 {% block body %}
-    <h1>{{ championship.name }} {{ championship.season }}</h1>
+    <h1>{{ championship.name }} {{ championship.season | lower }}</h1>
 
     <table>
         <thead>

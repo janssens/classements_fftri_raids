@@ -17,11 +17,6 @@ class DefaultController extends AbstractController
     */
     public function home()
     {
-        $em = $this->container->get('doctrine')->getManager();
-
-        $rankings = $em->getRepository(Championship::class)->find(1)->getRankings();
-        return $this->render('home.html.twig', [
-            'rankings' => $rankings,
-        ]);
+        return $this->redirectToRoute('championship_index');
     }
 }

@@ -3,36 +3,24 @@
 {% block title %}Championship index{% endblock %}
 
 {% block body %}
-    <h1>Championship index</h1>
+    <h1>Index des championnats</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                {% if is_granted('ROLE_ADMIN') %}
-                <th>actions</th>
-                {% endif %}
-            </tr>
-        </thead>
-        <tbody>
+    <ul>
+
+    </ul>
         {% for championship in championships %}
-            <tr>
-                <td>{{ championship.id }}</td>
-                <td><a href="{{ path('championship_show', {'id': championship.id}) }}">{{ championship.name }}</a></td>
+            <li>
+                <a href="{{ path('championship_show', {'id': championship.id}) }}">{{ championship.name }}</a> {{ championship.season | lower }}
                 {% if is_granted('ROLE_ADMIN') %}
-                <td>
                     <a href="{{ path('championship_edit', {'id': championship.id}) }}">edit</a>
-                </td>
                 {% endif %}
-            </tr>
+            </li>
         {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
+            <li>
+                no records found
+            </li>
         {% endfor %}
-        </tbody>
-    </table>
+    </ul>
     {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('championship_new') }}">Create new</a>
     {% endif %}
