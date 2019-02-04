@@ -71,9 +71,9 @@ class ImportData extends CsvCommand
             $this->mapField($file,$delimiter,$input,$output);
 
         $lines = $this->getLines($file) - 1;
-        if ($limit){
-            $lines = min($lines,$limit);
-        }
+//        if ($limit){
+//            $lines = min($lines,$limit);
+//        }
         $output->writeln("<info>Dealing with $lines lines</info>");
         if ($start<1 or $start > $lines) {
             $start = 1;
@@ -87,187 +87,191 @@ class ImportData extends CsvCommand
 
         $em = $this->getContainer()->get('doctrine')->getManager();
 
-        if (($handle = fopen($file, "r")) !== FALSE) {
-            $progress->advance($start-1);
-            $row = $start-1;
-            while ((--$start > 0) && (fgets($handle, 10000) !== FALSE)) { }
+        $processed = 0;
 
-            while (($data = fgetcsv($handle, 10000, $delimiter)) !== FALSE) {
-                $row++;
-                if ($limit and $limit <= $row){
-                    break;
-                }
-                $data = array_map("utf8_encode", $data); //utf8
-                if ($row > $start+1) { //skip first line
-                    $progress->advance();
+        $index = $start+$processed;
+        while ($index < $lines){
+            if (($handle = fopen($file, "r")) !== FALSE) {
+                $progress->advance($start-1);
+                $row = $start-1;
+                while ((--$start > 0) && (fgets($handle, 10000) !== FALSE)) { }
 
-                    $date = date_create_from_format('d/m/Y',$this->getField('date',$data));
-                    $number = strtoupper($this->getField('number',$data));
+                while (($data = fgetcsv($handle, 10000, $delimiter)) !== FALSE) {
+                    $row++;
+                    if ($limit and $limit <= $processed){
+                        break;
+                    }
+                    $data = array_map("utf8_encode", $data); //utf8
+                    if ($row > $start+1) { //skip first line
+                        $progress->advance();
 
-                    $output->writeln('',OutputInterface::VERBOSITY_DEBUG);
-                    if ($date && $number) {
-                        $registration_exist = $em->getRepository(Registration::class)
-                            ->findOneByDateAndNumber($date,$number);
-                        if ($registration_exist) { //update
-                            $registration = $registration_exist;
-                            $output->writeln('<info>Registration exist, update</info>',OutputInterface::VERBOSITY_DEBUG);
-                        }else{//new registration
-                            $registration = new Registration();
+                        $date = date_create_from_format('d/m/Y',$this->getField('date',$data));
+                        $number = strtoupper($this->getField('number',$data));
+
+                        $output->writeln('',OutputInterface::VERBOSITY_DEBUG);
+                        if ($date && $number) {
+                            $registration_exist = $em->getRepository(Registration::class)
+                                ->findOneByDateAndNumber($date,$number);
+                            if ($registration_exist) { //update
+                                $registration = $registration_exist;
+                                $output->writeln('<info>Registration exist, update</info>',OutputInterface::VERBOSITY_DEBUG);
+                            }else{//new registration
+                                $registration = new Registration();
+                                $registration->setDate($date);
+                                $registration->setNumber($number);
+                            }
+
+                            $ask_date = date_create_from_format('d/m/Y',$this->getField('ask_date',$data));
+                            $registration->setAskDate($ask_date);
+
                             $registration->setDate($date);
-                            $registration->setNumber($number);
-                        }
+                            $registration->setStartDate($date);
 
-                        $ask_date = date_create_from_format('d/m/Y',$this->getField('ask_date',$data));
-                        $registration->setAskDate($ask_date);
-
-                        $registration->setDate($date);
-                        $registration->setStartDate($date);
-
-                        switch ($this->getField('type',$data)[0]){
-                            case 'a':
-                                $registration->setType(Registration::TYPE_A);
-                                break;
-                            case 'b':
-                                $registration->setType(Registration::TYPE_B);
-                                break;
-                            case 'c':
-                                $registration->setType(Registration::TYPE_C);
-                                break;
-                            case 'd':
-                                $registration->setType(Registration::TYPE_D);
-                                break;
-                            case 'e':
-                                $registration->setType(Registration::TYPE_E);
-                                break;
-                            case 'f':
-                                $registration->setType(Registration::TYPE_F);
-                                break;
-                            case 'g':
-                                $registration->setType(Registration::TYPE_G);
-                                break;
-                            case 'h':
-                                $registration->setType(Registration::TYPE_H);
-                                break;
-                            case 'i':
-                                $registration->setType(Registration::TYPE_I);
-                                break;
-                            case 'j':
-                                $registration->setType(Registration::TYPE_J);
-                                break;
-                            case 'k':
-                                $registration->setType(Registration::TYPE_K);
-                                break;
-                            case 'l':
-                                $registration->setType(Registration::TYPE_L);
-                                break;
-                            case 'm':
-                                $registration->setType(Registration::TYPE_M);
-                                break;
-                            default:
-                                $registration->setType(Registration::TYPE_NULL);
-                        }
-
-                        $registration->setIsLong(($this->getField('is_long',$data) == "oui"));
-
-                        $club_name = $this->getField('club',$data);
-                        if ($club_name) {
-                            //club
-                            $slug = $this->createSlug($club_name);
-                            $club_exist = $em->getRepository(Club::class)
-                                ->findOneBySlug($slug);
-                            if ($club_exist && $club_exist->getId()) {
-                                $club = $club_exist;
-                            } else {
-                                $club = new Club();
-                                $club->setSlug($slug);
-                                $club->setName($club_name);
-                                $em->persist($club);
-                                $em->flush(); //persist new club
+                            switch ($this->getField('type',$data)[0]){
+                                case 'a':
+                                    $registration->setType(Registration::TYPE_A);
+                                    break;
+                                case 'b':
+                                    $registration->setType(Registration::TYPE_B);
+                                    break;
+                                case 'c':
+                                    $registration->setType(Registration::TYPE_C);
+                                    break;
+                                case 'd':
+                                    $registration->setType(Registration::TYPE_D);
+                                    break;
+                                case 'e':
+                                    $registration->setType(Registration::TYPE_E);
+                                    break;
+                                case 'f':
+                                    $registration->setType(Registration::TYPE_F);
+                                    break;
+                                case 'g':
+                                    $registration->setType(Registration::TYPE_G);
+                                    break;
+                                case 'h':
+                                    $registration->setType(Registration::TYPE_H);
+                                    break;
+                                case 'i':
+                                    $registration->setType(Registration::TYPE_I);
+                                    break;
+                                case 'j':
+                                    $registration->setType(Registration::TYPE_J);
+                                    break;
+                                case 'k':
+                                    $registration->setType(Registration::TYPE_K);
+                                    break;
+                                case 'l':
+                                    $registration->setType(Registration::TYPE_L);
+                                    break;
+                                case 'm':
+                                    $registration->setType(Registration::TYPE_M);
+                                    break;
+                                default:
+                                    $registration->setType(Registration::TYPE_NULL);
                             }
-                            $registration->setClub($club);
-                        }
 
-                        $ligue_name = $this->getField('ligue',$data);
-                        if ($ligue_name) {
-                            //ligue
-                            $slug = $this->createSlug($ligue_name);
-                            $ligue_exist = $em->getRepository(Ligue::class)
-                                ->findOneBySlug($slug);
-                            if ($ligue_exist && $ligue_exist->getId()) {
-                                $ligue = $ligue_exist;
-                            } else {
-                                $ligue = new Ligue();
-                                $ligue->setName($ligue_name);
-                                $ligue->setSlug($slug);
-                                $em->persist($ligue);
-                                $em->flush(); //persist new ligue
+                            $registration->setIsLong(($this->getField('is_long',$data) == "oui"));
+
+                            $club_name = $this->getField('club',$data);
+                            if ($club_name) {
+                                //club
+                                $slug = $this->createSlug($club_name);
+                                $club_exist = $em->getRepository(Club::class)
+                                    ->findOneBySlug($slug);
+                                if ($club_exist && $club_exist->getId()) {
+                                    $club = $club_exist;
+                                } else {
+                                    $club = new Club();
+                                    $club->setSlug($slug);
+                                    $club->setName($club_name);
+                                    $em->persist($club);
+                                    $em->flush(); //persist new club
+                                }
+                                $registration->setClub($club);
                             }
-                            $registration->setLigue($ligue);
-                        }
 
-                        $email = $this->getField('email',$data);
-                        $lastname = $this->getField('lastname',$data);
-                        $firstname = $this->getField('firstname',$data);
-                        $dob = date_create_from_format('d/m/Y', $this->getField('dob',$data));
-                        $dob->setTime(0,0,0);
-                        $athlete_exist = $em->getRepository(Athlete::class)
-                            ->findOneByLastnameAndDob($lastname, $dob);
-                        if ($athlete_exist) {
-                            $athlete = $athlete_exist;
-                            //already up to date at registration date ?
-                            $same_year_registration_exist = $em->getRepository(Registration::class)
-                                ->findOneByYearAndAthlete(intval($date->format('Y')),$athlete);
-                            if ($same_year_registration_exist && $same_year_registration_exist->getType() == $registration->getType() && !$registration_exist) {
-                                $registration->setStartDate(date_create_from_format('d/m/Y H:i:s','01/01/'.(intval($date->format('Y'))+1).' 00:00:00'));
-                            }else{
-                                if (!$athlete->getRegistrations()){ //first registration ever
-                                    if ($registration->getDate()>date_create_from_format('d/m/Y H:i:s','01/09/'.(intval($date->format('Y'))).' 00:00:00'))
-                                    $registration->setIsLong(true); //primo
+                            $ligue_name = $this->getField('ligue',$data);
+                            if ($ligue_name) {
+                                //ligue
+                                $slug = $this->createSlug($ligue_name);
+                                $ligue_exist = $em->getRepository(Ligue::class)
+                                    ->findOneBySlug($slug);
+                                if ($ligue_exist && $ligue_exist->getId()) {
+                                    $ligue = $ligue_exist;
+                                } else {
+                                    $ligue = new Ligue();
+                                    $ligue->setName($ligue_name);
+                                    $ligue->setSlug($slug);
+                                    $em->persist($ligue);
+                                    $em->flush(); //persist new ligue
+                                }
+                                $registration->setLigue($ligue);
+                            }
+
+                            $email = $this->getField('email',$data);
+                            $lastname = $this->getField('lastname',$data);
+                            $firstname = $this->getField('firstname',$data);
+                            $dob = date_create_from_format('d/m/Y', $this->getField('dob',$data));
+                            $dob->setTime(0,0,0);
+                            $athlete_exist = $em->getRepository(Athlete::class)
+                                ->findOneByLastnameAndDob($lastname, $dob);
+                            if ($athlete_exist) {
+                                $athlete = $athlete_exist;
+                                //already up to date at registration date ?
+                                $same_year_registration_exist = $em->getRepository(Registration::class)
+                                    ->findOneByYearAndAthlete(intval($date->format('Y')),$athlete);
+                                if ($same_year_registration_exist && $same_year_registration_exist->getType() == $registration->getType() && !$registration_exist) {
+                                    $registration->setStartDate(date_create_from_format('d/m/Y H:i:s','01/01/'.(intval($date->format('Y'))+1).' 00:00:00'));
+                                }else{
+                                    if (!$athlete->getRegistrations()){ //first registration ever
+                                        if ($registration->getDate()>date_create_from_format('d/m/Y H:i:s','01/09/'.(intval($date->format('Y'))).' 00:00:00'))
+                                            $registration->setIsLong(true); //primo
+                                    }
+                                }
+                                $athlete->addRegistration($registration);
+                                $athlete->setEmail($email); //change email (maybe new ?)
+                            } else {
+                                $athlete = new Athlete();
+                                $athlete->setEmail($email);
+                                $athlete->setDob($dob);
+                                $athlete->setLastname($lastname);
+                                $athlete->setFirstname($firstname);
+                                $athlete->setGender(($this->getField('sex',$data) == 'm') ? Athlete::MALE : Athlete::FEMALE);
+                                $athlete->addRegistration($registration);
+
+                                $related_outsiders = $em->getRepository(Outsider::class)->findByRegistration($registration);
+                                foreach ($related_outsiders as $outsider){
+                                    $team = $outsider->getTeam();
+                                    $team->addRegistration($registration);
+                                    $team->removeOutsider($outsider);
+                                    $em->remove($outsider);
+                                    $em->persist($team);
                                 }
                             }
-                            $athlete->addRegistration($registration);
-                            $athlete->setEmail($email); //change email (maybe new ?)
+                            $em->persist($athlete);
                         } else {
-                            $athlete = new Athlete();
-                            $athlete->setEmail($email);
-                            $athlete->setDob($dob);
-                            $athlete->setLastname($lastname);
-                            $athlete->setFirstname($firstname);
-                            $athlete->setGender(($this->getField('sex',$data) == 'm') ? Athlete::MALE : Athlete::FEMALE);
-                            $athlete->addRegistration($registration);
-
-                            $related_outsiders = $em->getRepository(Outsider::class)->findByRegistration($registration);
-                            foreach ($related_outsiders as $outsider){
-                                $team = $outsider->getTeam();
-                                $team->addRegistration($registration);
-                                $team->removeOutsider($outsider);
-                                $em->remove($outsider);
-                                $em->persist($team);
+                            $output->writeln('');
+                            if (!$date) {
+                                $output->writeln('<error>No registration date</error>');
+                            }
+                            if (!$number) {
+                                $output->writeln('<error>No registration number</error>');
                             }
                         }
-                        $em->persist($athlete);
-                    } else {
-                        $output->writeln('');
-                        if (!$date) {
-                            $output->writeln('<error>No registration date</error>');
-                        }
-                        if (!$number) {
-                            $output->writeln('<error>No registration number</error>');
-                        }
                     }
-                    if ($row % 100 == 0) { //flush every 100 lines
-                        $em->flush();
-                    }
-                    unset($registration);
-                    unset($registration_exist);
-                    unset($athlete);
-                    unset($athlete_exist);
+                    $processed++;
                 }
+                fclose($handle);
+                $em->flush();
+                $output->writeln("flushing");
             }
-            fclose($handle);
-            $em->flush();
-            $output->writeln("");
+            $index = $start+$processed;
+            $start = $processed;
+            $processed = 0;
         }
+
+
         //$progress->finish();
         $output->writeln('');
 
