@@ -6,8 +6,6 @@
     <h1>Index des championnats</h1>
 
     <ul>
-
-    </ul>
         {% for championship in championships %}
             <li>
                 <a href="{{ path('championship_show', {'id': championship.id}) }}">{{ championship.name }}</a> {{ championship.season | lower }}

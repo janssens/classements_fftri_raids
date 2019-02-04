@@ -22,6 +22,13 @@
     <tr>
         <td>Licencié{% if athlete.gender == 2 %}e{% endif %} FFTRI</td>
     </tr>
+    {% if athlete.registrations[0] and athlete.registrations[0].club %}
+    <tr>
+        <td>
+            <a href="{{ path('club_show',{'slug':athlete.registrations[0].club.slug}) }}">{{ athlete.registrations[0].club.name | upper }}</a>
+        </td>
+    </tr>
+    {% endif %}
     <tr>
         {% if is_granted('ROLE_ADMIN') %}
             <td>{{ athlete.dob ? athlete.dob|date('Y-m-d') : '' }}</td>

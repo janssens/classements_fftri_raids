@@ -13,6 +13,7 @@
             <th>Nom</th>
             <th>Points</th>
             <th>Category</th>
+            <th>Club</th>
         </tr>
         </thead>
         <tbody>
@@ -27,6 +28,11 @@
                 <td><a href="{{ path('athlete_show',{"id":rank.athlete.id}) }}">{{ rank.athlete.lastname | upper }}</a></td>
                 <td>{{ rank.points }}</td>
                 <td><a href="{% if not app.request.get('category') %}?category={{ rank.category }}{% else %}?{% endif %}">{{ rank.categoryHuman }}</a></td>
+                <td>
+                    {% if rank.athlete.registrations[0] and rank.athlete.registrations[0].club %}
+                    <a href="{{ path('club_show',{'slug':rank.athlete.registrations[0].club.slug}) }}">{{ rank.athlete.registrations[0].club.name | upper }}</a>
+                    {% endif %}
+                </td>
             </tr>
                 {% set i = i + 1 %}
             {% endif %}
