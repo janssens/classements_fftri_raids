@@ -266,12 +266,12 @@ class ImportData extends CsvCommand
                 }
                 fclose($handle);
                 $em->flush();
-                $output->writeln("");
-                $output->writeln("flushing");
+                $output->writeln("",OutputInterface::VERBOSITY_VERBOSE);
+                $output->writeln("flushing",OutputInterface::VERBOSITY_VERBOSE);
             }
             $index += $processed;
-            $output->writeln($index,OutputInterface::VERBOSITY_DEBUG);
-            $start = $processed;
+            $output->writeln($index,OutputInterface::VERBOSITY_VERBOSE);
+            $start = $index;
             $processed = 0;
         }
 
