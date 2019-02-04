@@ -249,10 +249,12 @@ class ImportData extends CsvCommand
                             $output->writeln('<error>No registration number</error>');
                         }
                     }
-                    $em->flush();
+                    if ($row % 100 == 0) //flush every 100 lines
+                        $em->flush();
                 }
             }
             fclose($handle);
+            $em->flush();
             $output->writeln("");
         }
         //$progress->finish();
