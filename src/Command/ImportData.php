@@ -90,10 +90,9 @@ class ImportData extends CsvCommand
         $processed = 0;
 
         $index = $start;
+        $progress->advance($start-1);
         while ($index < $lines){
             if (($handle = fopen($file, "r")) !== FALSE) {
-                if ($index==$start)
-                    $progress->advance($start-1);
                 $row = $start-1;
                 $goto = $start;
                 while ((--$goto > 0) && (fgets($handle, 10000) !== FALSE)) { }
@@ -281,6 +280,7 @@ class ImportData extends CsvCommand
         $output->writeln('');
 
     }
+
 
 
     public static function createSlug($str, $delimiter = '-'){
