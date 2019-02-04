@@ -18,7 +18,7 @@
         {% for registration in athlete.registrations %}
             {% if is_granted('ROLE_ADMIN') %}
                 <li>{{ registration.number }} <small>{{ registration.startDate|date('d-m-Y') }} -> {{ registration.endDate|date('d-m-Y') }} ({{ registration.date|date('d-m-Y') }})</small>
-                {% if registration.isRacing %}COMPETITION{% else %}{{ registration.type }}{% endif %}</li>
+                {% if registration.isRacing %}COMPETITION{% elseif registration.isLoisir %}<b>LOISIR</b>{% endif %}</li>
             {% endif %}
             {% for team in registration.teams %}
                 <li><a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race.name }}</a> - <a href="{{ path('team_show',{'id':team.id}) }}">{{ team.name }}</a> {% if (team.officialTeamRanking) %}(#{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }} = {{ team.officialTeamRanking.points }}pts){% endif %}</li>

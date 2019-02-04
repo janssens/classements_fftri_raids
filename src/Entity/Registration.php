@@ -200,6 +200,14 @@ class Registration
         return in_array($this->getType(),array(self::TYPE_A,self::TYPE_B,self::TYPE_E,self::TYPE_F,self::TYPE_H,self::TYPE_I));
     }
 
+    public function isLoisir(){
+        return in_array($this->getType(),array(self::TYPE_C,self::TYPE_D,self::TYPE_K,self::TYPE_L));
+    }
+
+    public function isDir(){
+        return in_array($this->getType(),array(self::TYPE_G,self::TYPE_J));
+    }
+
     /**
      * @return Collection|Team[]
      */

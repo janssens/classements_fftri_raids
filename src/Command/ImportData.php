@@ -217,7 +217,7 @@ class ImportData extends CsvCommand
                             //already up to date at registration date ?
                             $same_year_registration_exist = $em->getRepository(Registration::class)
                                 ->findOneByYearAndAthlete(intval($date->format('Y')),$athlete);
-                            if ($same_year_registration_exist && !$registration_exist) {
+                            if ($same_year_registration_exist && $same_year_registration_exist->getType() == $registration->getType() && !$registration_exist) {
                                 $registration->setStartDate(date_create_from_format('d/m/Y H:i:s','01/01/'.(intval($date->format('Y'))+1).' 00:00:00'));
                             }else{
                                 if (!$athlete->getRegistrations()){ //first registration ever
