@@ -269,6 +269,7 @@ class ImportData extends CsvCommand
                 $output->writeln("flushing");
             }
             $index = $start+$processed;
+            $output->writeln($index);
             $start = $processed;
             $processed = 0;
         }
