@@ -196,6 +196,10 @@ class Registration
         return $this;
     }
 
+    public function isRacing(){
+        return in_array($this->getType(),array(self::TYPE_A,self::TYPE_B,self::TYPE_E,self::TYPE_F,self::TYPE_H,self::TYPE_I));
+    }
+
     /**
      * @return Collection|Team[]
      */
