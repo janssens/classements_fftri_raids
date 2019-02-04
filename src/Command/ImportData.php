@@ -92,7 +92,7 @@ class ImportData extends CsvCommand
         $index = $start+$processed;
         while ($index < $lines){
             if (($handle = fopen($file, "r")) !== FALSE) {
-                if ($processed==0)
+                if ($index==$start)
                     $progress->advance($start-1);
                 $row = $start-1;
                 $goto = $start;
