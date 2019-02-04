@@ -249,8 +249,13 @@ class ImportData extends CsvCommand
                             $output->writeln('<error>No registration number</error>');
                         }
                     }
-                    if ($row % 100 == 0) //flush every 100 lines
+                    if ($row % 100 == 0) { //flush every 100 lines
                         $em->flush();
+                        unset($em);
+                        $em = $this->getContainer()->get('doctrine')->getManager();
+                    }
+                    unset($registration);
+                    unset($athlete);
                 }
             }
             fclose($handle);
