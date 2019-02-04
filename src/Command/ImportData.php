@@ -104,6 +104,7 @@ class ImportData extends CsvCommand
                     $date = date_create_from_format('d/m/Y',$this->getField('date',$data));
                     $number = strtoupper($this->getField('number',$data));
 
+                    $output->writeln('',OutputInterface::VERBOSITY_DEBUG);
                     if ($date && $number) {
                         $registration_exist = $em->getRepository(Registration::class)
                             ->findOneByDateAndNumber($date,$number);
