@@ -95,7 +95,8 @@ class ImportData extends CsvCommand
                 if ($processed==0)
                     $progress->advance($start-1);
                 $row = $start-1;
-                while ((--$start > 0) && (fgets($handle, 10000) !== FALSE)) { }
+                $goto = $start;
+                while ((--$goto > 0) && (fgets($handle, 10000) !== FALSE)) { }
 
                 while (($data = fgetcsv($handle, 10000, $delimiter)) !== FALSE) {
                     $row++;
@@ -269,7 +270,7 @@ class ImportData extends CsvCommand
                 $output->writeln("flushing");
             }
             $index = $start+$processed;
-            $output->writeln($index);
+            $output->writeln($index,OutputInterface::VERBOSITY_DEBUG);
             $start = $processed;
             $processed = 0;
         }
