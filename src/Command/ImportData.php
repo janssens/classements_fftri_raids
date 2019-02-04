@@ -89,7 +89,7 @@ class ImportData extends CsvCommand
 
         $processed = 0;
 
-        $index = $start+$processed;
+        $index = $start;
         while ($index < $lines){
             if (($handle = fopen($file, "r")) !== FALSE) {
                 if ($index==$start)
@@ -265,6 +265,7 @@ class ImportData extends CsvCommand
                     $processed++;
                 }
                 fclose($handle);
+                unset($handle);
                 $em->flush();
                 $output->writeln("",OutputInterface::VERBOSITY_VERBOSE);
                 $output->writeln("flushing",OutputInterface::VERBOSITY_VERBOSE);
