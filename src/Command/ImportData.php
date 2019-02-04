@@ -219,6 +219,11 @@ class ImportData extends CsvCommand
                                 ->findOneByYearAndAthlete(intval($date->format('Y')),$athlete);
                             if ($same_year_registration_exist && !$registration_exist) {
                                 $registration->setStartDate(date_create_from_format('d/m/Y H:i:s','01/01/'.(intval($date->format('Y'))+1).' 00:00:00'));
+                            }else{
+                                if (!$athlete->getRegistrations()){ //first registration ever
+                                    if ($registration->getDate()>date_create_from_format('d/m/Y H:i:s','01/09/'.(intval($date->format('Y'))).' 00:00:00'))
+                                    $registration->setIsLong(true); //primo
+                                }
                             }
                             $athlete->addRegistration($registration);
                             $athlete->setEmail($email); //change email (maybe new ?)
@@ -252,11 +257,11 @@ class ImportData extends CsvCommand
                     }
                     if ($row % 100 == 0) { //flush every 100 lines
                         $em->flush();
-                        unset($em);
-                        $em = $this->getContainer()->get('doctrine')->getManager();
                     }
                     unset($registration);
+                    unset($registration_exist);
                     unset($athlete);
+                    unset($athlete_exist);
                 }
             }
             fclose($handle);
