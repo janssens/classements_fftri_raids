@@ -36,16 +36,15 @@ class OfficialTeamRanking
     private $points;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Race", inversedBy="official_team_rankings")
-     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
-     */
-    private $race;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Team")
+     * @ORM\OneToOne(targetEntity="App\Entity\Team", inversedBy="official_team_ranking")
      * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
      */
     private $team;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Race", inversedBy="official_team_rankings")
+     */
+    private $race;
 
     public function getId(): ?int
     {
@@ -76,5 +75,7 @@ class OfficialTeamRanking
     {
         return $this->race;
     }
+
+
 
 }

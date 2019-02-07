@@ -60,11 +60,17 @@ class Race
      */
     private $championships;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\OfficialTeamRanking", mappedBy="race")
+     */
+    private $official_team_rankings;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
         $this->official_teams = new ArrayCollection();
         $this->championships = new ArrayCollection();
+        $this->official_team_rankings = new ArrayCollection();
     }
 
     public function __toString()
@@ -202,6 +208,14 @@ class Race
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|OfficialTeamRanking[]
+     */
+    public function getOfficialTeamRankings(): Collection
+    {
+        return $this->official_team_rankings;
     }
 
 }

@@ -22,6 +22,7 @@ class Ranking
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Athlete", inversedBy="rankings")
+     * @ORM\JoinColumn(name="athlete_id", referencedColumnName="id")
      */
     private $athlete;
 
