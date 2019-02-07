@@ -71,38 +71,37 @@ class ImportData extends CsvCommand
             $this->mapField($file,$delimiter,$input,$output);
 
         $lines = $this->getLines($file) - 1;
-        if ($limit){
-            $lines = min($lines,$limit);
-        }
+
         $output->writeln("<info>Dealing with $lines lines</info>");
-        if ($start<1 or $start > $lines) {
-            $start = 1;
+        if ($start<0 or $start > $lines) {
+            $start = 0;
         }
-        if ($start != 1){
+        if ($start != 0){
             $output->writeln("<info>Starting at $start</info>");
         }
 
         $progress = new ProgressBar($output);
-        $progress->setMaxSteps($lines);
+        $progress->setMaxSteps(min($lines,$start+$limit));
+        $progress->advance($start);
 
         $em = $this->getContainer()->get('doctrine')->getManager();
 
-        $processed = 0;
 
-        $progress->advance($start-1);
+
         if (($handle = fopen($file, "r")) !== FALSE) {
-            $row = $start-1;
+
+            $processed = 0;
             $goto = $start;
             while ((--$goto > 0) && (fgets($handle, 10000) !== FALSE)) { }
 
+            $row = $start;
+
             while (($data = fgetcsv($handle, 10000, $delimiter)) !== FALSE) {
-                $row++;
-                $progress->advance();
                 if ($limit and $limit <= $processed){
                     break;
                 }
                 $data = array_map("utf8_encode", $data); //utf8
-                if ($row > $start+1) { //skip first line
+                if ($row > 0) { //skip first line
 
                     $date = date_create_from_format('d/m/Y',$this->getField('date',$data));
                     $number = strtoupper($this->getField('number',$data));
@@ -259,13 +258,15 @@ class ImportData extends CsvCommand
                         }
                     }
                 }
+                $row++;
                 $processed++;
+                $progress->advance();
             }
             fclose($handle);
-            unset($handle);
+
             $em->flush();
             $output->writeln("",OutputInterface::VERBOSITY_VERBOSE);
-            $output->writeln("flushing",OutputInterface::VERBOSITY_VERBOSE);
+            $output->writeln("flushing . . .",OutputInterface::VERBOSITY_VERBOSE);
         }
         //$progress->finish();
         $output->writeln('');
