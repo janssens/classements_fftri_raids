@@ -99,12 +99,13 @@ class ImportData extends CsvCommand
 
                 while (($data = fgetcsv($handle, 10000, $delimiter)) !== FALSE) {
                     $row++;
+                    $progress->advance();
                     if ($limit and $limit <= $processed){
                         break;
                     }
                     $data = array_map("utf8_encode", $data); //utf8
                     if ($row > $start+1) { //skip first line
-                        $progress->advance();
+
 
                         $date = date_create_from_format('d/m/Y',$this->getField('date',$data));
                         $number = strtoupper($this->getField('number',$data));
