@@ -19,7 +19,7 @@
     <h3>Equipes</h3>
     <ul>
         {% for team in race.teams %}
-            <li>{{ team.position }} - <a href="{{ path("team_show",{"id":team.id}) }}">{{ team.name }}</a> </li>
+            <li>{{ team.position }} - <a href="{{ path("team_show",{"id":team.id}) }}">{{ team.name }}</a>{% if team.officialTeam %} FFTRI {{ team.officialTeamRanking.categoryPosition }}e {{ team.officialTeam.categoryHuman }} {% endif %}</li>
             <ul>
                 {% for registration in team.registrations %}
                     <li><b><a href="{{ path('athlete_show',{'id':registration.athlete.id}) }}">{{ registration.athlete.firstname }} {{ registration.athlete.lastname }}</a></b>{% if is_granted('ROLE_ADMIN') %} [ {{ registration.number }} ]{% endif %}</li>
