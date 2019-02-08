@@ -33,23 +33,8 @@ class AthleteController extends AbstractController
      */
     public function show(Athlete $athlete): Response
     {
-        $teams = null;
-        $registrations = $athlete->getRegistrations();
-        foreach ($registrations as $registration){
-            if ($registration->getTeams()){
-                if ($teams){
-                    foreach ($registration->getTeams() as $team){
-                        $teams->add($team);
-                    }
-                }else{
-                    $teams = $registration->getTeams();
-                }
-            }
-        }
         return $this->render('athlete/show.html.twig', [
-            'athlete' => $athlete,
-            'teams' => $teams,
-            'registrations' => $registrations
+            'athlete' => $athlete
         ]);
     }
 
