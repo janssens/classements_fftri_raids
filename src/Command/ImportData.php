@@ -27,9 +27,10 @@ class ImportData extends CsvCommand
             ->setDescription('Import / update data')
             ->setHelp('This command allows you to import updated data from fftri...')
             ->addArgument('file', InputArgument::REQUIRED, 'Csv file source')
+            ->addOption('map','m',InputOption::VALUE_OPTIONAL,'map','')
             ->addOption('delimiter','d',InputOption::VALUE_OPTIONAL,'csv delimiter',';')
             ->addOption('limit','l',InputOption::VALUE_OPTIONAL,'limit')
-            ->addOption('start','s',InputOption::VALUE_OPTIONAL,'start at',1)
+            ->addOption('start','s',InputOption::VALUE_OPTIONAL,'start at',0)
             ->addOption('default_mapping',null,InputOption::VALUE_NONE,'')
         ;
     }
@@ -37,10 +38,11 @@ class ImportData extends CsvCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $file = $input->getArgument('file');
-        $delimiter= $input->getOption('delimiter');
-        $limit= $input->getOption('limit');
-        $start=$input->getOption('start');
-        $default_mapping= $input->getOption('default_mapping');
+        $delimiter = $input->getOption('delimiter');
+        $map = $input->getOption('map');
+        $limit = $input->getOption('limit');
+        $start = $input->getOption('start');
+        $default_mapping = $input->getOption('default_mapping');
 
         $delimiter = $this->checkDelimiter($file,$delimiter,$input,$output);
 
@@ -65,8 +67,14 @@ class ImportData extends CsvCommand
             'ask_date' => array('label' => 'Date de demande de la licence (d/m/Y)','index'=>40,"required" => false,"default" => '01/01/2019'),
         ));
 
-        if (!$default_mapping)
+        if (!$default_mapping&&!$map)
             $this->mapField($file,$delimiter,$input,$output);
+
+        if ($map){
+            $this->setMap(explode(',',$map));
+        }
+        $output->writeln("<info>MAP : </info>");
+        $this->displayMap($output);
 
         $lines = $this->getLines($file) - 1;
 

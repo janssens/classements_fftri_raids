@@ -58,6 +58,30 @@ abstract class CsvCommand extends ContainerAwareCommand
     }
 
     /**
+     * @param OutputInterface $output
+     */
+    protected function displayMap(OutputInterface $output){
+        $fields = $this->getNeededFields();
+        $map = array();
+        foreach ($fields as $key=>$value){
+            $map[] = $fields[$key]['index'];
+        }
+        $output->writeln(implode(',',$map));
+    }
+
+    /**
+     * @param array $map
+     */
+    protected function setMap($map){
+        $fields = $this->getNeededFields();
+        $index = 0;
+        foreach ($fields as $key=>$value){
+            $fields[$key]['index'] = $map[$index++];
+        }
+        $this->setNeededFields($fields); // "save"
+    }
+
+    /**
      * @param string $file
      * @param string $delimiter
      * @param InputInterface $input
