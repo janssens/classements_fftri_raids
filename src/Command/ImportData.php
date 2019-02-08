@@ -104,7 +104,10 @@ class ImportData extends CsvCommand
             $row = $start;
 
             while (($data = fgetcsv($handle, 10000, $delimiter)) !== FALSE) {
-                if ($limit and $limit <= $processed){
+                if ($limit and $processed >= $limit){
+                    break;
+                }
+                if ($row > $lines){
                     break;
                 }
                 $data = array_map("utf8_encode", $data); //utf8
@@ -243,6 +246,10 @@ class ImportData extends CsvCommand
                             $athlete->setLastname($lastname);
                             $athlete->setFirstname($firstname);
                             $athlete->setGender(($this->getField('sex',$data) == 'm') ? Athlete::MALE : Athlete::FEMALE);
+
+                            if ($registration->getDate()>date_create_from_format('d/m/Y H:i:s','01/09/'.(intval($date->format('Y'))).' 00:00:00'))
+                                $registration->setIsLong(true); //primo
+
                             $athlete->addRegistration($registration);
 
                             $related_outsiders = $em->getRepository(Outsider::class)->findByRegistration($registration);
