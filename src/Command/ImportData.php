@@ -30,7 +30,6 @@ class ImportData extends CsvCommand
             ->addOption('delimiter','d',InputOption::VALUE_OPTIONAL,'csv delimiter',';')
             ->addOption('limit','l',InputOption::VALUE_OPTIONAL,'limit')
             ->addOption('start','s',InputOption::VALUE_OPTIONAL,'start at',1)
-            ->addOption('dry_run',null,InputOption::VALUE_NONE,'dry run')
             ->addOption('default_mapping',null,InputOption::VALUE_NONE,'')
         ;
     }
@@ -39,7 +38,6 @@ class ImportData extends CsvCommand
     {
         $file = $input->getArgument('file');
         $delimiter= $input->getOption('delimiter');
-        $dry_run= $input->getOption('dry_run');
         $limit= $input->getOption('limit');
         $start=$input->getOption('start');
         $default_mapping= $input->getOption('default_mapping');
@@ -72,21 +70,22 @@ class ImportData extends CsvCommand
 
         $lines = $this->getLines($file) - 1;
 
-        $output->writeln("<info>Dealing with $lines lines</info>");
+        $output->writeln("<info>File with <fg=cyan>$lines</> lines</info>");
         if ($start<0 or $start > $lines) {
             $start = 0;
         }
+        if ($limit){
+            $output->writeln("<info>Deal with <fg=cyan>$limit</> lines</info>");
+        }
         if ($start != 0){
-            $output->writeln("<info>Starting at $start</info>");
+            $output->writeln("<info>Starting at <fg=cyan>$start</></info>");
         }
 
         $progress = new ProgressBar($output);
-        $progress->setMaxSteps(min($lines,$start+$limit));
+        $progress->setMaxSteps($lines);
         $progress->advance($start);
 
         $em = $this->getContainer()->get('doctrine')->getManager();
-
-
 
         if (($handle = fopen($file, "r")) !== FALSE) {
 
