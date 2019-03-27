@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Team{% endblock %}
+{% block title %}Team {{ team.name }}{% endblock %}
+
+{% block head %}
+    <meta name="robots" content="noindex, follow">
+{% endblock %}
 
 {% block body %}
     <h1>Team {{ team.name }}</h1>
