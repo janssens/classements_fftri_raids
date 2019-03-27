@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Championship{% endblock %}
+{% block title %}{{ championship.name }} {{ championship.season | lower }}{% endblock %}
 
 {% block body %}
     <h1>{{ championship.name }} {{ championship.season | lower }}</h1>

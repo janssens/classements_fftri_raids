@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Athlete{% endblock %}
+{% block title %}[Athlete] {{ athlete.firstname | capitalize }} {{ athlete.lastname | upper }}{% endblock %}
 
 {% block body %}
     <h1>Athlete</h1>
