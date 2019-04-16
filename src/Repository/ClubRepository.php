@@ -36,6 +36,20 @@ class ClubRepository extends ServiceEntityRepository
     }
     */
 
+    /**
+     * @return Club[] Returns an array of Club objects
+     */
+    public function findByString($value): ?array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.name like :val')
+            ->setParameter('val', '%'.$value.'%')
+            ->orderBy('c.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 
     public function findOneBySlug($slug): ?Club
     {

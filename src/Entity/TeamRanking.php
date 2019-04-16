@@ -7,10 +7,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="view_official_team_ranking")
+ * @ORM\Table(name="view_team_ranking")
  * @ORM\Entity(readOnly=true)
  */
-class OfficialTeamRanking
+class TeamRanking
 {
 
     /**

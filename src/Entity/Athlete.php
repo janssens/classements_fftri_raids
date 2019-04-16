@@ -60,6 +60,11 @@ class Athlete
      */
     private $rankings;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Racer", mappedBy="parent")
+     */
+    private $racer;
+
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
@@ -170,4 +175,11 @@ class Athlete
         return $this->rankings;
     }
 
+    /**
+     * @return Racer
+     */
+    public function getRacer(): Racer
+    {
+        return $this->racer;
+    }
 }

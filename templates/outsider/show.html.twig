@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}[Outsider] {{ outsiders[0].firstname | capitalize }} {{ outsiders[0].lastname | upper }}{% endblock %}
+
+{% block body %}
+    <h1>Athlete</h1>
+
+    {% set outsider = outsiders[0] %}
+    {{ include('outsider/_card.html.twig') }}
+
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        {#<a href="{{ path('athlete_edit', {'id': athlete.id}) }}">edit</a>#}
+        <a href="{{ path('athlete_index') }}">back to list</a>
+    {% endif %}
+
+    <h3>Courses</h3>
+    <ul>
+    {% for out in outsiders %}
+        <li>
+            {% set team = out.team %}
+            <a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race.name }}</a> -
+            <a href="{{ path('team_show',{'id':team.id}) }}">{{ team.name }}</a>
+            {% for championship in team.race.championships %}
+                {% if championship.rankOutsider %}
+                    {{ championship.name }}
+                    {% if (team.teamRanking) %}
+                        (#{{ team.teamRanking.categoryPosition }} {{ team.viewTeam.categoryHuman }} = {{ team.teamRanking.points }}pts)
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </li>
+    {% endfor %}
+    </ul>
+{#    {% if athlete.rankings | length %}
+        <h3>Championnats</h3>
+        <ul>
+            {% for ranking in athlete.rankings %}
+                {% if not ranking.championship.rankOutsider %}
+                    <li><a href="{{ path('championship_show',{'id':ranking.championship.id}) }}">{{ ranking.championship.name }}</a> {{ ranking.championship.season }} <a href="{{ path('championship_show',{'id':ranking.championship.id,'category':ranking.category}) }}">categorie {{ ranking.categoryHuman }}</a> ({{ ranking.points }}pts)</li>
+                {% endif %}
+            {% endfor %}
+            {% for ranking in athlete.racer.overallRankings %}
+                {% if ranking.championship.rankOutsider %}
+                    <li><a href="{{ path('championship_show',{'id':ranking.championship.id}) }}">{{ ranking.championship.name }}</a> {{ ranking.championship.season }} <a href="{{ path('championship_show',{'id':ranking.championship.id,'category':ranking.category}) }}">categorie {{ ranking.categoryHuman }}</a> ({{ ranking.points }}pts)</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}#}
+
+{% endblock %}
+

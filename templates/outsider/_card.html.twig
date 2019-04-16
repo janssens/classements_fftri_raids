@@ -1,17 +1,7 @@
-<table class="table">
-    <tbody>
-    <tr>
-        <td style="text-align: center">
-            <img src="{{ gravatar('',200,'g','mp') }}" />
-        </td>
-    </tr>
-    <tr>
-        <td style="text-align: center">
-            <strong>{{ outsider.firstname | capitalize }} {{ outsider.lastname | upper }}</strong>
-        </td>
-    </tr>
-    <tr>
-        <td>Non Licencié{% if outsider.gender == 2 %}e{% endif %} FFTRI</td>
-    </tr>
-    </tbody>
-</table>
+<div class="card" style="width: 18rem;">
+    <a href="{{ path('outsider_show',{uid:outsider.uid}) }}"><img src="{{ gravatar('outsider',200,'g','mp') }}" class="card-img-top"  /></a>
+    <div class="card-body">
+        <p class="card-text">{{ outsider.firstname | capitalize }} {{ outsider.lastname | upper }}</p>
+        Non Licencié{% if outsider.gender == 2 %}e{% endif %} FFTRI
+    </div>
+</div>

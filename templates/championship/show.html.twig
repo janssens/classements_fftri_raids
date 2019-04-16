@@ -6,6 +6,15 @@
     <h1>{{ championship.name }} {{ championship.season | lower }}</h1>
 
     <table>
+        <tr>
+            {% for race in championship.races %}
+                <td>{{ include('race/_card.html.twig',{'race':race}) }}</td>
+            {% endfor %}
+        </tr>
+    </table>
+
+
+    <table>
         <thead>
         <tr>
             <th>Position</th>
@@ -20,26 +29,53 @@
 
         </tbody>
         {% set i = 1 %}
-        {% for rank in championship.rankings %}
-            {% if not app.request.get('category') or app.request.get('category') == rank.category %}
-            <tr>
-                <td>{{ i }}</td>
-                <td><a href="{{ path('athlete_show',{"id":rank.athlete.id}) }}">{{ rank.athlete.firstname | capitalize }}</a></td>
-                <td><a href="{{ path('athlete_show',{"id":rank.athlete.id}) }}">{{ rank.athlete.lastname | upper }}</a></td>
-                <td>{{ rank.points }}</td>
-                <td><a href="{% if not app.request.get('category') %}?category={{ rank.category }}{% else %}?{% endif %}">{{ rank.categoryHuman }}</a></td>
-                <td>
-                    {% if rank.athlete.registrations[0] and rank.athlete.registrations[0].club %}
-                    <a href="{{ path('club_show',{'slug':rank.athlete.registrations[0].club.slug}) }}">{{ rank.athlete.registrations[0].club.name | upper }}</a>
+        {% if championship.rankOutsider %}
+            {% for rank in championship.overallRankings %}
+                {% if not app.request.get('category') or app.request.get('category') == rank.category %}
+                <tr>
+                    <td>{{ i }}</td>
+                {% if not rank.outsider %}
+                    <td><a href="{{ path('athlete_show',{"id":rank.racer.id}) }}">{{ rank.racer.firstname | capitalize }}</a></td>
+                    <td><a href="{{ path('athlete_show',{"id":rank.racer.id}) }}">{{ rank.racer.lastname | upper }}</a></td>
+                {% else %}
+                    <td><a href="{{ path('outsider_show',{"uid":rank.racer.id}) }}">{{ rank.racer.firstname | capitalize }}</a></td>
+                    <td><a href="{{ path('outsider_show',{"uid":rank.racer.id}) }}">{{ rank.racer.lastname | upper }}*</a></td>
+                {% endif %}
+                    <td>{{ rank.points }}</td>
+                    <td><a href="{% if not app.request.get('category') %}?category={{ rank.category }}{% else %}?{% endif %}">{{ rank.categoryHuman }}</a></td>
+                    <td>
+                    {% if not rank.outsider %}
+                        {% if rank.athlete.registrations[0] and rank.athlete.registrations[0].club %}
+                        <a href="{{ path('club_show',{'slug':rank.athlete.registrations[0].club.slug}) }}">{{ rank.athlete.registrations[0].club.name | upper }}</a>
+                        {% endif %}
                     {% endif %}
-                </td>
-            </tr>
-                {% set i = i + 1 %}
-            {% endif %}
-        {% endfor %}
+                    </td>
+                </tr>
+                    {% set i = i + 1 %}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for rank in championship.rankings %}
+                {% if not app.request.get('category') or app.request.get('category') == rank.category %}
+                    <tr>
+                        <td>{{ i }}</td>
+                        <td><a href="{{ path('athlete_show',{"id":rank.athlete.id}) }}">{{ rank.athlete.firstname | capitalize }}</a></td>
+                        <td><a href="{{ path('athlete_show',{"id":rank.athlete.id}) }}">{{ rank.athlete.lastname | upper }}</a></td>
+                        <td>{{ rank.points }}</td>
+                        <td><a href="{% if not app.request.get('category') %}?category={{ rank.category }}{% else %}?{% endif %}">{{ rank.categoryHuman }}</a></td>
+                        <td>
+                            {% if rank.athlete.registrations[0] and rank.athlete.registrations[0].club %}
+                                <a href="{{ path('club_show',{'slug':rank.athlete.registrations[0].club.slug}) }}">{{ rank.athlete.registrations[0].club.name | upper }}</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% set i = i + 1 %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
     </table>
 
-    <a href="{{ path('championship_index') }}">back to list</a>
+    <a href="{{ path('championship_index') }}">Retour à la liste des championnats</a>
 
     {% if is_granted('ROLE_SUPER_ADMIN') %}
         <a href="{{ path('championship_edit', {'id': championship.id}) }}">edit</a>

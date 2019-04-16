@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Athlete;
+use App\Entity\Outsider;
 use App\Form\AthleteType;
 use App\Repository\AthleteRepository;
 use Doctrine\Common\Collections\Collection;
@@ -37,10 +38,28 @@ class AthleteController extends AbstractController
         if ($athlete->getRankings()->count() < 1){
             $session = new Session();
             $session->getFlashBag()->add('warning','Cet athlete n&rsquo;a participé à aucune course enregistrée sur cette plateforme');
-            return $this->redirectToRoute('home');
+            //return $this->redirectToRoute('home');
         }
         return $this->render('athlete/show.html.twig', [
             'athlete' => $athlete
+        ]);
+    }
+
+    /**
+     * @Route("/outsider/{uid}", name="outsider_show", methods={"GET"})
+     */
+    public function outsiderShow(Request $request): Response
+    {
+        $uid = $request->get('uid');
+        $em = $this->getDoctrine()->getManager();
+        $outsiders = $em->getRepository(Outsider::class)->findByUid($uid);
+        if (count($outsiders) < 1){
+            $session = new Session();
+            $session->getFlashBag()->add('warning','Aucun athlete trouvé pour cet identifiant');
+            return $this->redirectToRoute('home');
+        }
+        return $this->render('outsider/show.html.twig', [
+            'outsiders' => $outsiders
         ]);
     }
 

@@ -9,37 +9,37 @@
 {% block body %}
     <h1>Team {{ team.name }}</h1>
     <h2><a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race }}</a> {{ team.race.date | date('d M Y') }}</h2>
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Scratch</th>
-                <td>{{ team.position }}</td>
-            </tr>
-            {% if (team.officialTeamRanking) %}
-            <tr>
-                <th>Classement FFTRI</th>
-                <td>{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }}</td>
-            </tr>
-            <tr>
-                <th>Points FFTRI</th>
-                <td>{{ team.officialTeamRanking.points }}pts</td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-3 col-sm-12">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>Scratch</th>
+                    <td>{{ team.position }}</td>
+                </tr>
+                {% if (team.officialTeamRanking) %}
+                    <tr>
+                        <th>Classement FFTRI</th>
+                        <td>{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }}</td>
+                    </tr>
+                    <tr>
+                        <th>Points FFTRI</th>
+                        <td>{{ team.officialTeamRanking.points }}pts</td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <table>
-        <tbody>
-            <tr>
-                {% for registration in team.registrations %}
-                    <td>{{ include('athlete/_card.html.twig',{'athlete':registration.athlete}) }}</td>
-                {% endfor %}
-                {% for outsider in team.outsiders %}
-                    <td>{{ include('outsider/_card.html.twig',{'outsider':outsider}) }}</td>
-                {% endfor %}
-            </tr>
-        </tbody>
-    </table>
+    <div class="row">
+        {% for registration in team.registrations %}
+            <div class="col-12 col-sm-6 col-md-3">{{ include('athlete/_card.html.twig',{'athlete':registration.athlete}) }}</div>
+        {% endfor %}
+        {% for outsider in team.outsiders %}
+            <div class="col-12 col-sm-6 col-md-3">{{ include('outsider/_card.html.twig',{'outsider':outsider}) }}</div>
+        {% endfor %}
+    </div>
 
     {% if is_granted('ROLE_SUPER_ADMIN') %}
         <a href="{{ path('team_edit', {'id': team.id}) }}">edit</a>

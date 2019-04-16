@@ -7,10 +7,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="view_official_ranking")
+ * @ORM\Table(name="view_ranking")
  * @ORM\Entity(readOnly=true)
  */
-class Ranking
+class OverallRanking
 {
 
     /**
@@ -20,10 +20,15 @@ class Ranking
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Athlete", inversedBy="rankings")
-     * @ORM\JoinColumn(name="athlete_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Racer")
+     * @ORM\JoinColumn(name="racer_id", referencedColumnName="id")
      */
-    private $athlete;
+    private $racer;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $outsider;
 
     /**
      * @ORM\Column(type="integer")
@@ -50,6 +55,16 @@ class Ranking
         return $this->id;
     }
 
+    public function getRacer(): ?Racer
+    {
+        return $this->racer;
+    }
+
+    public function getOutsider(): ?bool
+    {
+        return $this->outsider;
+    }
+
     public function getCategory(): ?string
     {
         return $this->category;
@@ -68,14 +83,10 @@ class Ranking
         }
     }
 
+
     public function getPoints(): ?int
     {
         return $this->points;
-    }
-
-    public function getAthlete(): ?Athlete
-    {
-        return $this->athlete;
     }
 
     public function getChampionship(): ?Championship

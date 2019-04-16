@@ -24,6 +24,11 @@ class Championship
     private $name;
 
     /**
+     * @ORM\Column(type="boolean", options={"default" : 0})
+     */
+    private $rank_outsider;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Season", inversedBy="championships")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -39,6 +44,12 @@ class Championship
      * @ORM\OrderBy({"points" = "DESC","athlete" = "DESC"})
      */
     private $rankings;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\OverallRanking", mappedBy="championship")
+     * @ORM\OrderBy({"points" = "DESC","racer" = "DESC"})
+     */
+    private $overall_rankings;
 
     /**
      * @ORM\Column(type="datetime")
@@ -67,6 +78,18 @@ class Championship
         return $this;
     }
 
+    public function getRankOutsider(): ?bool
+    {
+        return $this->rank_outsider;
+    }
+
+    public function setRankOutsider(string $rank_outsider): self
+    {
+        $this->rank_outsider = $rank_outsider;
+
+        return $this;
+    }
+
     public function getSeason(): ?Season
     {
         return $this->season;
@@ -85,6 +108,14 @@ class Championship
     public function getRankings(): Collection
     {
         return $this->rankings;
+    }
+
+    /**
+     * @return Collection|Ranking[]
+     */
+    public function getOverallRankings(): Collection
+    {
+        return $this->overall_rankings;
     }
 
     /**

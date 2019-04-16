@@ -1,40 +1,18 @@
-
-
-<table class="table">
-    <tbody>
-    <tr>
-        <td style="text-align: center">
-            <a href="{{ path('athlete_show',{"id":athlete.id}) }}">
-                <img src="{{ gravatar(athlete.email,200,'g','mp') }}" />
-            </a>
-        </td>
-    </tr>
-    <tr>
-        <td style="text-align: center">
-            <strong>{{ athlete.firstname | capitalize }} {{ athlete.lastname | upper }}</strong>
-        </td>
-    </tr>
-    {% if is_granted('ROLE_ADMIN') %}
-        <tr>
-            <td>{{ athlete.email }}</td>
-        </tr>
-    {% endif %}
-    <tr>
-        <td>Licencié{% if athlete.gender == 2 %}e{% endif %} FFTRI</td>
-    </tr>
-    {% if athlete.registrations[0] and athlete.registrations[0].club %}
-    <tr>
-        <td>
-            <a href="{{ path('club_show',{'slug':athlete.registrations[0].club.slug}) }}">{{ athlete.registrations[0].club.name | upper }}</a>
-        </td>
-    </tr>
-    {% endif %}
-    <tr>
-        {% if is_granted('ROLE_ADMIN') %}
-            <td>{{ athlete.dob ? athlete.dob|date('Y-m-d') : '' }}</td>
-        {% else %}
-            <td>Né{% if athlete.gender == 2 %}e{% endif %} en {{ athlete.dob ? athlete.dob|date('Y') : '' }}</td>
+<div class="card">
+    <a href="{{ path('athlete_show',{id:athlete.id}) }}"><img src="{{ gravatar(athlete.email,400,'g','mp') }}" class="card-img-top"  /></a>
+    <div class="card-body">
+        <p class="card-text">{{ athlete.firstname | capitalize }} {{ athlete.lastname | upper }}</p>
+        Licencié{% if athlete.gender == 2 %}e{% endif %} FFTRI <br>
+        {% if athlete.registrations[0] and athlete.registrations[0].club %}
+            <a href="{{ path('club_show',{'slug':athlete.registrations[0].club.slug}) }}">{{ athlete.registrations[0].club.name | upper }}</a><br>
         {% endif %}
-    </tr>
-    </tbody>
-</table>
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ athlete.email }}
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <span>{{ athlete.dob ? athlete.dob|date('Y-m-d') : '' }}</span>
+        {% else %}
+            <span>Né{% if athlete.gender == 2 %}e{% endif %} en {{ athlete.dob ? athlete.dob|date('Y') : '' }}</span>
+        {% endif %}
+    </div>
+</div>

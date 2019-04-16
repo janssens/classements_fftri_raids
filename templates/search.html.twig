@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche{% endblock %}
+
+{% block body %}
+    <h1>Résultats de rechercher pour &ldquo;<strong>{{ s }}</strong>&rdquo;</h1>
+    {% if races | length %}
+    <h2>Courses</h2>
+    <ul class="fa-ul">
+        {% for race in races %}
+            <li>
+                <span class="fa-li"><i class="fas fa-map-marker"></i></span>
+                <a href="{{ path('race_show',{'id':race.id}) }}">
+                    {{ race.name }}
+                </a>
+            </li>
+        {% else %}
+            <li>
+                no records found
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if clubs | length %}
+        <h2>Clubs</h2>
+        <ul class="fa-ul">
+            {% for club in clubs %}
+                <li>
+                    <span class="fa-li"><i class="fas fa-users"></i></span>
+                    <a href="{{ path('club_show',{'slug':club.slug}) }}">
+                        {{ club.name }}
+                    </a>
+                </li>
+            {% else %}
+                <li>
+                    no records found
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if racers | length %}
+    <h2>Athlètes</h2>
+    <ul class="fa-ul">
+        {% for racer in racers %}
+            <li>
+                {% if not racer.outsider %}
+                    <span class="fa-li"><i class="fas fa-running"></i></span>
+                    <a href="{{ path('athlete_show',{'id':racer.id}) }}">
+                        {{ racer.firstname }} {{ racer.lastname }}
+                    </a>
+                {% else %}
+                    <span class="fa-li"><i class="far fa-user"></i></span>
+                    <a href="{{ path('outsider_show',{'uid':racer.id}) }}">
+                        {{ racer.firstname }} {{ racer.lastname }}
+                    </a>
+                {% endif %}
+            </li>
+        {% else %}
+            <li>
+                no records found
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+{% endblock %}

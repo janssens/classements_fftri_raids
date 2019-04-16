@@ -33,6 +33,8 @@ class Club
      */
     private $slug;
 
+    private $athletes;
+
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
@@ -84,6 +86,17 @@ class Club
         }
 
         return $this;
+    }
+
+    public function getAthletes(): array
+    {
+        if (!$this->athletes){
+            $this->athletes = array();
+            foreach ($this->registrations as $registration){
+                $this->athletes[$registration->getAthlete()->getId()] = $registration->getAthlete();
+            }
+        }
+        return $this->athletes;
     }
 
     public function getSlug(): ?string

@@ -7,10 +7,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="view_official_team")
+ * @ORM\Table(name="view_team")
  * @ORM\Entity(readOnly=true)
  */
-class OfficialTeam
+class ViewTeam
 {
 
     const GENDER_MALE = 'M';

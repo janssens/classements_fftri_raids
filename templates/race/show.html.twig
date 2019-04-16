@@ -22,10 +22,16 @@
             <li>{{ team.position }} - <a href="{{ path("team_show",{"id":team.id}) }}">{{ team.name }}</a>{% if team.officialTeam %} FFTRI {{ team.officialTeamRanking.categoryPosition }}e {{ team.officialTeam.categoryHuman }} {% endif %}</li>
             <ul>
                 {% for registration in team.registrations %}
-                    <li><b><a href="{{ path('athlete_show',{'id':registration.athlete.id}) }}">{{ registration.athlete.firstname }} {{ registration.athlete.lastname }}</a></b>{% if is_granted('ROLE_ADMIN') %} [ {{ registration.number }} ]{% endif %}</li>
+                    <li><b>
+                            <a href="{{ path('athlete_show',{'id':registration.athlete.id}) }}">
+                                {{ registration.athlete.firstname }} {{ registration.athlete.lastname }}
+                            </a></b>{% if is_granted('ROLE_ADMIN') %} [ {{ registration.number }} ]{% endif %}</li>
                 {% endfor %}
                 {% for outsider in team.outsiders %}
-                    <li {% if outsider.number %}style="color: red"{% endif %}>{{ outsider.firstname }} {{ outsider.lastname }}{% if outsider.number %} [ {{ outsider.number }} ]{% endif %}</li>
+                    <li {% if outsider.number %}style="color: red"{% endif %}>
+                        <a href="{{ path('outsider_show',{'uid':outsider.uid}) }}">
+                            {{ outsider.firstname }} {{ outsider.lastname }}
+                        </a>{% if outsider.number %} [ {{ outsider.number }} ]{% endif %}</li>
                 {% endfor %}
             </ul>
         {% endfor %}

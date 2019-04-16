@@ -1,0 +1,10 @@
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+{#        <div class="card-header">Course</div>#}
+        <div class="card-body">
+            <h5 class="card-title">{{ race.name }}</h5>
+            <a href="{{ path("race_show",{id:race.id}) }}">{{ race.teams | length }} équipes</a>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">{{ race.date ? race.date|date('d M Y') : '' }}</small>
+        </div>
+    </div>

@@ -5,7 +5,13 @@
 {% block body %}
     <h1>Athlete</h1>
 
-    {{ include('athlete/_card.html.twig') }}
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-xs-12 col-sm-10 col-md-4 col-lg-2">
+            {{ include('athlete/_card.html.twig') }}
+        </div>
+        <div class="col"></div>
+    </div>
 
     {% if is_granted('ROLE_SUPER_ADMIN') %}
         <a href="{{ path('athlete_edit', {'id': athlete.id}) }}">edit</a>

@@ -54,15 +54,17 @@ class OutsiderRepository extends ServiceEntityRepository
             ;
     }
 
-    /*
-    public function findOneBySomeField($value): ?Outsider
+    /**
+     * @return Outsider[]
+     */
+    public function findByUid($value): ?array
     {
         return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
+            ->andWhere('o.uid = :val')
             ->setParameter('val', $value)
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult();
+            //->getOneOrNullResult()
         ;
     }
-    */
 }

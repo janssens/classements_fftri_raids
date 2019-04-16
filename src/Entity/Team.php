@@ -44,6 +44,11 @@ class Team
     private $outsiders;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\ViewTeam", mappedBy="team")
+     */
+    private $view_team;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\OfficialTeam", mappedBy="team")
      */
     private $official_team;
@@ -52,6 +57,11 @@ class Team
      * @ORM\OneToOne(targetEntity="App\Entity\OfficialTeamRanking", mappedBy="team")
      */
     private $official_team_ranking;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\TeamRanking", mappedBy="team")
+     */
+    private $team_ranking;
 
     public function __construct()
     {
@@ -105,9 +115,19 @@ class Team
         return $this->official_team;
     }
 
+    public function getViewTeam(): ?ViewTeam
+    {
+        return $this->view_team;
+    }
+
     public function getOfficialTeamRanking(): ?OfficialTeamRanking
     {
         return $this->official_team_ranking;
+    }
+
+    public function getTeamRanking(): ?TeamRanking
+    {
+        return $this->team_ranking;
     }
 
     /**

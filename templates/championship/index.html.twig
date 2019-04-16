@@ -3,14 +3,14 @@
 {% block title %}Championship index{% endblock %}
 
 {% block body %}
-    <h1>Index des championnats</h1>
+    <h1>Liste des championnats</h1>
 
     <ul>
         {% for championship in championships %}
             <li>
                 <a href="{{ path('championship_show', {'id': championship.id}) }}">{{ championship.name }}</a> {{ championship.season | lower }}
                 {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('championship_edit', {'id': championship.id}) }}">edit</a>
+                    <a href="{{ path('championship_edit', {'id': championship.id}) }}"><i class="fas fa-edit"></i></a>
                 {% endif %}
             </li>
         {% else %}
@@ -20,6 +20,6 @@
         {% endfor %}
     </ul>
     {% if is_granted('ROLE_ADMIN') %}
-    <a href="{{ path('championship_new') }}">Create new</a>
+    <a href="{{ path('championship_new') }}" class="btn btn-primary"><i class="fas fa-plus"></i>&nbsp;Nouveau championnat</a>
     {% endif %}
 {% endblock %}
