@@ -144,7 +144,7 @@ class ImportRaceRanking extends CsvCommand
                                     $outsider = new Outsider();
                                     $outsider->setFirstname($this->getField('firstname_' . $i, $data));
                                     $outsider->setLastname($this->getField('lastname_' . $i, $data));
-                                    $outsider->setGender(($this->getField('gender_' . $i, $data) == 'm') ? Athlete::MALE : Athlete::FEMALE);
+                                    $outsider->setGender((($this->getField('gender_' . $i, $data) == 'm')||($this->getField('gender_' . $i, $data) == 'h')) ? Athlete::MALE : Athlete::FEMALE);
                                     $outsider->setNumber($this->getField('number_' . $i, $data));
                                     $em->persist($outsider);
                                     $team->addOutsider($outsider);
@@ -153,7 +153,7 @@ class ImportRaceRanking extends CsvCommand
                                 $outsider = new Outsider();
                                 $outsider->setFirstname($this->getField('firstname_' . $i, $data));
                                 $outsider->setLastname($this->getField('lastname_' . $i, $data));
-                                $outsider->setGender(($this->getField('gender_' . $i, $data) == 'm') ? Athlete::MALE : Athlete::FEMALE);
+                                $outsider->setGender((($this->getField('gender_' . $i, $data) == 'm')||($this->getField('gender_' . $i, $data) == 'h')) ? Athlete::MALE : Athlete::FEMALE);
                                 $outsider->setNumber(null);
                                 $em->persist($outsider);
                                 $team->addOutsider($outsider);
