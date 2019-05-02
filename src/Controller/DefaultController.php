@@ -36,7 +36,7 @@ class DefaultController extends AbstractController
         $racers = $em->getRepository(Racer::class)->findByString($s);
         $clubs = $em->getRepository(Club::class)->findByString($s);
         $athletes = array();
-        if ($this->getUser()->isGranted('ROLE_ADMIN')){
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $athletes = $em->getRepository(Athlete::class)->findByString($s);
         }
 
