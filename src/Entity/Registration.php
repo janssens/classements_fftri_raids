@@ -224,7 +224,7 @@ class Registration
     }
 
     public static function typesAreFromSameCategory($typeA,$typeB){
-        return ((self::isRacing($typeA)&&self::isRacing($typeB)||(self::isLoisir($typeA)&&self::isLoisir($typeB))||self::isDir($typeA)&&self::isDir($typeB)));
+        return ((self::typeIsRacing($typeA)&&self::typeIsRacing($typeB)||(self::typeIsLoisir($typeA)&&self::typeIsLoisir($typeB))||self::typeIsDir($typeA)&&self::typeIsDir($typeB)));
     }
 
     /**
