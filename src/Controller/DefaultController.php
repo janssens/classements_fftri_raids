@@ -35,12 +35,17 @@ class DefaultController extends AbstractController
         $races = $em->getRepository(Race::class)->findByString($s);
         $racers = $em->getRepository(Racer::class)->findByString($s);
         $clubs = $em->getRepository(Club::class)->findByString($s);
+        $athletes = array();
+        if ($this->getUser()->isGranted('ROLE_ADMIN')){
+            $athletes = $em->getRepository(Athlete::class)->findByString($s);
+        }
 
         return $this->render('search.html.twig', [
             's' => $s,
             'races' => $races,
             'racers' => $racers,
-            'clubs' => $clubs
+            'clubs' => $clubs,
+            'athletes' => $athletes
         ]);
     }
 }

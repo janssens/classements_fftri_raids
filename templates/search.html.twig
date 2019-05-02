@@ -67,6 +67,27 @@
     </ul>
     {% endif %}
 
+    {% if is_granted("ROLE_ADMIN") %}
+        {% if athletes | length %}
+            {% set results = 1 %}
+            <h2>Tous les athlètes FFTRI</h2>
+            <ul class="fa-ul">
+                {% for athlete in athletes %}
+                    <li>
+                        <span class="fa-li"><i class="fas fa-running"></i></span>
+                        <a href="{{ path('athlete_show',{'id':athlete.id}) }}">
+                            {{ athlete.firstname }} {{ athlete.lastname }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li>
+                        no records found
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+
     {% if not results %}
         <i>aucun résultat</i>
     {% endif %}

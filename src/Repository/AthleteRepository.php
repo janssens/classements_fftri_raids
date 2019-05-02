@@ -35,6 +35,17 @@ class AthleteRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findByString($value): ?array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('concat(a.firstname,a.lastname) like :val')
+            ->setParameter('val', '%'.$value.'%')
+            ->orderBy('a.id', 'ASC')
+            ->setMaxResults(20)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 
     public function findOneByLastnameAndDob($lastname, $dob): ?Athlete
     {
