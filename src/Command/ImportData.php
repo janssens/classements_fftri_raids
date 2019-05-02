@@ -232,7 +232,10 @@ class ImportData extends CsvCommand
                             if ($same_year_registration_exist && $same_year_registration_exist->getType() == $registration->getType()) {
                                 $registration->setStartDate(date_create_from_format('d/m/Y H:i:s','01/01/'.(intval($date->format('Y'))+1).' 00:00:00'));
                             }else{
-                                if (!$athlete->getRegistrations()){ //first registration ever
+                                if ($same_year_registration_exist && $athlete->getRegistrations()->count() == 0){ //we know also that type is not the same
+                                    if ($registration->getDate()>date_create_from_format('d/m/Y H:i:s','01/09/'.(intval($date->format('Y'))).' 00:00:00'))
+                                        $registration->setIsLong(true); //primo
+                                }else if (!$athlete->getRegistrations()){ //first registration ever
                                     if ($registration->getDate()>date_create_from_format('d/m/Y H:i:s','01/09/'.(intval($date->format('Y'))).' 00:00:00'))
                                         $registration->setIsLong(true); //primo
                                 }
