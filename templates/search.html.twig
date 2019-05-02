@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Recherche{% endblock %}
+{% block title %}[Classements Raids] Recherche "{{ s }}"{% endblock %}
 
 {% block body %}
     <h1>Résultats de rechercher pour &ldquo;<strong>{{ s }}</strong>&rdquo;</h1>
+    {% set results = 0 %}
     {% if races | length %}
+        {% set results = 1 %}
     <h2>Courses</h2>
     <ul class="fa-ul">
         {% for race in races %}
@@ -22,6 +24,7 @@
     </ul>
     {% endif %}
     {% if clubs | length %}
+        {% set results = 1 %}
         <h2>Clubs</h2>
         <ul class="fa-ul">
             {% for club in clubs %}
@@ -39,6 +42,7 @@
         </ul>
     {% endif %}
     {% if racers | length %}
+        {% set results = 1 %}
     <h2>Athlètes</h2>
     <ul class="fa-ul">
         {% for racer in racers %}
@@ -61,6 +65,10 @@
             </li>
         {% endfor %}
     </ul>
+    {% endif %}
+
+    {% if not results %}
+        <i>aucun résultat</i>
     {% endif %}
 
 {% endblock %}
