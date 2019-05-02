@@ -200,15 +200,31 @@ class Registration
     }
 
     public function isRacing(){
-        return in_array($this->getType(),array(self::TYPE_A,self::TYPE_B,self::TYPE_E,self::TYPE_F,self::TYPE_H,self::TYPE_I));
+        return self::typeIsRacing($this->getType());
     }
 
     public function isLoisir(){
-        return in_array($this->getType(),array(self::TYPE_C,self::TYPE_D,self::TYPE_K,self::TYPE_L));
+        return self::typeIsLoisir($this->getType());
     }
 
     public function isDir(){
-        return in_array($this->getType(),array(self::TYPE_G,self::TYPE_J));
+        return self::typeIsDir($this->getType());
+    }
+
+    public static function typeIsRacing($type){
+        return in_array($type,array(self::TYPE_A,self::TYPE_B,self::TYPE_E,self::TYPE_F,self::TYPE_H,self::TYPE_I));
+    }
+
+    public static function typeIsLoisir($type){
+        return in_array($type,array(self::TYPE_C,self::TYPE_D,self::TYPE_K,self::TYPE_L));
+    }
+
+    public static function typeIsDir($type){
+        return in_array($type,array(self::TYPE_G,self::TYPE_J));
+    }
+
+    public static function typesAreFromSameCategory($typeA,$typeB){
+        return ((self::isRacing($typeA)&&self::isRacing($typeB)||(self::isLoisir($typeA)&&self::isLoisir($typeB))||self::isDir($typeA)&&self::isDir($typeB)));
     }
 
     /**
