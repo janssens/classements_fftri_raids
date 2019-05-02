@@ -90,6 +90,11 @@ class Registration
      */
     private $start_date;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $end_date;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
@@ -143,9 +148,7 @@ class Registration
 
     public function getEndDate(): ?\DateTimeInterface
     {
-        if ($this->is_long)
-            return date_create_from_format('d/m/Y H:i:s','31/12/'.(intval($this->getStartDate()->format('Y'))+1).' 23:59:59');
-        return date_create_from_format('d/m/Y H:i:s','31/12/'.($this->getStartDate()->format('Y')).' 23:59:59');
+        return $this->end_date;
     }
 
     public function getClub(): ?Club

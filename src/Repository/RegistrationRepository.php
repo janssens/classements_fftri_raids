@@ -102,10 +102,10 @@ class RegistrationRepository extends ServiceEntityRepository
 
     public function findOneByLicenceAndRace($number,Race $race): ?Registration
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.number like :nb')
+        $qb = $this->createQueryBuilder('r');
+        return $qb->andWhere('r.number like :nb')
             ->andWhere('r.start_date <= :race_start')
-            ->andWhere('DATE(CONCAT(DATE_FORMAT(r.start_date, \'%Y\')+r.is_long,\'-12-31 23:59:59\')) => :race_start ')
+            ->andWhere('r.end_date >= :race_start')
             ->setParameter('nb', $number.'%')
             ->setParameter('race_start', date_create_from_format('d/m/Y H:i:s',$race->getDate()->format('d/m/Y').' 00:00:00'))
             ->orderBy('r.date','DESC')
