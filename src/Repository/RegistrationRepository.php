@@ -57,35 +57,17 @@ class RegistrationRepository extends ServiceEntityRepository
     {
         $year = $registration->getDate()->format('Y');
         $athlete = $registration->getAthlete();
-        $r = $this->createQueryBuilder('r')
-            ->andWhere('r.start_date BETWEEN :date_start AND :date_end')
+        $query = $this->createQueryBuilder('r')
+            ->andWhere('r.end_date BETWEEN :date_start AND :date_end')
             ->andWhere('r.id != :id')
             ->andWhere('r.athlete = :athlete')
             ->setParameter('date_start', date_create_from_format('d/m/Y H:i:s','01/01/'.$year.' 00:00:00'))
-            ->setParameter('date_end', date_create_from_format('d/m/Y H:i:s','31/12/'.$year.' 23:59:59'))
+            ->setParameter('date_end', date_create_from_format('d/m/Y H:i:s','01/01/'.($year+1).' 00:00:00'))
             ->setParameter('id', $registration->getId())
             ->setParameter('athlete', $athlete)
             ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-        if ($r == NULL){ //not found, look for long one on previous year
-            $r = $this->createQueryBuilder('r')
-                ->andWhere('r.start_date BETWEEN :date_start AND :date_end')
-                ->andWhere('r.id != :id')
-                ->andWhere('r.athlete = :athlete')
-                ->andWhere('r.is_long = :is_long')
-                ->setParameter('date_start', date_create_from_format('d/m/Y H:i:s','01/01/'.($year-1).' 00:00:00'))
-                ->setParameter('date_end', date_create_from_format('d/m/Y H:i:s','31/12/'.($year-1).' 23:59:59'))
-                ->setParameter('id', $registration->getId())
-                ->setParameter('athlete', $athlete)
-                ->setParameter('is_long', 1)
-                ->setMaxResults(1)
-                ->getQuery()
-                ->getOneOrNullResult()
-            ;
-        }
-        return $r;
+            ->getQuery();
+        return $query->getOneOrNullResult();
     }
 
     public function findOneByLicence($number): ?Registration
