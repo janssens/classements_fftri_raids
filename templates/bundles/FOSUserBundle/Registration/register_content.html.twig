@@ -1,7 +1,8 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
 {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
-    {{ form_widget(form) }}
+    {{ form_label(form.email) }}&nbsp;
+    {{ form_widget(form.email) }}
     <div>
         <input type="submit" value="Inscription" class="btn btn-primary" />
     </div>
