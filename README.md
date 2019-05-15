@@ -36,3 +36,9 @@ In case too heavy to handle (out of memory error)
 ### Race data
 
 ``php bin/console app:import:race_ranking PATH/TO/FILE.csv``
+
+### Usefull SQL
+
+get all firstname,lastname and email of racers
+
+``SELECT a.firstname, a.lastname , a.email FROM `view_racer` AS r JOIN athlete AS a ON r.parent_id = a.id WHERE outsider = 0``
