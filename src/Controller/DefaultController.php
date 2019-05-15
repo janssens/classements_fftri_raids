@@ -87,10 +87,17 @@ class DefaultController extends Controller
             $rsm = new ResultSetMappingBuilder($em);
             $rsm->addRootEntityFromClassMetadata('App:Registration', 'b');
 
-            $query = $em->createNativeQuery('SELECT r.* FROM registration AS r '.
+/*            $query = $em->createNativeQuery('SELECT r.* FROM registration AS r '.
                 'join athlete AS a ON a.id = r.athlete_id '.
                 'join registration_team as rt ON rt.registration_id = r.id '.
-                'WHERE DATE(r.end_date) > DATE(NOW()) AND LOWER(CONCAT(a.lastname,a.firstname)) LIKE :key', $rsm);
+                'WHERE DATE(r.end_date) > DATE(NOW()) AND LOWER(CONCAT(a.lastname,a.firstname)) LIKE :key', $rsm);*/
+
+            $query = $em->createNativeQuery('SELECT r.* FROM registration AS r '.
+                'join athlete AS a ON a.id = r.athlete_id '.
+                'join club AS c ON c.id = r.club_id '.
+                'left join registration AS copain ON copain.club_id = r.club_id '.
+                'join registration_team as rt ON rt.registration_id = copain.id '.
+                'WHERE DATE(r.end_date) > DATE(NOW()) AND LOWER(CONCAT(a.lastname,a.firstname)) LIKE :key GROUP BY email;', $rsm);
 
             $registrations = $query->setParameter('key', '%' . $string . '%')
                 ->getResult();
