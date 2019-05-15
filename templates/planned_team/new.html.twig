@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle équipe{% endblock %}
+
+{% block body %}
+    <h1>Créer une nouvelle équipe</h1>
+
+    Equipe de <b>{{ plannedTeam.captain }}</b>
+    {{ include('planned_team/_form.html.twig') }}
+
+{% endblock %}

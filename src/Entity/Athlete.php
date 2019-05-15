@@ -65,6 +65,13 @@ class Athlete
      */
     private $racer;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\User", mappedBy="athlete")
+     */
+    private $user;
+
+    private $planned_teams;
+
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
@@ -90,7 +97,7 @@ class Athlete
 
     public function getFirstname(): ?string
     {
-        return $this->firstname;
+        return ucfirst(strtolower($this->firstname));
     }
 
     public function setFirstname(string $firstname): self
@@ -102,7 +109,7 @@ class Athlete
 
     public function getLastname(): ?string
     {
-        return $this->lastname;
+        return strtoupper($this->lastname);
     }
 
     public function setLastname(?string $lastname): self
@@ -110,6 +117,16 @@ class Athlete
         $this->lastname = $lastname;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getFullName();
+    }
+
+    public function getFullName(): string
+    {
+        return $this->getFirstname().' '.$this->getLastname();
     }
 
     public function getGender(): ?int
@@ -181,5 +198,43 @@ class Athlete
     public function getRacer(): Racer
     {
         return $this->racer;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getPlannedTeam(): ?Collection
+    {
+        if (!$this->planned_teams) {
+            $this->planned_teams = new ArrayCollection();
+            foreach ($this->getRegistrations() as $registration) {
+                foreach ($registration->getPlannedTeams() as $plannedTeam) {
+                    $this->planned_teams->add($plannedTeam);
+                }
+            }
+        }
+        return $this->planned_teams;
+    }
+
+    public function getPlannedTeamByRace(Race $race): ?Collection
+    {
+        if (!$this->planned_teams)
+            return null;
+        return $this->planned_teams
+            ->filter(function(PlannedTeam $plannedTeam) use ($race){
+                return $plannedTeam->getRace() === $race;
+            });
     }
 }

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}[Simu Team] {{ team.name }}{% endblock %}
+
+{% block head %}
+    <meta name="robots" content="noindex, follow">
+{% endblock %}
+
+{% block body %}
+    <h1>Team {{ team.name }}</h1>
+    <h2><a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race }}</a> {{ team.race.date | date('d M Y') }}</h2>
+    <div class="row">
+        <div class="col-3 col-sm-12">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>Catégorie</th>
+                    <td>{{ team.categoryHuman }}</td>
+                </tr>
+                <tr>
+                    <th>Points</th>
+                    <td>{{ team.points }}pts</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        {% for registration in team.registrations %}
+            <div class="col-12 col-sm-6 col-md-3">{{ include('athlete/_card.html.twig',{'athlete':registration.athlete}) }}</div>
+        {% endfor %}
+        {% for request in team.requests %}
+            <div class="col-12 col-sm-6 col-md-3">{{ include('athlete/_card.html.twig',{'athlete':request.athlete}) }}</div>
+        {% endfor %}
+    </div>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('planned_team_edit', {'id': team.id}) }}">edit</a>
+        {{ include('planned_team/_delete_form.html.twig') }}
+    {% endif %}
+{% endblock %}

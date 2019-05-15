@@ -81,6 +81,16 @@ class Registration
     private $teams;
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\PlannedTeam", mappedBy="registrations",cascade={"all"})
+     */
+    private $planned_teams;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\PlannedTeam", mappedBy="requests",cascade={"all"})
+     */
+    private $planned_teams_requests;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $is_long;
@@ -91,13 +101,15 @@ class Registration
     private $start_date;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $end_date;
 
     public function __construct()
     {
         $this->teams = new ArrayCollection();
+        $this->planned_teams = new ArrayCollection();
+        $this->planned_teams_requests = new ArrayCollection();
     }
 
     public function __toString(): ?string
@@ -248,6 +260,63 @@ class Registration
     {
         if ($this->teams->contains($team)) {
             $this->teams->removeElement($team);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PlannedTeam[]
+     */
+    public function getPlannedTeams(): Collection
+    {
+        return $this->planned_teams;
+    }
+
+
+    public function addPlannedTeam(PlannedTeam $plannedTeam): self
+    {
+        if (!$this->planned_teams->contains($plannedTeam)) {
+            $this->planned_teams[] = $plannedTeam;
+            $plannedTeam->addRegistration($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlannedTeam(PlannedTeam $plannedTeam): self
+    {
+        if ($this->planned_teams->contains($plannedTeam)) {
+            $this->planned_teams->removeElement($plannedTeam);
+            $plannedTeam->removeRegistration($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PlannedTeam[]
+     */
+    public function getPlannedTeamsRequest(): Collection
+    {
+        return $this->planned_teams_requests;
+    }
+
+    public function addPlannedTeamRequest(PlannedTeam $plannedTeam): self
+    {
+        if (!$this->planned_teams_requests->contains($plannedTeam)) {
+            $this->planned_teams_requests[] = $plannedTeam;
+            $plannedTeam->addRequest($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlannedTeamRequest(PlannedTeam $plannedTeam): self
+    {
+        if ($this->planned_teams_requests->contains($plannedTeam)) {
+            $this->planned_teams_requests->removeElement($plannedTeam);
+            $plannedTeam->removeRequest($this);
         }
 
         return $this;

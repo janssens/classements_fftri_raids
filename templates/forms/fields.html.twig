@@ -1,0 +1,26 @@
+{% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block autocomplete_registration_widget %}
+    {% spaceless %}
+        {% set attr = attr|merge({class: (attr.class|default('') ~ 'registration_autocomplete')|trim}) %}
+        {{ form_label(form) }}
+        <input type="hidden" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %} />
+        <input type="text" id="{{ id }}_autocomplete" autocomplete="off" />
+    {% endspaceless %}
+    <script>
+        defer(function(){
+            //
+            $('#{{ id }}_autocomplete').autocomplete({
+                ajaxSettings: {'method':'post'},
+                serviceUrl: '{{ path('registration_list') }}',
+                minChars: 2,
+                onSelect: function (suggestion) {
+                    console.log('selected: ' + suggestion.value + ', ' + suggestion.data);
+                    $('#{{ id }}').val(suggestion.data);
+                }
+            }).dblclick(function () {
+                $(this).val('');
+            })
+        });
+    </script>
+{% endblock %}

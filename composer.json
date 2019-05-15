@@ -12,6 +12,7 @@
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/asset": "*",
         "symfony/console": "*",
+        "symfony/event-dispatcher": "4.1.*",
         "symfony/expression-language": "*",
         "symfony/flex": "^1.1",
         "symfony/form": "4.1.9",

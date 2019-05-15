@@ -4,7 +4,7 @@
 
 {% block body %}
     <h1>{{ championship.name }} {{ championship.season | lower }}</h1>
-
+    <h2>Les manches</h2>
     <table>
         <tr>
             {% for race in championship.races %}
@@ -12,8 +12,14 @@
             {% endfor %}
         </tr>
     </table>
-
-
+    {% if championship.final %}
+    <h2>La finale</h2>
+    <table>
+        <tr>
+            <td>{{ include('race/_card.html.twig',{'race':championship.final}) }}</td>
+        </tr>
+    </table>
+    {% endif %}
     <table>
         <thead>
         <tr>

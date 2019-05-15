@@ -2,7 +2,7 @@ twig:
     default_path: '%kernel.project_dir%/templates'
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
-    form_themes: ['form-theme.html.twig']
+    form_themes: ['forms/fields.html.twig']
 ornicar_gravatar:
     rating: g
     size: 80

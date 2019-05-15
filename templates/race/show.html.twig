@@ -6,6 +6,38 @@
     <h1>{{ race.name }}</h1>
     <h2>{{ race.date ? race.date|date('d M Y') : '' }}</h2>
 
+    {% if race.finalOf %}
+        <h3>Finale de championnat</h3>
+        <a href="{{ path('championship_show',{'id':race.finalOf.id}) }}">{{ race.finalOf.name }}</a> {{ race.finalOf.season }}
+
+        <h3>Equipes préinscriptes</h3>
+        {% for key,teams_cat in sortedPlannedTeams %}
+            <h4>{{ key }}</h4>
+            <ul>
+                {% for team in teams_cat %}
+                <li>{{ loop.index }} -
+                    <a href="{{ path("planned_team_show",{"id":team.team.id}) }}">{{ team.team.name }}</a> {{ team.team.categoryHuman }} {{ team.team.points }}pts
+                    <ul>
+                        {% for registration in team.team.registrations %}
+                            <li><b>
+                                    <a href="{{ path('athlete_show',{'id':registration.athlete.id}) }}">
+                                        {{ registration.athlete.firstname }} {{ registration.athlete.lastname }}
+                                    </a></b>{% if is_granted('ROLE_ADMIN') %} [ {{ registration.number }} ]{% endif %}</li>
+                        {% endfor %}
+                        {% for request in team.team.requests %}
+                            <li><i>
+                                    <a href="{{ path('athlete_show',{'id':request.athlete.id}) }}">
+                                        {{ request.athlete.firstname }} {{ request.athlete.lastname }}
+                                    </a> (a confirmer)</i>{% if is_granted('ROLE_ADMIN') %} [ {{ request.number }} ]{% endif %}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+        <a href="{{ path('planned_team_new',{'id':race.id}) }}" class="btn btn-primary">Pré-inscrire mon équipe</a>
+    {% endif %}
+
     {% if race.championships | length %}
         <h3>Course de championnat</h3>
         <p>Cette course apparait dans les championnats suivants</p>
@@ -16,26 +48,31 @@
         </ul>
     {% endif %}
 
+    {% if race.teams | length and race.date|date("Ymd") < "now"|date("Ymd") %}
     <h3>Equipes</h3>
     <ul>
         {% for team in race.teams %}
-            <li>{{ team.position }} - <a href="{{ path("team_show",{"id":team.id}) }}">{{ team.name }}</a>{% if team.officialTeam %} FFTRI {{ team.officialTeamRanking.categoryPosition }}e {{ team.officialTeam.categoryHuman }} {% endif %}</li>
-            <ul>
-                {% for registration in team.registrations %}
-                    <li><b>
-                            <a href="{{ path('athlete_show',{'id':registration.athlete.id}) }}">
-                                {{ registration.athlete.firstname }} {{ registration.athlete.lastname }}
-                            </a></b>{% if is_granted('ROLE_ADMIN') %} [ {{ registration.number }} ]{% endif %}</li>
-                {% endfor %}
-                {% for outsider in team.outsiders %}
-                    <li {% if outsider.number %}style="color: red"{% endif %}>
-                        <a href="{{ path('outsider_show',{'uid':outsider.uid}) }}">
-                            {{ outsider.firstname }} {{ outsider.lastname }}
-                        </a>{% if outsider.number %} [ {{ outsider.number }} ]{% endif %}</li>
-                {% endfor %}
-            </ul>
+            <li>{{ team.position }} -
+                <a href="{{ path("team_show",{"id":team.id}) }}">{{ team.name }}</a>
+                {% if team.officialTeam %} FFTRI {{ team.officialTeamRanking.categoryPosition }}e {{ team.officialTeam.categoryHuman }} {% endif %}
+                <ul>
+                    {% for registration in team.registrations %}
+                        <li><b>
+                                <a href="{{ path('athlete_show',{'id':registration.athlete.id}) }}">
+                                    {{ registration.athlete.firstname }} {{ registration.athlete.lastname }}
+                                </a></b>{% if is_granted('ROLE_ADMIN') %} [ {{ registration.number }} ]{% endif %}</li>
+                    {% endfor %}
+                    {% for outsider in team.outsiders %}
+                        <li {% if outsider.number %}style="color: red"{% endif %}>
+                            <a href="{{ path('outsider_show',{'uid':outsider.uid}) }}">
+                                {{ outsider.firstname }} {{ outsider.lastname }}
+                            </a>{% if outsider.number %} [ {{ outsider.number }} ]{% endif %}</li>
+                    {% endfor %}
+                </ul>
+            </li>
         {% endfor %}
     </ul>
+    {% endif %}
 
     {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('race_index') }}">back to list</a>

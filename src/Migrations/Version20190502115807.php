@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20190502115807_add_end_date_generated_coulumn_to_registrations extends AbstractMigration
+final class Version20190502115807 extends AbstractMigration
 {
     public function getDescription() : string
     {

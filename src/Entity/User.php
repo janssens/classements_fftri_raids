@@ -20,6 +20,11 @@ class User extends BaseUser
      */
     protected $id;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Athlete", inversedBy="user")
+     */
+    private $athlete;
+
     public function __construct()
     {
         parent::__construct();
@@ -29,5 +34,31 @@ class User extends BaseUser
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getAthlete(): ?Athlete
+    {
+        return $this->athlete;
+    }
+
+    public function setAthlete(Athlete $athlete): self
+    {
+        $this->athlete = $athlete;
+
+        return $this;
+    }
+
+    public function setEmail($email)
+    {
+        $email = is_null($email) ? '' : $email;
+        parent::setEmail($email);
+        $this->setUsername($email);
+
+        return $this;
+    }
+
+    public function getDisplayName(): string
+    {
+        return ($this->getAthlete()) ? $this->getAthlete()->getFirstname() : $this->getUsername();
     }
 }

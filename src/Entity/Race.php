@@ -45,6 +45,12 @@ class Race
     private $teams;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PlannedTeam", mappedBy="race", orphanRemoval=true, cascade={"remove"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $planned_teams;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\OfficialTeam", mappedBy="race")
      * @ORM\OrderBy({"position" = "ASC"})
      */
@@ -54,6 +60,11 @@ class Race
      * @ORM\Column(type="integer")
      */
     private $athletes_per_team;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Championship", mappedBy="final")
+     */
+    private $final_of;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Championship", mappedBy="races")
@@ -131,6 +142,18 @@ class Race
         return $this;
     }
 
+    public function getFinalOf(): ?Championship
+    {
+        return $this->final_of;
+    }
+
+    public function setFinalOf(Championship $championship): self
+    {
+        $this->final_of = $championship;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Team[]
      */
@@ -156,6 +179,37 @@ class Race
             // set the owning side to null (unless already changed)
             if ($team->getRace() === $this) {
                 $team->setRace(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PlannedTeam[]
+     */
+    public function getPlannedTeams(): Collection
+    {
+        return $this->planned_teams;
+    }
+
+    public function addPlannedTeam(PlannedTeam $planned_team): self
+    {
+        if (!$this->planned_teams->contains($planned_team)) {
+            $this->planned_teams[] = $planned_team;
+            $planned_team->setRace($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlannedTeam(PlannedTeam $planned_team): self
+    {
+        if ($this->planned_teams->contains($planned_team)) {
+            $this->planned_teams->removeElement($planned_team);
+            // set the owning side to null (unless already changed)
+            if ($planned_team->getRace() === $this) {
+                $planned_team->setRace(null);
             }
         }
 

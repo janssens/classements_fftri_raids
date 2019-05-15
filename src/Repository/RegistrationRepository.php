@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Athlete;
+use App\Entity\PlannedTeam;
 use App\Entity\Race;
 use App\Entity\Registration;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -20,24 +21,6 @@ class RegistrationRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Registration::class);
     }
-
-//    /**
-//     * @return Registration[] Returns an array of Registration objects
-//     */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
 
     public function findOneByDateAndNumber($date,$number): ?Registration
     {
@@ -76,6 +59,21 @@ class RegistrationRepository extends ServiceEntityRepository
             ->andWhere('r.number like :nb')
             ->setParameter('nb', $number.'%')
             ->orderBy('r.date','DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
+    public function getOneRequestByEmailAndPlannedTeam(string $email,PlannedTeam $plannedTeam): ?Registration
+    {
+        return $this->createQueryBuilder('r')
+            ->join('r.planned_teams_requests', 'ptr')
+            ->join('r.athlete', 'a')
+            ->andWhere('ptr.id = :id')
+            ->andWhere('a.email = :email')
+            ->setParameter('id', $plannedTeam->getId())
+            ->setParameter('email', $email)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()

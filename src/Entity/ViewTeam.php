@@ -45,7 +45,7 @@ class ViewTeam
     private $race;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Team", inversedBy="official_team")
+     * @ORM\OneToOne(targetEntity="App\Entity\Team", inversedBy="view_team")
      * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
      */
     private $team;

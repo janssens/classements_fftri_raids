@@ -40,6 +40,12 @@ class Championship
     private $races;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Race", inversedBy="final_of")
+     * @ORM\JoinColumn(name="final_id", referencedColumnName="id")
+     */
+    private $final;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Ranking", mappedBy="championship")
      * @ORM\OrderBy({"points" = "DESC","athlete" = "DESC"})
      */
@@ -98,6 +104,18 @@ class Championship
     public function setSeason(?Season $season): self
     {
         $this->season = $season;
+
+        return $this;
+    }
+
+    public function getFinal(): ?Race
+    {
+        return $this->final;
+    }
+
+    public function setFinal(?Race $race): self
+    {
+        $this->final = $race;
 
         return $this;
     }

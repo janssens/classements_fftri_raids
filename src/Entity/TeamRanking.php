@@ -35,7 +35,7 @@ class TeamRanking
     private $points;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Team", inversedBy="official_team_ranking")
+     * @ORM\OneToOne(targetEntity="App\Entity\Team", inversedBy="team_ranking")
      * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
      */
     private $team;

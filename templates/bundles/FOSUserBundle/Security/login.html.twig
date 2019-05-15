@@ -1,0 +1,22 @@
+{% extends "@FOSUser/layout.html.twig" %}
+
+{% block title %}Se connecter{% endblock %}
+
+{% block fos_user_content %}
+    </div>
+    <div style="background-image: url(/img/login.jpg);background-size: cover;height: 100%">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-8 mt-4 text-center">
+                    {{ include('@FOSUser/Security/login_content.html.twig') }}
+                    <a href="{{ path('fos_user_resetting_request') }}">Mot de passe oublié ?</a>
+                    <br>
+                    <br>
+                    Pas encore membre ?
+                    <a href="{{ path('fos_user_registration_register') }}" class="btn btn-success">Je crée mon compte</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+{% endblock fos_user_content %}

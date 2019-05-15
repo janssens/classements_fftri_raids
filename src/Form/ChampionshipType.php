@@ -17,6 +17,7 @@ class ChampionshipType extends AbstractType
             ->add('rank_outsider')
             ->add('season')
             ->add('races')
+            ->add('final')
         ;
     }
 

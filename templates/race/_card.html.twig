@@ -2,7 +2,13 @@
 {#        <div class="card-header">Course</div>#}
         <div class="card-body">
             <h5 class="card-title">{{ race.name }}</h5>
+            {% if race.teams | length and race.date|date("Ymd") < "now"|date("Ymd") %}
             <a href="{{ path("race_show",{id:race.id}) }}">{{ race.teams | length }} équipes</a>
+            {% elseif race.finalOf %}
+                {% if race.date|date("Ymd") > "now"|date("Ymd") %}
+                    <a href="{{ path("race_show",{id:race.id}) }}">{{ race.plannedTeams | length }} équipes pré-inscrites</a>
+                {% endif %}
+            {% endif %}
         </div>
         <div class="card-footer">
             <small class="text-muted">{{ race.date ? race.date|date('d M Y') : '' }}</small>

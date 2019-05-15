@@ -1,0 +1,17 @@
+{{ form_start(form) }}
+    {{ form_label(form.name) }}
+    {{ form_widget(form.name) }}
+<br>
+{{ form_label(form.requests) }}
+{{ form_errors(form.requests) }}
+
+<ul>
+    {% for registerField in form.requests %}
+        <li>
+            {{ form_errors(registerField) }}
+            {{ form_widget(registerField) }}
+        </li>
+    {% endfor %}
+</ul>
+    <button class="btn btn-primary">Valider</button>
+{{ form_end(form) }}
