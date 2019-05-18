@@ -172,7 +172,7 @@ class RaceController extends Controller
                 $em->persist($plannedTeam);
                 $em->flush();
 
-                $this->eventDispatcher->dispatch(PlannedTeamNewEvent::NAME, new PlannedTeamNewEvent($plannedTeam));
+                $this->eventDispatcher->dispatch(PlannedTeamNewEvent::NAME, new PlannedTeamNewEvent($plannedTeam,(string)$this->getUser()));
 
                 $session->getFlashBag()->add('success',' l\'équipe a bien été créée !');
 

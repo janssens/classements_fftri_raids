@@ -31,6 +31,11 @@ class User extends BaseUser
         // your own logic
     }
 
+    public function __toString()
+    {
+        return ($this->getAthlete())? $this->getAthlete()->getFirstName() : $this->getUsername();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

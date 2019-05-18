@@ -87,6 +87,7 @@ class EmailingEventListener
     public function onPlannedTeamNew(PlannedTeamNewEvent $event)
     {
         $pt = $event->getPlannedTeam();
+        $author = $event->getAuthor();
         $vigenereHelper = new Vigenere($this->container);
 
         foreach ($pt->getRequests() as $registration){
@@ -95,13 +96,14 @@ class EmailingEventListener
             $accepte_url = $this->container->get('router')->generate('planned_team_confirm', array('id' => $pt->getId(),'code' => urlencode($vigenereHelper->encode($email))),UrlGeneratorInterface::ABSOLUTE_URL);
             $decline_url = $this->container->get('router')->generate('planned_team_decline', array('id' => $pt->getId(),'code' => urlencode($vigenereHelper->encode($email))),UrlGeneratorInterface::ABSOLUTE_URL);
 
-            $needInfo = (new \Swift_Message( $pt->getCaptain()->getFirstname().' t\'invite dans son équipe pour le'.$pt->getRace()->getFinalOf()->getName()))
+            $needInfo = (new \Swift_Message( $author.' t\'invite dans son équipe pour le'.$pt->getRace()->getFinalOf()->getName()))
             ->setFrom($this->fromEmail['address'], $this->fromEmail['sender_name'])
             ->setTo($email)
             ->setBody(
                 $this->renderView(
                     'emails/confirmPlanningTeam.html.twig',
                     array(
+                        'author' => $author,
                         'planning_team' => $pt,
                         'athlete' => $athlete,
                         'accepte_url' => $accepte_url,
@@ -117,17 +119,19 @@ class EmailingEventListener
 
     public function onPlannedTeamEdit(PlannedTeamEditEvent $event){
         $pt = $event->getPlannedTeam();
+        $author = $event->getAuthor();
         $vigenereHelper = new Vigenere($this->container);
         /* @var $athlete Athlete */
         foreach ($event->getRemovedAthletes() as $athlete){
             $email = $athlete->getEmail();
-            $needInfo = (new \Swift_Message( $pt->getCaptain()->getFirstname().' a changé son équipe pour le '.$pt->getRace()->getFinalOf()->getName()))
+            $needInfo = (new \Swift_Message( $author.' a changé l\'équipe pour le '.$pt->getRace()->getFinalOf()->getName()))
                 ->setFrom($this->fromEmail['address'], $this->fromEmail['sender_name'])
                 ->setTo($email)
                 ->setBody(
                     $this->renderView(
                         'emails/removed.html.twig',
                         array(
+                            'author' => $author,
                             'planning_team' => $pt,
                             'athlete' => $athlete,
                         )
@@ -142,13 +146,14 @@ class EmailingEventListener
             $accepte_url = $this->container->get('router')->generate('planned_team_confirm', array('id' => $pt->getId(),'code' => urlencode($vigenereHelper->encode($email))),UrlGeneratorInterface::ABSOLUTE_URL);
             $decline_url = $this->container->get('router')->generate('planned_team_decline', array('id' => $pt->getId(),'code' => urlencode($vigenereHelper->encode($email))),UrlGeneratorInterface::ABSOLUTE_URL);
 
-            $needInfo = (new \Swift_Message( $pt->getCaptain()->getFirstname().' t\'invite dans son équipe pour le'.$pt->getRace()->getFinalOf()->getName()))
+            $needInfo = (new \Swift_Message( $author.' t\'invite dans son équipe pour le'.$pt->getRace()->getFinalOf()->getName()))
                 ->setFrom($this->fromEmail['address'], $this->fromEmail['sender_name'])
                 ->setTo($email)
                 ->setBody(
                     $this->renderView(
                         'emails/confirmPlanningTeam.html.twig',
                         array(
+                            'author' => $author,
                             'planning_team' => $pt,
                             'athlete' => $athlete,
                             'accepte_url' => $accepte_url,
@@ -163,16 +168,18 @@ class EmailingEventListener
 
     public function onPlannedTeamDelete(PlannedTeamEditEvent $event){
         $pt = $event->getPlannedTeam();
+        $author = $event->getAuthor();
         /* @var $athlete Athlete */
         foreach ($event->getPlannedTeam()->getAthletes() as $athlete){
             $email = $athlete->getEmail();
-            $needInfo = (new \Swift_Message( $pt->getCaptain()->getFirstname().' a supprimé l\'équipe pour le '.$pt->getRace()->getFinalOf()->getName()))
+            $needInfo = (new \Swift_Message( $author.' a supprimé l\'équipe pour le '.$pt->getRace()->getFinalOf()->getName()))
                 ->setFrom($this->fromEmail['address'], $this->fromEmail['sender_name'])
                 ->setTo($email)
                 ->setBody(
                     $this->renderView(
                         'emails/delete.html.twig',
                         array(
+                            'author' => $author,
                             'planning_team' => $pt,
                             'athlete' => $athlete,
                         )

@@ -10,10 +10,17 @@ class PlannedTeamRemoveEvent extends Event
     const NAME = 'planned_team.remove';
 
     private $planned_team;
+    private $author;
 
-    public function __construct(PlannedTeam $team)
+    public function __construct(PlannedTeam $team,string $author)
     {
         $this->planned_team = $team;
+        $this->author = $author;
+    }
+
+    public function getAuthor()
+    {
+        return $this->author;
     }
 
     /**

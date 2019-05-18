@@ -15,11 +15,18 @@ class PlannedTeamEditEvent extends Event
 
     private $planned_team;
     private $old_athlete;
+    private $author;
 
-    public function __construct(PlannedTeam $planned_team,ArrayCollection $old_athlete)
+    public function __construct(PlannedTeam $planned_team,ArrayCollection $old_athlete,string $author)
     {
         $this->planned_team = $planned_team;
         $this->old_athlete = $old_athlete;
+        $this->author = $author;
+    }
+
+    public function getAuthor()
+    {
+        return $this->author;
     }
 
     /**

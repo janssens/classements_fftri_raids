@@ -141,7 +141,7 @@ class PlannedTeamController extends Controller
                 $em->persist($plannedTeam);
                 $em->flush();
 
-                $this->eventDispatcher->dispatch(PlannedTeamEditEvent::NAME, new PlannedTeamEditEvent($plannedTeam,$old_athletes));
+                $this->eventDispatcher->dispatch(PlannedTeamEditEvent::NAME, new PlannedTeamEditEvent($plannedTeam,$old_athletes,(string)$this->getUser()));
 
                 $session->getFlashBag()->add('success',' l\'équipe a bien été éditée !');
 
@@ -167,7 +167,7 @@ class PlannedTeamController extends Controller
             $race = $team->getRace();
             $entityManager = $this->getDoctrine()->getManager();
 
-            $this->eventDispatcher->dispatch(PlannedTeamEditEvent::DELETE_NAME, new PlannedTeamEditEvent($team,new ArrayCollection()));
+            $this->eventDispatcher->dispatch(PlannedTeamEditEvent::DELETE_NAME, new PlannedTeamEditEvent($team,new ArrayCollection(),(string)$this->getUser()));
 
             $entityManager->remove($team);
             $entityManager->flush();

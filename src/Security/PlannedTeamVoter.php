@@ -3,7 +3,9 @@
 namespace App\Security;
 
 use App\Entity\PlannedTeam;
+use App\Entity\Registration;
 use App\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
@@ -68,6 +70,11 @@ class PlannedTeamVoter extends Voter
 
     private function canEdit(PlannedTeam $team, User $user)
     {
-        return $user === $team->getCaptain()->getUser();
+        $confirmed_athlete = new ArrayCollection();
+        /** @var Registration $registration */
+        foreach ($team->getRegistrations() as $registration){
+            $confirmed_athlete->add($registration->getAthlete());
+        }
+        return $user->getAthlete() && $confirmed_athlete->contains($user->getAthlete());
     }
 }
