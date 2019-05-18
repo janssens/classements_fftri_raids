@@ -91,7 +91,7 @@ class DefaultController extends Controller
 
             $registrations = array();
 
-            if ($this->isGranted("ROLE_ADMIN")){
+            if (!$this->isGranted("ROLE_ADMIN")){
                 #athlete from club where athletes do race
                 $query = $em->createNativeQuery('SELECT r.* FROM registration AS r '.
                     'join athlete AS a ON a.id = r.athlete_id '.
