@@ -36,7 +36,7 @@ class JoinAthleteListener{
     {
         $entity = $args->getObject();
 
-        // only for users created trow "User" entity
+        // only for "User" entity
         if (!$entity instanceof User) {
             return;
         }

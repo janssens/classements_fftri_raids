@@ -6,11 +6,13 @@ use App\Entity\PlannedTeam;
 use App\Entity\Registration;
 use App\Entity\Team;
 use App\Event\PlannedTeamConfirmEvent;
+use App\Event\PlannedTeamEditEvent;
 use App\Event\PlannedTeamNewEvent;
 use App\Form\PlannedTeamType;
 use App\Form\TeamType;
 use App\Helper\Vigenere;
 use App\Repository\TeamRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -115,21 +117,40 @@ class PlannedTeamController extends Controller
      * @Route("/{id}/edit", name="planned_team_edit", methods={"GET","POST"})
      * @IsGranted("ROLE_ADMIN")
      */
-    public function edit(Request $request, PlannedTeam $team): Response
+    public function edit(Request $request, PlannedTeam $plannedTeam): Response
     {
-        $form = $this->createForm(PlannedTeamType::class, $team);
+        $form = $this->createForm(PlannedTeamType::class, $plannedTeam);
+        $old_athletes = new ArrayCollection();
+        foreach ($plannedTeam->getAthletes() as $athlete){
+            $old_athletes->add($athlete);
+        };
+
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        $session = new Session();
+        $race = $plannedTeam->getRace();
 
-            return $this->redirectToRoute('race_show', [
-                'id' => $team->getRace()->getId(),
-            ]);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $ids = $plannedTeam->getRegistrationsIds();
+            if (count($ids)!=$race->getAthletesPerTeam()){
+                $session->getFlashBag()->add('error','l\'équipe est incomplète : elle doit comporter '.$race->getAthletesPerTeam().' membres différents');
+            }else{
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($plannedTeam);
+                $em->flush();
+
+                $this->eventDispatcher->dispatch(PlannedTeamEditEvent::NAME, new PlannedTeamEditEvent($plannedTeam,$old_athletes));
+
+                $session->getFlashBag()->add('success',' l\'équipe a bien été éditée !');
+
+                return $this->redirectToRoute('race_show', [
+                    'id' => $plannedTeam->getRace()->getId(),
+                ]);
+            }
         }
 
         return $this->render('planned_team/edit.html.twig', [
-            'team' => $team,
+            'team' => $plannedTeam,
             'form' => $form->createView(),
         ]);
     }

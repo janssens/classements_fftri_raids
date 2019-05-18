@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Validator\Constraints as MyAssert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PlannedTeamRepository")
@@ -33,6 +34,7 @@ class PlannedTeam
      * @ORM\JoinTable(name="registration_planned_team",
      joinColumns={@ORM\JoinColumn(name="planned_team_id", referencedColumnName="id", nullable=false, onDelete="cascade")},
      inverseJoinColumns={@ORM\JoinColumn(name="registration_id", referencedColumnName="id", nullable=false, onDelete="cascade")})
+     * @MyAssert\ValidRegistrationForPlanningTeam
      */
     private $registrations;
 
@@ -41,10 +43,10 @@ class PlannedTeam
      * @ORM\JoinTable(name="request_planned_team",
     joinColumns={@ORM\JoinColumn(name="planned_team_id", referencedColumnName="id", nullable=false, onDelete="cascade")},
     inverseJoinColumns={@ORM\JoinColumn(name="registration_id", referencedColumnName="id", nullable=false, onDelete="cascade")})
+     * @MyAssert\ValidRegistrationForPlanningTeam
      */
     private $requests;
 
-    private $athletes;
     private $gender;
 
     public function __construct()
@@ -135,14 +137,12 @@ class PlannedTeam
 
     public function getAthletes(): Collection
     {
-        if (!$this->athletes){
-            $this->athletes = new ArrayCollection();
-            foreach ($this->getRegistrations() as $registration){
-                $this->athletes->add($registration->getAthlete());
-            }
-            foreach ($this->getRequests() as $registration){
-                $this->athletes->add($registration->getAthlete());
-            }
+        $this->athletes = new ArrayCollection();
+        foreach ($this->getRegistrations() as $registration){
+            $this->athletes->add($registration->getAthlete());
+        }
+        foreach ($this->getRequests() as $registration){
+            $this->athletes->add($registration->getAthlete());
         }
         return $this->athletes;
     }

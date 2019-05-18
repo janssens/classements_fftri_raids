@@ -17,6 +17,8 @@ use FOS\UserBundle\Event\UserEvent;
 use FOS\UserBundle\Form\Factory\FactoryInterface;
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Model\UserManagerInterface;
+use Ornicar\GravatarBundle\GravatarApi;
+use Ornicar\GravatarBundle\Templating\Helper\GravatarHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -87,26 +89,107 @@ class DefaultController extends Controller
             $rsm = new ResultSetMappingBuilder($em);
             $rsm->addRootEntityFromClassMetadata('App:Registration', 'b');
 
-/*            $query = $em->createNativeQuery('SELECT r.* FROM registration AS r '.
-                'join athlete AS a ON a.id = r.athlete_id '.
-                'join registration_team as rt ON rt.registration_id = r.id '.
-                'WHERE DATE(r.end_date) > DATE(NOW()) AND LOWER(CONCAT(a.lastname,a.firstname)) LIKE :key', $rsm);*/
+            $registrations = array();
 
-            $query = $em->createNativeQuery('SELECT r.* FROM registration AS r '.
-                'join athlete AS a ON a.id = r.athlete_id '.
-                'join club AS c ON c.id = r.club_id '.
-                'left join registration AS copain ON copain.club_id = r.club_id '.
-                'join registration_team as rt ON rt.registration_id = copain.id '.
-                'WHERE DATE(r.end_date) > DATE(NOW()) AND LOWER(CONCAT(a.lastname,a.firstname)) LIKE :key GROUP BY email;', $rsm);
+            if ($this->isGranted("ROLE_ADMIN")){
+                #athlete from club where athletes do race
+                $query = $em->createNativeQuery('SELECT r.* FROM registration AS r '.
+                    'join athlete AS a ON a.id = r.athlete_id '.
+                    'join club AS c ON c.id = r.club_id '.
+                    'left join registration AS copain ON copain.club_id = r.club_id '.
+                    'join registration_team as rt ON rt.registration_id = copain.id '.
+                    'WHERE DATE(r.end_date) > DATE(NOW()) AND r.type IN (1,2,5,6,8,9) AND LOWER(CONCAT(a.lastname,a.firstname)) LIKE :key GROUP BY email;', $rsm);
+                $registrations1 = $query->setParameter('key', '%' . $string . '%')
+                    ->getResult();
 
-            $registrations = $query->setParameter('key', '%' . $string . '%')
-                ->getResult();
+                #athlete without club who do race
+                $query2 = $em->createNativeQuery('SELECT r.* FROM registration AS r '.
+                    'join athlete AS a ON a.id = r.athlete_id '.
+                    'join registration_team as rt ON rt.registration_id = r.id '.
+                    'WHERE DATE(r.end_date) > DATE(NOW()) AND r.type IN (1,2,5,6,8,9) AND LOWER(CONCAT(a.lastname,a.firstname)) AND r.club_id = NULL LIKE :key;', $rsm);
+                $registrations2 = $query2->setParameter('key', '%' . $string . '%')
+                    ->getResult();
+
+                $registrations = array_merge($registrations1,$registrations2);
+            }else{
+                #for admin : all registrations
+                $query = $em->createNativeQuery('SELECT r.* FROM registration AS r '.
+                    'join athlete AS a ON a.id = r.athlete_id '.
+                    'WHERE DATE(r.end_date) > DATE(NOW()) AND r.type IN (1,2,5,6,8,9) AND LOWER(CONCAT(a.lastname,a.firstname)) LIKE :key;', $rsm);
+                $registrations = $query->setParameter('key', '%' . $string . '%')
+                    ->getResult();
+            }
 
             $returnArray = array();
             foreach ($registrations as $registration){
                 $returnArray[] = array('value' => $registration->getAthlete()->getFullName(),'data'=>$registration->getId());
             }
             return new JsonResponse(array('suggestions'=>$returnArray));
+        }
+        return new Response("Ajax only",400);
+    }
+
+    /**
+     * @Route("/registration/from_number", name="get_registration_from_number", methods={"POST"})
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @IsGranted("ROLE_USER")
+     */
+    public function getRegistrationFromNumberAction(Request $request){
+
+        if ($request->isXmlHttpRequest()){
+            $em = $this->getDoctrine()->getManager();
+
+            $number = $request->get('number');
+            if (strlen($number)>=7){
+                $registration = $em->getRepository(Registration::class)->findOneByLicence($number);
+            }else{
+                $registration = false;
+            }
+
+            /** @var Registration $registration */
+            if ($registration && $registration->isRacing()){
+                $gravatarApi = new GravatarApi();
+                $img = $gravatarApi->getUrl($registration->getAthlete()->getEmail(),50,'g','mp');
+                $returnArray = array('id'=>$registration->getId());
+                return new JsonResponse($returnArray);
+            }else{
+                return new JsonResponse(array());
+            }
+        }
+        return new Response("Ajax only",400);
+    }
+
+    /**
+     * @Route("/registration/", name="registration", methods={"POST"})
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @IsGranted("ROLE_USER")
+     */
+    public function getRegistrationAction(Request $request){
+
+        if ($request->isXmlHttpRequest()){
+            $em = $this->getDoctrine()->getManager();
+
+            $id = $request->get('id');
+            /** @var Registration $registration */
+            $registration = $em->getRepository(Registration::class)->find($id);
+
+            if ($registration){
+                $gravatarApi = new GravatarApi();
+                $img = $gravatarApi->getUrl($registration->getAthlete()->getEmail(),50,'g','mp');
+                $returnArray = array(
+                    'fullname' => $registration->getAthlete()->getFullName(),
+                    'img'=>$img,
+                    'id'=>$registration->getId(),
+                    'number'=>$registration->getNumber(),
+                    'club'=>strtoupper($registration->getClub()->getName()),
+                    'ligue'=>strtoupper($registration->getLigue()->getName()),
+                );
+                return new JsonResponse($returnArray);
+            }else{
+                return new JsonResponse(array());
+            }
         }
         return new Response("Ajax only",400);
     }

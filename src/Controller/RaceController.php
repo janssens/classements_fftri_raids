@@ -163,26 +163,14 @@ class RaceController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $ids = $plannedTeam->getRegistrationsIds();
-
             if (count($ids)!=$race->getAthletesPerTeam()){
                 $session->getFlashBag()->add('error','l\'équipe est incomplète : elle doit comporter '.$race->getAthletesPerTeam().' membres différents');
             }else{
-
                 $em = $this->getDoctrine()->getManager();
-                $conflict = $em->getRepository(PlannedTeam::class)->findOneConflict($plannedTeam);
-                if ($conflict){
-                    $id = array_values(array_intersect($ids,$conflict->getRegistrationsIds()))[0];
-                    $regi = $em->getRepository(Registration::class)->find($id);
-                    $session->getFlashBag()->add('error',$regi->getAthlete()->getFullname().' apparait déjà dans une équipe pour cette course !');
-                    return $this->redirectToRoute('race_show', [
-                        'id' => $plannedTeam->getRace()->getId(),
-                    ]);
-                }
 
                 $em->persist($plannedTeam);
-                $this->getDoctrine()->getManager()->flush();
+                $em->flush();
 
                 $this->eventDispatcher->dispatch(PlannedTeamNewEvent::NAME, new PlannedTeamNewEvent($plannedTeam));
 
@@ -192,9 +180,6 @@ class RaceController extends Controller
                     'id' => $plannedTeam->getRace()->getId(),
                 ]);
             }
-
-
-
         }
 
         return $this->render('planned_team/new.html.twig', [

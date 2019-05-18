@@ -21,7 +21,17 @@ class PlannedTeamType extends AbstractType
             'label'=>'Equipiers',
             'entry_type' => AutocompleteRegistrationType::class,
             'entry_options' => [
-                'attr' => ['label' => 'coéquipier'],
+                'label' => '&nbsp;',
+                'attr' => [],
+            ],
+        ]);
+        $builder->add('registrations', CollectionType::class, [
+            'label'=>'Equipiers',
+            'entry_type' => AutocompleteRegistrationType::class,
+
+            'entry_options' => [
+                'label' => '&nbsp;',
+                'attr' => [],
             ],
         ]);
     }
@@ -31,5 +41,6 @@ class PlannedTeamType extends AbstractType
         $resolver->setDefaults([
             'data_class' => PlannedTeam::class,
         ]);
+
     }
 }

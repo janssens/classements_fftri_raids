@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin index{% endblock %}
+
+{% block body %}
+    <h1>User index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Firstname</th>
+                <th>Lastname</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.email }}</td>
+                {% if user.athlete %}
+                    <td><a href="{{ path('athlete_show',{id:user.athlete.id}) }}">{{ user.athlete.firstname }}</a></td>
+                    <td>{{ user.athlete.lastname }}</td>
+                {% else %}
+                    <td colspan="2" class="text-warning">No associated athlete</td>
+                {% endif %}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

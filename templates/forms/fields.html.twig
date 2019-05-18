@@ -1,26 +1,95 @@
 {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
 
 {% block autocomplete_registration_widget %}
-    {% spaceless %}
-        {% set attr = attr|merge({class: (attr.class|default('') ~ 'registration_autocomplete')|trim}) %}
-        {{ form_label(form) }}
-        <input type="hidden" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %} />
-        <input type="text" id="{{ id }}_autocomplete" autocomplete="off" />
-    {% endspaceless %}
+    <div class="registration_widget card bg-light" id="registration_{{ id }}">
+        <div class="card-body text-center">
+        {% spaceless %}
+            {% set attr = attr|merge({class: (attr.class|default('') ~ 'registration_autocomplete')|trim}) %}
+    {#        {{ form_label(form) }}#}
+            {{ form_errors(form) }}
+            <img id="{{ id }}_image" style="width: 50px;height: 50px;" src="/img/silhouette.png" data-default="/img/silhouette.png" alt="" class="rounded-circle border border-dark mb-1">
+            <br>
+            <input type="hidden" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %} />
+            <input type="text" id="{{ id }}_autocomplete" autocomplete="off" />
+            <i class="fas fa-circle-notch fa-spin d-none" id="{{ id }}_spinner"></i>
+            <i class="fas fa-check text-success d-none" id="{{ id }}_check"></i>
+            <a href="#" id="{{ id }}_remove" class="text-primary d-none registration_widget_remove">
+                Modifier&nbsp;<i class="fas fa-user-edit"></i>
+            </a>
+            <a href="#" data-container="body" id="{{ id }}_popover" data-placement="top" data-content="Si l'athlète n'apparait pas dans la liste tappez son numéro de licence et validez en appuyant sur la touche entrée">
+                <i class="far fa-question-circle"></i>
+            </a>
+            <div id="{{ id }}_number"></div>
+            <div id="{{ id }}_club" class="club"></div>
+            <div id="{{ id }}_ligue"></div>
+        {% endspaceless %}
+        </div>
+    </div>
     <script>
+        function reset{{ id }}(){
+            $('#{{ id }}_autocomplete').removeAttr('disabled');
+            $('#{{ id }}_autocomplete').val('');
+            $('#{{ id }}_autocomplete').removeClass('border border-danger');
+            $('#{{ id }}_number').html('');
+            $('#{{ id }}_club').html('');
+            $('#{{ id }}_ligue').html('');
+            $('#{{ id }}_image').attr('src',$('#{{ id }}_image').data('default'));
+            $('#{{ id }}_check').addClass('d-none');
+            $('#{{ id }}_remove').addClass('d-none');
+            $('#{{ id }}_popover').removeClass('d-none');
+        }
+        function set{{ id }}(){
+            getRegistrationInfo($('#{{ id }}').val(),function (data) {
+                if (data.id){
+                    $('#{{ id }}_autocomplete').attr('disabled','disabled');
+                    $('#{{ id }}_autocomplete').removeClass('border border-danger');
+                    $('#{{ id }}_autocomplete').val(data.fullname);
+                    $('#{{ id }}_number').html(data.number);
+                    $('#{{ id }}_club').html(data.club);
+                    $('#{{ id }}_ligue').html(data.ligue);
+                    $('#{{ id }}_image').attr('src',data.img);
+                    $('#{{ id }}_check').removeClass('d-none');
+                    $('#{{ id }}_popover').addClass('d-none');
+                    $('#{{ id }}_remove').removeClass('d-none');
+                }
+            });
+        }
         defer(function(){
             //
             $('#{{ id }}_autocomplete').autocomplete({
                 ajaxSettings: {'method':'post'},
                 serviceUrl: '{{ path('registration_list') }}',
-                minChars: 2,
+                minChars: 3,
                 onSelect: function (suggestion) {
                     console.log('selected: ' + suggestion.value + ', ' + suggestion.data);
                     $('#{{ id }}').val(suggestion.data);
+                    set{{ id }}();
                 }
-            }).dblclick(function () {
-                $(this).val('');
-            })
+            }).keydown(function(event){
+                if(event.which == 13 || event.which == 9) {
+                    event.preventDefault();
+                    $("#{{ id }}_spinner").removeClass('d-none');
+                    getRegistrationInfoFromNumber($('#{{ id }}_autocomplete').val(),function (data) {
+                            $("#{{ id }}_spinner").addClass('d-none');
+                            if (data.id) {
+                                $('#{{ id }}').val(data.id);
+                                set{{ id }}();
+                            } else {
+                                $('#{{ id }}_autocomplete').addClass('border border-danger');
+                            }
+                        }
+                    );
+                    return false;
+                }
+            });
+            ;
+            $('#{{ id }}_remove').click(function (e) {
+                e.preventDefault();
+                reset{{ id }}();
+            });
+            //
+            set{{ id }}();
+            $('#{{ id }}_popover').click(function (e) { e.preventDefault(); }).popover();
         });
     </script>
 {% endblock %}

@@ -29,6 +29,8 @@ class PlannedTeamRepository extends ServiceEntityRepository
             ->andWhere('req.id IN (:registrations_id)')
             ->orWhere('reg.id IN (:registrations_id)')
             ->andWhere('r.id = :race_id')
+            ->andWhere('t.id != :team_id')
+            ->setParameter('team_id', $plannedTeam->getId())
             ->setParameter('race_id', $plannedTeam->getRace()->getId())
             ->setParameter('registrations_id', $plannedTeam->getRegistrationsIds())
             ->setMaxResults(1)

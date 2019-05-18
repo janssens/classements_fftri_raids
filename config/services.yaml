@@ -72,5 +72,6 @@ services:
             $fromEmail: "%from_email%"
         tags:
             - { name: kernel.event_listener, event: planned_team.new, method: onPlannedTeamNew }
+            - { name: kernel.event_listener, event: planned_team.edit, method: onPlannedTeamEdit }
             - { name: kernel.event_listener, event: planned_team.confirm, method: onPlannedTeamConfirm }
             - { name: kernel.event_listener, event: planned_team.decline, method: onPlannedTeamDecline }

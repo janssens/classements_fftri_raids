@@ -1,17 +1,29 @@
 {{ form_start(form) }}
+    <div class="text-danger">
+        {{ form_errors(form) }}
+    </div>
+
     {{ form_label(form.name) }}
     {{ form_widget(form.name) }}
-<br>
-{{ form_label(form.requests) }}
-{{ form_errors(form.requests) }}
+    <br>
+    {{ form_label(form.requests) }}
+    <div class="d-none">{{ form_label(form.registrations) }}</div>
 
-<ul>
-    {% for registerField in form.requests %}
-        <li>
-            {{ form_errors(registerField) }}
-            {{ form_widget(registerField) }}
-        </li>
-    {% endfor %}
-</ul>
-    <button class="btn btn-primary">Valider</button>
+    <div class="row">
+        {% for registerField in form.requests %}
+            <div class="col-lg-3 col-sm-12 col-md-4">
+                {{ form_widget(registerField) }}
+            </div>
+        {% endfor %}
+        {% for registerField in form.registrations %}
+            <div class="col-lg-3 col-sm-12 col-md-4">
+                {{ form_widget(registerField) }}
+            </div>
+        {% endfor %}
+    </div>
+    <br>
+    <button class="btn btn-primary"><i class="fas fa-check"></i>&nbsp;Valider</button>
+    <div class="d-none">
+        {{ form_widget(form) }}
+    </div>
 {{ form_end(form) }}
