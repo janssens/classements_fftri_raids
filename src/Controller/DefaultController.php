@@ -183,8 +183,8 @@ class DefaultController extends Controller
                     'img'=>$img,
                     'id'=>$registration->getId(),
                     'number'=>$registration->getNumber(),
-                    'club'=>strtoupper($registration->getClub()->getName()),
-                    'ligue'=>strtoupper($registration->getLigue()->getName()),
+                    'club'=>($registration->getClub()) ? (strtoupper($registration->getClub()->getName())) : '',
+                    'ligue'=>($registration->getLigue()) ? (strtoupper($registration->getLigue()->getName())) : '',
                 );
                 return new JsonResponse($returnArray);
             }else{
