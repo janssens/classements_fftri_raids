@@ -161,6 +161,28 @@ class EmailingEventListener
         }
     }
 
+    public function onPlannedTeamDelete(PlannedTeamEditEvent $event){
+        $pt = $event->getPlannedTeam();
+        /* @var $athlete Athlete */
+        foreach ($event->getPlannedTeam()->getAthletes() as $athlete){
+            $email = $athlete->getEmail();
+            $needInfo = (new \Swift_Message( $pt->getCaptain()->getFirstname().' a supprimé l\'équipe pour le '.$pt->getRace()->getFinalOf()->getName()))
+                ->setFrom($this->fromEmail['address'], $this->fromEmail['sender_name'])
+                ->setTo($email)
+                ->setBody(
+                    $this->renderView(
+                        'emails/delete.html.twig',
+                        array(
+                            'planning_team' => $pt,
+                            'athlete' => $athlete,
+                        )
+                    ),
+                    'text/html'
+                );
+            $this->mailer->send($needInfo);
+        }
+    }
+
     /**
      * Returns a rendered view.
      *

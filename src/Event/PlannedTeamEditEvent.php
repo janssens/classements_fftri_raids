@@ -11,6 +11,7 @@ use Symfony\Component\EventDispatcher\Event;
 class PlannedTeamEditEvent extends Event
 {
     const NAME = 'planned_team.edit';
+    const DELETE_NAME = 'planned_team.delete';
 
     private $planned_team;
     private $old_athlete;

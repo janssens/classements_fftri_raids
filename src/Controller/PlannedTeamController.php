@@ -115,10 +115,12 @@ class PlannedTeamController extends Controller
 
     /**
      * @Route("/{id}/edit", name="planned_team_edit", methods={"GET","POST"})
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_USER")
      */
     public function edit(Request $request, PlannedTeam $plannedTeam): Response
     {
+        $this->denyAccessUnlessGranted('edit', $plannedTeam);
+
         $form = $this->createForm(PlannedTeamType::class, $plannedTeam);
         $old_athletes = new ArrayCollection();
         foreach ($plannedTeam->getAthletes() as $athlete){
@@ -164,8 +166,12 @@ class PlannedTeamController extends Controller
         if ($this->isCsrfTokenValid('delete'.$team->getId(), $request->request->get('_token'))) {
             $race = $team->getRace();
             $entityManager = $this->getDoctrine()->getManager();
+
+            $this->eventDispatcher->dispatch(PlannedTeamEditEvent::DELETE_NAME, new PlannedTeamEditEvent($team,new ArrayCollection()));
+
             $entityManager->remove($team);
             $entityManager->flush();
+
         }
 
         return $this->redirectToRoute('race_show',array('id'=>$race->getId()));

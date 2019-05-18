@@ -1,13 +1,15 @@
-<div class="card">
-    <a href="{{ path('athlete_show',{id:athlete.id}) }}"><img src="{{ gravatar(athlete.email,400,'g','mp') }}" class="card-img-top"  /></a>
+<div class="card bg-light">
     <div class="card-body">
-        <p class="card-text">{{ athlete.firstname | capitalize }} {{ athlete.lastname | upper }}</p>
+        <p class="text-center">
+            <a href="{{ path('athlete_show',{id:athlete.id}) }}"><img src="{{ gravatar(athlete.email,100,'g','mp') }}" class="rounded-circle border border-dark mb-1"  /></a>
+        </p>
+        <p class="card-text text-center">{{ athlete.firstname | capitalize }} {{ athlete.lastname | upper }}</p>
         Licencié{% if athlete.gender == 2 %}e{% endif %} FFTRI <br>
         {% if athlete.registrations[0] and athlete.registrations[0].club %}
             <a href="{{ path('club_show',{'slug':athlete.registrations[0].club.slug}) }}">{{ athlete.registrations[0].club.name | upper }}</a><br>
         {% endif %}
         {% if is_granted('ROLE_ADMIN') %}
-            {{ athlete.email }}
+            {{ athlete.email }}<br>
         {% endif %}
         {% if is_granted('ROLE_ADMIN') %}
             <span>{{ athlete.dob ? athlete.dob|date('Y-m-d') : '' }}</span>

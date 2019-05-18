@@ -17,6 +17,9 @@
                 {% for team in teams_cat %}
                 <li>{{ loop.index }} -
                     <a href="{{ path("planned_team_show",{"id":team.team.id}) }}">{{ team.team.name }}</a> {{ team.team.categoryHuman }} {{ team.team.points }}pts
+                    {% if is_granted('edit',team.team) %}
+                        <a href="{{ path('planned_team_edit', {'id': team.team.id}) }}" class="text-success"><i class="far fa-edit"></i>&nbspéditer</a>
+                    {% endif %}
                     <ul>
                         {% for registration in team.team.registrations %}
                             <li><b>

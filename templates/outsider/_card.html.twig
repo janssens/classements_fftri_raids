@@ -1,7 +1,9 @@
-<div class="card" style="width: 18rem;">
-    <a href="{{ path('outsider_show',{uid:outsider.uid}) }}"><img src="{{ gravatar('outsider',200,'g','mp') }}" class="card-img-top"  /></a>
+<div class="card bg-dark text-white">
     <div class="card-body">
-        <p class="card-text">{{ outsider.firstname | capitalize }} {{ outsider.lastname | upper }}</p>
+        <p class="text-center">
+            <a href="{{ path('outsider_show',{uid:outsider.id}) }}"><img src="{{ gravatar('outsider',100,'g','mp') }}" class="rounded-circle border border-dark mb-1"  /></a>
+        </p>
+        <p class="card-text text-center">{{ outsider.firstname | capitalize }} {{ outsider.lastname | upper }}</p>
         Non Licencié{% if outsider.gender == 2 %}e{% endif %} FFTRI
     </div>
 </div>
