@@ -98,16 +98,16 @@ class DefaultController extends Controller
                     'join club AS c ON c.id = r.club_id '.
                     'left join registration AS copain ON copain.club_id = r.club_id '.
                     'join registration_team as rt ON rt.registration_id = copain.id '.
-                    'WHERE DATE(r.end_date) > DATE(NOW()) AND r.type IN (1,2,5,6,8,9) AND LOWER(CONCAT(a.lastname,a.firstname)) LIKE :key GROUP BY email;', $rsm);
-                $registrations1 = $query->setParameter('key', '%' . $string . '%')
+                    'WHERE DATE(r.end_date) > DATE(NOW()) AND r.type IN (1,2,5,6,8,9) AND LOWER(CONCAT(CONCAT(a.lastname," "),a.firstname)) LIKE :key GROUP BY email;', $rsm);
+                $registrations1 = $query->setParameter('key', '%' . strtolower($string) . '%')
                     ->getResult();
 
                 #athlete without club who do race
                 $query2 = $em->createNativeQuery('SELECT r.* FROM registration AS r '.
                     'join athlete AS a ON a.id = r.athlete_id '.
                     'join registration_team as rt ON rt.registration_id = r.id '.
-                    'WHERE DATE(r.end_date) > DATE(NOW()) AND r.type IN (1,2,5,6,8,9) AND LOWER(CONCAT(a.lastname,a.firstname)) AND r.club_id = NULL LIKE :key;', $rsm);
-                $registrations2 = $query2->setParameter('key', '%' . $string . '%')
+                    'WHERE DATE(r.end_date) > DATE(NOW()) AND r.type IN (1,2,5,6,8,9) AND LOWER(CONCAT(CONCAT(a.lastname," "),a.firstname)) AND r.club_id = NULL LIKE :key;', $rsm);
+                $registrations2 = $query2->setParameter('key', '%' . strtolower($string) . '%')
                     ->getResult();
 
                 $registrations = array_merge($registrations1,$registrations2);
@@ -115,8 +115,8 @@ class DefaultController extends Controller
                 #for admin : all registrations
                 $query = $em->createNativeQuery('SELECT r.* FROM registration AS r '.
                     'join athlete AS a ON a.id = r.athlete_id '.
-                    'WHERE DATE(r.end_date) > DATE(NOW()) AND r.type IN (1,2,5,6,8,9) AND LOWER(CONCAT(a.lastname,a.firstname)) LIKE :key;', $rsm);
-                $registrations = $query->setParameter('key', '%' . $string . '%')
+                    'WHERE DATE(r.end_date) > DATE(NOW()) AND r.type IN (1,2,5,6,8,9) AND LOWER(CONCAT(CONCAT(a.lastname," "),a.firstname)) LIKE :key;', $rsm);
+                $registrations = $query->setParameter('key', '%' . strtolower($string) . '%')
                     ->getResult();
             }
 
