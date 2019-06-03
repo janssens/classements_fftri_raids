@@ -14,7 +14,7 @@ class ChampionshipType extends AbstractType
         $builder
             ->add('name')
             ->add('registration_due_date')
-            ->add('final_registration_due_date')
+            ->add('final_registration_due_date', DateType::class, ['widget' => 'single_text',])
             ->add('rank_outsider')
             ->add('season')
             ->add('races')

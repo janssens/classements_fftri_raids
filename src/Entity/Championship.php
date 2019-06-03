@@ -179,12 +179,12 @@ class Championship
         return $this;
     }
 
-    public function getFinalRegistrationDueDate(): ?\DateTimeInterface
+    public function getFinalRegistrationDueDate(): ?\DateTime
     {
         return $this->final_registration_due_date;
     }
 
-    public function setFinalRegistrationDueDate(\DateTimeInterface $date): self
+    public function setFinalRegistrationDueDate(\DateTime $date): self
     {
         $this->final_registration_due_date = $date;
 
