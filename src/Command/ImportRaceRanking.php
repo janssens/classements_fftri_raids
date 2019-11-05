@@ -57,8 +57,9 @@ class ImportRaceRanking extends CsvCommand
 
         $races = $em->getRepository(Race::class)->findAll();
         $chooses = array();
+        /** @var Race $race */
         foreach ($races as $race){
-            $chooses[$race->getId()] = $race->getName();
+            $chooses[$race->getId()] = $race->getDate()->format('Y') . ' - ' . $race->getName();
         }
         $chooses[0] = 'New';
 
@@ -137,10 +138,14 @@ class ImportRaceRanking extends CsvCommand
                         for ($i = 0; $i < $race->getAthletesPerTeam(); $i++) {
                             $number = substr($this->getField('number_' . $i, $data),0,6);
                             if (strlen($number) == 6) {
+                                $output->writeln("Search athlete with licence :",OutputInterface::VERBOSITY_VERBOSE);
+                                $output->writeln($number,OutputInterface::VERBOSITY_VERBOSE);
                                 $registration = $em->getRepository(Registration::class)->findOneByLicenceAndRace($number,$race);
                                 if ($registration) {
+                                    $output->writeln("found #".$registration->getId(),OutputInterface::VERBOSITY_VERBOSE);
                                     $team->addRegistration($registration);
                                 } else {
+                                    $output->writeln("not found",OutputInterface::VERBOSITY_VERBOSE);
                                     $outsider = new Outsider();
                                     $outsider->setFirstname($this->getField('firstname_' . $i, $data));
                                     $outsider->setLastname($this->getField('lastname_' . $i, $data));
