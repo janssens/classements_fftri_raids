@@ -30,6 +30,7 @@ class ImportRaceRanking extends CsvCommand
             ->addArgument('file', InputArgument::REQUIRED, 'Csv file source')
             ->addOption('delimiter','d',InputOption::VALUE_OPTIONAL,'csv delimiter',';')
             ->addOption('default_mapping',null,InputOption::VALUE_NONE,'')
+            ->addOption('map','m',InputOption::VALUE_OPTIONAL,'map','')
         ;
     }
 
@@ -38,6 +39,7 @@ class ImportRaceRanking extends CsvCommand
         $file = $input->getArgument('file');
         $delimiter= $input->getOption('delimiter');
         $default_mapping= $input->getOption('default_mapping');
+        $map = $input->getOption('map');
 
         $delimiter = $this->checkDelimiter($file,$delimiter,$input,$output);
 
@@ -109,8 +111,12 @@ class ImportRaceRanking extends CsvCommand
         }
         $this->setNeededFields($neededFields);
 
-        if (!$default_mapping)
+        if (!$default_mapping&&!$map)
             $this->mapField($file,$delimiter,$input,$output);
+
+        if ($map){
+            $this->setMap(explode(',',$map));
+        }
 
         $row = 0;
         if (($handle = fopen($file, "r")) !== FALSE) {
