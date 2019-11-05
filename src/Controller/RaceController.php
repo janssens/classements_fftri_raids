@@ -137,6 +137,12 @@ class RaceController extends Controller
             return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
         }
 
+        $date = $race->getFinalOf()->getFinaleRegistrationDueDate();
+        if ($date < new \DateTime()){
+            $session->getFlashBag()->add('error','Pre-inscriptions closes');
+            return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
+        }
+
         $plannedTeam = new PlannedTeam();
         $plannedTeam->setRace($race);
 

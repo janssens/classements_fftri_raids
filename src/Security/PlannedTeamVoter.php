@@ -70,6 +70,10 @@ class PlannedTeamVoter extends Voter
 
     private function canEdit(PlannedTeam $team, User $user)
     {
+        $date = $team->getRace()->getFinalOf()->getFinalRegistrationDueDate();
+        if ($date < new \DateTime()){
+            return false;
+        }
         $confirmed_athlete = new ArrayCollection();
         /** @var Registration $registration */
         foreach ($team->getRegistrations() as $registration){

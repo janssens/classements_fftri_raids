@@ -62,6 +62,11 @@ class Championship
      */
     private $registration_due_date;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $final_registration_due_date;
+
     public function __construct()
     {
         $this->races = new ArrayCollection();
@@ -170,6 +175,18 @@ class Championship
     public function setRegistrationDueDate(\DateTimeInterface $registration_due_date): self
     {
         $this->registration_due_date = $registration_due_date;
+
+        return $this;
+    }
+
+    public function getFinalRegistrationDueDate(): ?\DateTime
+    {
+        return $this->final_registration_due_date;
+    }
+
+    public function setFinalRegistrationDueDate(\DateTime $date): self
+    {
+        $this->final_registration_due_date = $date;
 
         return $this;
     }

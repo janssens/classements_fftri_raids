@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Championship;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,6 +15,7 @@ class ChampionshipType extends AbstractType
         $builder
             ->add('name')
             ->add('registration_due_date')
+            ->add('final_registration_due_date', DateType::class, ['widget' => 'single_text',])
             ->add('rank_outsider')
             ->add('season')
             ->add('races')
