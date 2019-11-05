@@ -223,7 +223,7 @@ class ImportData extends CsvCommand
                         $dob = date_create_from_format('d/m/Y', $this->getField('dob',$data));
                         $dob->setTime(0,0,0);
                         $athlete_exist = $em->getRepository(Athlete::class)
-                            ->findOneByLastnameAndDob($lastname, $dob);
+                            ->findOneByFistnameLastnameAndDob($firstname,$lastname, $dob);
                         if ($athlete_exist) {
                             $athlete = $athlete_exist;
                             //already up to date at registration date ?

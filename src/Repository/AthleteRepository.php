@@ -59,4 +59,19 @@ class AthleteRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    public function findOneByFistnameLastnameAndDob($fistname, $lastname, $dob): ?Athlete
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.firstname = :valf')
+            ->andWhere('a.lastname = :vall')
+            ->andWhere('a.dob = :dob')
+            ->setParameter('valf', $fistname)
+            ->setParameter('vall', $lastname)
+            ->setParameter('dob', $dob)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }
