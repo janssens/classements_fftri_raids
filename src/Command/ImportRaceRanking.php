@@ -147,8 +147,15 @@ class ImportRaceRanking extends CsvCommand
                                 $output->writeln("Search athlete with licence :",OutputInterface::VERBOSITY_VERBOSE);
                                 $output->writeln($number,OutputInterface::VERBOSITY_VERBOSE);
                                 $registration = $em->getRepository(Registration::class)->findOneByLicenceAndRace($number,$race);
+                                /** @var Registration $registration */
                                 if ($registration) {
                                     $output->writeln("found #".$registration->getId(),OutputInterface::VERBOSITY_VERBOSE);
+                                    $output->writeln(
+                                        $registration->getAthlete()->getFirstname().' '.
+                                        $registration->getAthlete()->getLastname().' '.
+                                        $registration->getNumber().' '.
+                                        $registration->getDate()
+                                            ->format('Y-m-d'),OutputInterface::VERBOSITY_VERBOSE);
                                     $team->addRegistration($registration);
                                 } else {
                                     $output->writeln("not found",OutputInterface::VERBOSITY_VERBOSE);
