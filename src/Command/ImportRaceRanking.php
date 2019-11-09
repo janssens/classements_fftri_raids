@@ -117,6 +117,8 @@ class ImportRaceRanking extends CsvCommand
         if ($map){
             $this->setMap(explode(',',$map));
         }
+        $output->writeln("<info>MAP : </info>");
+        $this->displayMap($output);
 
         $row = 0;
         if (($handle = fopen($file, "r")) !== FALSE) {
