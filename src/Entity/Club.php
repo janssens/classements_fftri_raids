@@ -94,9 +94,13 @@ class Club
     public function getAthletes(): ArrayCollection
     {
         if (!$this->_athletes){
+            $added = array();
             $this->_athletes = new ArrayCollection();
             foreach ($this->registrations as $registration){
-                $this->_athletes->add($registration->getAthlete());
+                if (!in_array($registration->getAthlete()->getId(),$added)) {
+                    $this->_athletes->add($registration->getAthlete());
+                    $added[] = $registration->getAthlete()->getId();
+                }
             }
         }
         return $this->_athletes;
