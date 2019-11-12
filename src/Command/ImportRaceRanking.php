@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Validator\Constraints\DateTime;
 
@@ -111,11 +112,20 @@ class ImportRaceRanking extends CsvCommand
         }
         $this->setNeededFields($neededFields);
 
-        if (!$default_mapping&&!$map)
-            $this->mapField($file,$delimiter,$input,$output);
+        if (!$map && $this->loadSavedMap($file)){
 
-        if ($map){
-            $this->setMap(explode(',',$map));
+        }else{
+            $this->checkDelimiter($file,$delimiter,$input,$output);
+            if (!$default_mapping&&!$map) {
+                $this->mapField($file, $input, $output);
+                $this->saveMap($file);
+            }else{
+                $this->setMap(explode(',',$map));
+            }
+            $confirm = new ConfirmationQuestion('Save this map as default ?', true);
+            if ($this->getHelper('question')->ask($input, $output, $confirm)) {
+                $this->saveMap($file);
+            }
         }
         $output->writeln("<info>MAP : </info>");
         $this->displayMap($output);

@@ -44,8 +44,6 @@ class ImportData extends CsvCommand
         $start = $input->getOption('start');
         $default_mapping = $input->getOption('default_mapping');
 
-        $delimiter = $this->checkDelimiter($file,$delimiter,$input,$output);
-
         $output->writeln([
             '====================================',
             'Import registrations data from a csv',
@@ -67,11 +65,20 @@ class ImportData extends CsvCommand
             'ask_date' => array('label' => 'Date de demande de la licence (d/m/Y)','index'=>40,"required" => false,"default" => '01/01/2019'),
         ));
 
-        if (!$default_mapping&&!$map)
-            $this->mapField($file,$delimiter,$input,$output);
+        if (!$map && $this->loadSavedMap($file)){
 
-        if ($map){
-            $this->setMap(explode(',',$map));
+        }else{
+            $this->checkDelimiter($file,$delimiter,$input,$output);
+            if (!$default_mapping&&!$map) {
+                $this->mapField($file, $input, $output);
+                $this->saveMap($file);
+            }else{
+                $this->setMap(explode(',',$map));
+            }
+            $confirm = new ConfirmationQuestion('Save this map as default ?', true);
+            if ($this->getHelper('question')->ask($input, $output, $confirm)) {
+                $this->saveMap($file);
+            }
         }
         $output->writeln("<info>MAP : </info>");
         $this->displayMap($output);
@@ -99,43 +106,44 @@ class ImportData extends CsvCommand
 
             $processed = 0;
             $goto = $start;
-            while ((--$goto > 0) && (fgets($handle, 10000) !== FALSE)) { }
+            while ((--$goto > 0) && (fgets($handle, 10000) !== FALSE)) {
+            }
 
             $row = $start;
 
-            while (($data = fgetcsv($handle, 10000, $delimiter)) !== FALSE) {
-                if ($limit and $processed >= $limit){
+            while (($data = fgetcsv($handle, 10000, $this->getDelimiter())) !== FALSE) {
+                if ($limit and $processed >= $limit) {
                     break;
                 }
-                if ($row > $lines){
+                if ($row > $lines) {
                     break;
                 }
                 $data = array_map("utf8_encode", $data); //utf8
                 if ($row > 0) { //skip first line
 
-                    $date = date_create_from_format('d/m/Y',$this->getField('date',$data));
-                    $number = strtoupper($this->getField('number',$data));
+                    $date = date_create_from_format('d/m/Y', $this->getField('date', $data));
+                    $number = strtoupper($this->getField('number', $data));
 
-                    $output->writeln('',OutputInterface::VERBOSITY_DEBUG);
+                    $output->writeln('', OutputInterface::VERBOSITY_DEBUG);
                     if ($date && $number) {
                         $registration_exist = $em->getRepository(Registration::class)
-                            ->findOneByDateAndNumber($date,$number);
+                            ->findOneByDateAndNumber($date, $number);
                         if ($registration_exist) { //update
                             $registration = $registration_exist;
-                            $output->writeln('<info>Registration exist, update</info>',OutputInterface::VERBOSITY_DEBUG);
-                        }else{//new registration
+                            $output->writeln('<info>Registration exist, update</info>', OutputInterface::VERBOSITY_DEBUG);
+                        } else {//new registration
                             $registration = new Registration();
                             $registration->setDate($date);
                             $registration->setNumber($number);
                         }
 
-                        $ask_date = date_create_from_format('d/m/Y',$this->getField('ask_date',$data));
+                        $ask_date = date_create_from_format('d/m/Y', $this->getField('ask_date', $data));
                         $registration->setAskDate($ask_date);
 
                         $registration->setDate($date);
                         $registration->setStartDate($date);
 
-                        switch ($this->getField('type',$data)[0]){
+                        switch ($this->getField('type', $data)[0]) {
                             case 'a':
                                 $registration->setType(Registration::TYPE_A);
                                 break;
@@ -179,9 +187,9 @@ class ImportData extends CsvCommand
                                 $registration->setType(Registration::TYPE_NULL);
                         }
 
-                        $registration->setIsLong(($this->getField('is_long',$data) == "oui"));
+                        $registration->setIsLong(($this->getField('is_long', $data) == "oui"));
 
-                        $club_name = $this->getField('club',$data);
+                        $club_name = $this->getField('club', $data);
                         if ($club_name) {
                             //club
                             $slug = $this->createSlug($club_name);
@@ -199,7 +207,7 @@ class ImportData extends CsvCommand
                             $registration->setClub($club);
                         }
 
-                        $ligue_name = $this->getField('ligue',$data);
+                        $ligue_name = $this->getField('ligue', $data);
                         if ($ligue_name) {
                             //ligue
                             $slug = $this->createSlug($ligue_name);
@@ -217,27 +225,27 @@ class ImportData extends CsvCommand
                             $registration->setLigue($ligue);
                         }
 
-                        $email = $this->getField('email',$data);
-                        $lastname = $this->getField('lastname',$data);
-                        $firstname = $this->getField('firstname',$data);
-                        $dob = date_create_from_format('d/m/Y', $this->getField('dob',$data));
-                        $dob->setTime(0,0,0);
+                        $email = $this->getField('email', $data);
+                        $lastname = $this->getField('lastname', $data);
+                        $firstname = $this->getField('firstname', $data);
+                        $dob = date_create_from_format('d/m/Y', $this->getField('dob', $data));
+                        $dob->setTime(0, 0, 0);
                         $athlete_exist = $em->getRepository(Athlete::class)
-                            ->findOneByFistnameLastnameAndDob($firstname,$lastname, $dob);
+                            ->findOneByFistnameLastnameAndDob($firstname, $lastname, $dob);
                         if ($athlete_exist) {
                             $athlete = $athlete_exist;
                             //already up to date at registration date ?
                             $same_year_registration_exist = $em->getRepository(Registration::class)
                                 ->findSameYear($registration);
                             if ($same_year_registration_exist && Registration::typesAreFromSameCategory($same_year_registration_exist->getType(), $registration->getType())) {
-                                $registration->setStartDate(date_create_from_format('d/m/Y H:i:s','01/01/'.(intval($date->format('Y'))+1).' 00:00:00'));
-                            }else{
+                                $registration->setStartDate(date_create_from_format('d/m/Y H:i:s', '01/01/' . (intval($date->format('Y')) + 1) . ' 00:00:00'));
+                            } else {
                                 //same year registration exist is not of same type and new registration is the first of this kind (wont work for case LOISIR - LOISIR - COMPETITION)
-                                if ($same_year_registration_exist && $athlete->getRegistrations()->count() == ($registration_exist != null) ? 2 : 1){
-                                    if ($registration->getDate()>date_create_from_format('d/m/Y H:i:s','01/09/'.(intval($date->format('Y'))).' 00:00:00'))
+                                if ($same_year_registration_exist && $athlete->getRegistrations()->count() == ($registration_exist != null) ? 2 : 1) {
+                                    if ($registration->getDate() > date_create_from_format('d/m/Y H:i:s', '01/09/' . (intval($date->format('Y'))) . ' 00:00:00'))
                                         $registration->setIsLong(true); //primo
-                                }else if (!$athlete->getRegistrations()){ //first registration ever
-                                    if ($registration->getDate()>date_create_from_format('d/m/Y H:i:s','01/09/'.(intval($date->format('Y'))).' 00:00:00'))
+                                } else if (!$athlete->getRegistrations()) { //first registration ever
+                                    if ($registration->getDate() > date_create_from_format('d/m/Y H:i:s', '01/09/' . (intval($date->format('Y'))) . ' 00:00:00'))
                                         $registration->setIsLong(true); //primo
                                 }
                             }
@@ -249,15 +257,15 @@ class ImportData extends CsvCommand
                             $athlete->setDob($dob);
                             $athlete->setLastname($lastname);
                             $athlete->setFirstname($firstname);
-                            $athlete->setGender(($this->getField('sex',$data) == 'm') ? Athlete::MALE : Athlete::FEMALE);
+                            $athlete->setGender(($this->getField('sex', $data) == 'm') ? Athlete::MALE : Athlete::FEMALE);
 
-                            if ($registration->getDate()>date_create_from_format('d/m/Y H:i:s','01/09/'.(intval($date->format('Y'))).' 00:00:00'))
+                            if ($registration->getDate() > date_create_from_format('d/m/Y H:i:s', '01/09/' . (intval($date->format('Y'))) . ' 00:00:00'))
                                 $registration->setIsLong(true); //primo
 
                             $athlete->addRegistration($registration);
 
                             $related_outsiders = $em->getRepository(Outsider::class)->findByRegistration($registration);
-                            foreach ($related_outsiders as $outsider){
+                            foreach ($related_outsiders as $outsider) {
                                 $team = $outsider->getTeam();
                                 $team->addRegistration($registration);
                                 $team->removeOutsider($outsider);
@@ -283,15 +291,13 @@ class ImportData extends CsvCommand
             fclose($handle);
 
             $em->flush();
-            $output->writeln("",OutputInterface::VERBOSITY_VERBOSE);
-            $output->writeln("flushing . . .",OutputInterface::VERBOSITY_VERBOSE);
+            $output->writeln("", OutputInterface::VERBOSITY_VERBOSE);
+            $output->writeln("flushing . . .", OutputInterface::VERBOSITY_VERBOSE);
+            //$progress->finish();
         }
-        //$progress->finish();
         $output->writeln('');
 
     }
-
-
 
     public static function createSlug($str, $delimiter = '-'){
 

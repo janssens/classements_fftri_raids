@@ -13,6 +13,7 @@ use Symfony\Component\Console\Question\Question;
 abstract class CsvCommand extends ContainerAwareCommand
 {
     private $_neededFields;
+    private $_delimiter = ';';
 
     const DEFAULT_LABEL = '-- N/A --';
 
@@ -54,6 +55,7 @@ abstract class CsvCommand extends ContainerAwareCommand
                 $chosen = true;
             }
         }
+        $this->setDelimiter($delimiter);
         return $delimiter;
     }
 
@@ -82,18 +84,76 @@ abstract class CsvCommand extends ContainerAwareCommand
     }
 
     /**
+     * @param string $delimiter
+     */
+    protected function setDelimiter($delimiter){
+        $this->_delimiter = $delimiter;
+    }
+
+    /**
+     * @param string $delimiter
+     */
+    protected function getDelimiter(){
+        return $this->_delimiter;
+    }
+
+    protected function saveMap($file){
+        $fields = $this->getNeededFields();
+        $map = array();
+        foreach ($fields as $key=>$value){
+            $map[] = $fields[$key]['index'];
+        }
+        $filename = pathinfo($file,PATHINFO_FILENAME);
+        $dir = pathinfo($file,PATHINFO_DIRNAME);
+        $mapfile = fopen($dir.".".$filename.'_map', "w") or die("Unable to open file!");
+        fwrite($mapfile, implode($this->getDelimiter(),$map));
+        fclose($mapfile);
+    }
+
+    protected function loadSavedMap($file){
+        $filename = pathinfo($file,PATHINFO_FILENAME);
+        $dir = pathinfo($file,PATHINFO_DIRNAME);
+        $mapfile = $dir.'/'.".".$filename.'_map';
+        if (!file_exists($mapfile)){
+            return false;
+        }
+        $handle = fopen($mapfile, "r");
+
+        if (!$handle){
+            return false;
+        }
+
+        $re = '/[0-9]+(.{1})/m';
+        $str = fgets($handle);
+        fclose($handle);
+
+        preg_match($re, $str, $matches, PREG_OFFSET_CAPTURE, 0);
+
+        if (count($matches)>1){
+            $delimiter = $matches[1][0];
+            $handle = fopen($mapfile, "r");
+            $map =  fgetcsv($handle, 10000, $delimiter);
+            fclose($handle);
+            $this->setMap($map);
+            $this->setDelimiter($delimiter);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @param string $file
      * @param string $delimiter
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected function mapField($file,$delimiter,InputInterface $input,OutputInterface $output){
+    protected function mapField($file,InputInterface $input,OutputInterface $output){
         $fields = $this->getNeededFields();
         $head = array();
         $lines = array();
         $row = 0;
         if (($handle = fopen($file, "r")) !== FALSE) {
-            while (($data = fgetcsv($handle, 10000, $delimiter)) !== FALSE) {
+            while (($data = fgetcsv($handle, 10000, $this->getDelimiter())) !== FALSE) {
                 $row++;
                 if (10 <= $row){
                     break;
