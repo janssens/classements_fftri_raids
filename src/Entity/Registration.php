@@ -240,6 +240,14 @@ class Registration
     }
 
     /**
+     * @param $date \DateTime
+     * @return bool
+     */
+    public function isValidForDate($date){
+        return $date > $this->getStartDate() && $date < $this->getEndDate();
+    }
+
+    /**
      * @return Collection|Team[]
      */
     public function getTeams(): Collection

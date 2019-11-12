@@ -161,6 +161,11 @@ class Athlete
         return $this->registrations;
     }
 
+    public function getLastRegistration(): Registration
+    {
+        return $this->registrations->first();
+    }
+
     public function addRegistration(Registration $registration): self
     {
         if (!$this->registrations->contains($registration)) {

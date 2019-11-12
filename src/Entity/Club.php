@@ -33,7 +33,7 @@ class Club
      */
     private $slug;
 
-    private $athletes;
+    private $_athletes;
 
     public function __construct()
     {
@@ -88,15 +88,34 @@ class Club
         return $this;
     }
 
-    public function getAthletes(): array
+    /**
+     * @return ArrayCollection
+     */
+    public function getAthletes(): ArrayCollection
     {
-        if (!$this->athletes){
-            $this->athletes = array();
+        if (!$this->_athletes){
+            $this->_athletes = new ArrayCollection();
             foreach ($this->registrations as $registration){
-                $this->athletes[$registration->getAthlete()->getId()] = $registration->getAthlete();
+                $this->_athletes->add($registration->getAthlete());
             }
         }
-        return $this->athletes;
+        return $this->_athletes;
+    }
+
+    public function getUptodateAthletes(): ArrayCollection
+    {
+        /** @athlete Athlete */
+        return $this->getAthletes()->filter(function ($athlete) {
+            return $athlete->getLastRegistration()->isValidForDate(new \DateTime('now'));
+        });
+    }
+
+    public function getOldAthletes(): ArrayCollection
+    {
+        /** @athlete Athlete */
+        return $this->getAthletes()->filter(function ($athlete) {
+            return !$athlete->getLastRegistration()->isValidForDate(new \DateTime('now'));
+        });
     }
 
     public function getSlug(): ?string
