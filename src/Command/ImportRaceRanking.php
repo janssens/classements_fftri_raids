@@ -156,6 +156,7 @@ class ImportRaceRanking extends CsvCommand
                         for ($i = 0; $i < $race->getAthletesPerTeam(); $i++) {
                             $number = substr($this->getField('number_' . $i, $data),0,6);
                             if (strlen($number) == 6) {
+                                $output->writeln("",OutputInterface::VERBOSITY_VERBOSE);
                                 $output->writeln("Search athlete with licence :",OutputInterface::VERBOSITY_VERBOSE);
                                 $output->writeln($number,OutputInterface::VERBOSITY_VERBOSE);
                                 $registration = $em->getRepository(Registration::class)->findOneByLicenceAndRace($number,$race);
@@ -171,6 +172,7 @@ class ImportRaceRanking extends CsvCommand
                                         $registration->getEndDate()
                                             ->format('Y-m-d'),OutputInterface::VERBOSITY_VERBOSE);
                                     $team->addRegistration($registration);
+                                    $registration->addTeam($team);
                                 } else {
                                     $output->writeln("not found",OutputInterface::VERBOSITY_VERBOSE);
                                     $outsider = new Outsider();
@@ -178,6 +180,7 @@ class ImportRaceRanking extends CsvCommand
                                     $outsider->setLastname($this->getField('lastname_' . $i, $data));
                                     $outsider->setGender((($this->getField('gender_' . $i, $data) == 'm')||($this->getField('gender_' . $i, $data) == 'h')) ? Athlete::MALE : Athlete::FEMALE);
                                     $outsider->setNumber($this->getField('number_' . $i, $data));
+                                    $outsider->setTeam($team);
                                     $em->persist($outsider);
                                     $team->addOutsider($outsider);
                                 }
@@ -187,12 +190,12 @@ class ImportRaceRanking extends CsvCommand
                                 $outsider->setLastname($this->getField('lastname_' . $i, $data));
                                 $outsider->setGender((($this->getField('gender_' . $i, $data) == 'm')||($this->getField('gender_' . $i, $data) == 'h')) ? Athlete::MALE : Athlete::FEMALE);
                                 $outsider->setNumber(null);
+                                $outsider->setTeam($team);
                                 $em->persist($outsider);
                                 $team->addOutsider($outsider);
                             }
                         }
                         $team->setRace($race);
-
                         $em->persist($team);
                     }
                 }
