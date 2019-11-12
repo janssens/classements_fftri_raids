@@ -167,6 +167,8 @@ class ImportRaceRanking extends CsvCommand
                                         $registration->getAthlete()->getLastname().' '.
                                         $registration->getNumber().' '.
                                         $registration->getDate()
+                                            ->format('Y-m-d'). '->' .
+                                        $registration->getEndDate()
                                             ->format('Y-m-d'),OutputInterface::VERBOSITY_VERBOSE);
                                     $team->addRegistration($registration);
                                 } else {
