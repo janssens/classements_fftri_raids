@@ -130,6 +130,13 @@ class ImportRaceRanking extends CsvCommand
         $output->writeln("<info>MAP : </info>");
         $this->displayMap($output);
 
+        $output->writeln('Empty race ranking '.$race);
+        foreach ($race->getTeams() as $team){
+            $race->removeTeam($team);
+            $em->remove($team);
+        }
+        $em->persist($race);
+
         $row = 0;
         if (($handle = fopen($file, "r")) !== FALSE) {
             while (($data = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
@@ -139,11 +146,10 @@ class ImportRaceRanking extends CsvCommand
 
                     $team_name = $this->getField('team_name', $data);
                     if ($team_name and strlen($team_name)>1){
-                        $team = $em->getRepository(Team::class)->findOneBy(array('name' => $team_name, 'race' => $race));
-                        if (!$team) {
-                            $team = new Team();
-                            $team->setName($team_name);
-                        }
+
+                        $team = new Team();
+                        $team->setName($team_name);
+
                         $team->setPosition(intval($this->getField('position', $data)));
                         foreach ($team->getOutsiders() as $outsider){
                             $team->removeOutsider($outsider);
