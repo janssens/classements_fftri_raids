@@ -197,6 +197,7 @@ class ImportRaceRanking extends CsvCommand
                         }
                         $team->setRace($race);
                         $em->persist($team);
+                        $output->writeln("Team #".$team->getId()." saved.",OutputInterface::VERBOSITY_VERBOSE);
                     }
                 }
             }
