@@ -2,6 +2,12 @@
 
 {% block title %}[Athlete] {{ athlete.firstname | capitalize }} {{ athlete.lastname | upper }}{% endblock %}
 
+{% block head %}
+    {% if not (athlete.rankings | length) %}
+        <meta name="robots" content="noindex, follow">
+    {% endif %}
+{% endblock %}
+
 {% block body %}
     <h1>Athlete</h1>
 
