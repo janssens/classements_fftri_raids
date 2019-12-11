@@ -86,6 +86,24 @@
                 {% endfor %}
             </ul>
         {% endif %}
+        {% if registrations | length %}
+            {% set results = 1 %}
+            <h2>Toutes les licences FFTRI</h2>
+            <ul class="fa-ul">
+                {% for registration in registrations %}
+                    <li>
+                        <span class="fa-li"><i class="fas fa-running"></i></span>
+                        <a href="{{ path('athlete_show',{'id':registration.athlete.id}) }}">
+                            {{ registration.athlete.firstname }} {{ registration.athlete.lastname }} #{{ registration.number }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li>
+                        no records found
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     {% endif %}
 
     {% if not results %}

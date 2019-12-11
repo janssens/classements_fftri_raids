@@ -36,6 +36,18 @@ class RegistrationRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByString($value): ?array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.number like :val')
+            ->setParameter('val', '%'.$value.'%')
+            ->orderBy('r.id', 'ASC')
+            ->setMaxResults(20)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     public function findSameYear(Registration $registration): ?Registration
     {
         $year = $registration->getDate()->format('Y');

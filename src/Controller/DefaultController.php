@@ -60,8 +60,10 @@ class DefaultController extends Controller
         $racers = $em->getRepository(Racer::class)->findByString($s);
         $clubs = $em->getRepository(Club::class)->findByString($s);
         $athletes = array();
+        $registrations = array();
         if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $athletes = $em->getRepository(Athlete::class)->findByString($s);
+            $registrations = $em->getRepository(Registration::class)->findByString($s);
         }
 
         return $this->render('search.html.twig', [
@@ -69,7 +71,8 @@ class DefaultController extends Controller
             'races' => $races,
             'racers' => $racers,
             'clubs' => $clubs,
-            'athletes' => $athletes
+            'athletes' => $athletes,
+            'registrations' => $registrations
         ]);
     }
 
