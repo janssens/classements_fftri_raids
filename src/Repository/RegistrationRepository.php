@@ -100,8 +100,8 @@ class RegistrationRepository extends ServiceEntityRepository
                 $qb->expr()->orX(
                     $qb->expr()->lte('r.start_date', ':race_start'),
                     $qb->expr()->andX(
-                        $qb->expr()->eq('YEAR(r.start_data)',':race_start_year'),
-                        $qb->expr()->gt('MONTH(r.start_data)','8'),
+                        $qb->expr()->eq('YEAR(r.start_date)',':race_start_year'),
+                        $qb->expr()->gt('MONTH(r.start_date)','8'),
                         $qb->expr()->eq('r.is_long','1')
                         )
                 )
