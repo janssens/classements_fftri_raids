@@ -96,10 +96,11 @@ class RegistrationRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('r');
         return $qb->andWhere('r.number like :nb')
-            ->andWhere('r.start_date <= :race_start')
+            ->andWhere('(r.start_date <= :race_start OR (YEAR(r.start_data) = :race_start_year AND MONTH(r.start_data) > 8 AND r.is_long = 1))')
             ->andWhere('r.end_date >= :race_start')
             ->setParameter('nb', $number.'%')
             ->setParameter('race_start', date_create_from_format('d/m/Y H:i:s',$race->getDate()->format('d/m/Y').' 00:00:00'))
+            ->setParameter('race_start_year', date_create_from_format('Y',$race->getDate()->format('d/m/Y').' 00:00:00'))
             ->orderBy('r.date','DESC')
             ->setMaxResults(1)
             ->getQuery()
