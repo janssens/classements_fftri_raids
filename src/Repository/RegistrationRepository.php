@@ -101,7 +101,7 @@ class RegistrationRepository extends ServiceEntityRepository
                     $qb->expr()->lte('r.start_date', ':race_start'),
                     $qb->expr()->andX(
                         $qb->expr()->eq('YEAR(r.start_date)',':race_start_year'),
-                        $qb->expr()->gt('MONTH(r.start_date)','8'),
+                        $qb->expr()->gt(':race_start_month','8'),
                         $qb->expr()->eq('r.is_long','1')
                         )
                 )
@@ -110,6 +110,7 @@ class RegistrationRepository extends ServiceEntityRepository
             ->setParameter('nb', $number.'%')
             ->setParameter('race_start', date_create_from_format('d/m/Y H:i:s',$race->getDate()->format('d/m/Y').' 00:00:00'))
             ->setParameter('race_start_year', date_create_from_format('Y',$race->getDate()->format('d/m/Y').' 00:00:00'))
+            ->setParameter('race_start_month', date_create_from_format('m',$race->getDate()->format('d/m/Y').' 00:00:00'))
             ->orderBy('r.date','DESC')
             ->setMaxResults(1)
             ->getQuery()
