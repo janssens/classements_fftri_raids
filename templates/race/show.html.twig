@@ -42,7 +42,7 @@
             <a href="{{ path('planned_team_new',{'id':race.id}) }}" class="btn btn-primary">Pré-inscrire mon équipe</a>
         {% else %}
             {% if is_granted('ROLE_SUPER_ADMIN') %}
-                {{ dump(race.finalOf.final_registration_due_date) }} <= {{ dump(date("now")) }}
+                {{ race.finalOf.final_registration_due_date | date('d M Y') }} <= {{ date("now") | date('d M Y') }}
             {% endif %}
             <button class="btn btn-primary" disabled="disabled">Pré-inscriptions terminées</button>
         {% endif %}
