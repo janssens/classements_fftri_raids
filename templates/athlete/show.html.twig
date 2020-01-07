@@ -13,7 +13,7 @@
 
     {% if not (athlete.rankings | length) %}
         <div class="alert alert-warning" role="alert">
-            <i class="fas fa-exclamation"></i>&nbsp;Cet athlete n&rsquo;a participé à aucune course enregistrée sur cette plateforme
+            <i class="fas fa-exclamation-circle"></i>&nbsp;Cet athlete n&rsquo;a participé à aucune course enregistrée sur cette plateforme
         </div>
     {% endif %}
 
@@ -30,30 +30,32 @@
         <a href="{{ path('athlete_index') }}">back to list</a>
     {% endif %}
 
-    <h3>Courses</h3>
-    <ul>
-    {% for registration in athlete.registrations %}
-        {% if is_granted('ROLE_ADMIN') %}
-            <li>{{ registration.id }} {{ registration.number }} <small>{{ registration.startDate|date('d-m-Y') }} -> {{ registration.endDate|date('d-m-Y') }} ({{ registration.date|date('d-m-Y') }})</small>
-            {% if registration.isRacing %}COMPETITION{% elseif registration.isLoisir %}<b>LOISIR</b>{% endif %}</li>
-            <ul>
-        {% endif %}
-        {% if registration.teams | length %}
-            {% for team in registration.teams %}
-                <li>
-                    <a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race.name }}</a> -
-                    <a href="{{ path('team_show',{'id':team.id}) }}">{{ team.name }}</a>
-                    {% if (team.officialTeamRanking) %}
-                        (#{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }} = {{ team.officialTeamRanking.points }}pts)
-                    {% endif %}
-                </li>
-            {% endfor %}
-        {% endif %}
-        {% if is_granted('ROLE_ADMIN') %}
-            </ul>
-        {% endif %}
-    {% endfor %}
-    </ul>
+    {% if (athlete.rankings | length) %}
+        <h3>Courses</h3>
+        <ul>
+        {% for registration in athlete.registrations %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <li>{{ registration.id }} {{ registration.number }} <small>{{ registration.startDate|date('d-m-Y') }} -> {{ registration.endDate|date('d-m-Y') }} ({{ registration.date|date('d-m-Y') }})</small>
+                {% if registration.isRacing %}COMPETITION{% elseif registration.isLoisir %}<b>LOISIR</b>{% endif %}</li>
+                <ul>
+            {% endif %}
+            {% if registration.teams | length %}
+                {% for team in registration.teams %}
+                    <li>
+                        <a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race.name }}</a> -
+                        <a href="{{ path('team_show',{'id':team.id}) }}">{{ team.name }}</a>
+                        {% if (team.officialTeamRanking) %}
+                            (#{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }} = {{ team.officialTeamRanking.points }}pts)
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    {% endif %}
 
     {% if athlete.rankings | length %}
         <h3>Championnats</h3>
