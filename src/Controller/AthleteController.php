@@ -35,11 +35,6 @@ class AthleteController extends AbstractController
      */
     public function show(Athlete $athlete): Response
     {
-        if ($athlete->getRankings()->count() < 1){
-            $session = new Session();
-            $session->getFlashBag()->add('warning','Cet athlete n&rsquo;a participé à aucune course enregistrée sur cette plateforme');
-            //return $this->redirectToRoute('home');
-        }
         return $this->render('athlete/show.html.twig', [
             'athlete' => $athlete
         ]);

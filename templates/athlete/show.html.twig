@@ -9,7 +9,13 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Athlete</h1>
+    <h1>Athlete {{ athlete.firstname | capitalize }} {{ athlete.lastname | upper }}</h1>
+
+    {% if not (athlete.rankings | length) %}
+        <div class="alert alert-warning" role="alert">
+            <i class="fas fa-exclamation"></i>&nbsp;Cet athlete n&rsquo;a participé à aucune course enregistrée sur cette plateforme
+        </div>
+    {% endif %}
 
     <div class="row">
         <div class="col"></div>
