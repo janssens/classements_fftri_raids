@@ -2522,16 +2522,16 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v4.2.2",
+            "version": "v4.2.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "dd223d4bb9a2f9a4b4992851800b349739c40860"
+                "reference": "28286385757fa08c249254541ad814a8ccaff0f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/dd223d4bb9a2f9a4b4992851800b349739c40860",
-                "reference": "dd223d4bb9a2f9a4b4992851800b349739c40860",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/28286385757fa08c249254541ad814a8ccaff0f7",
+                "reference": "28286385757fa08c249254541ad814a8ccaff0f7",
                 "shasum": ""
             },
             "require": {
@@ -2550,7 +2550,7 @@
             "provide": {
                 "psr/cache-implementation": "1.0",
                 "psr/simple-cache-implementation": "1.0",
-                "symfony/cache-contracts-implementation": "1.0"
+                "symfony/cache-implementation": "1.0"
             },
             "require-dev": {
                 "cache/integration-tests": "dev-master",
@@ -2595,7 +2595,7 @@
                 "caching",
                 "psr6"
             ],
-            "time": "2019-01-03T09:07:35+00:00"
+            "time": "2019-11-11T12:44:10+00:00"
         },
         {
             "name": "symfony/config",
