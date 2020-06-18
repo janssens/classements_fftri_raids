@@ -27,7 +27,9 @@
             <th>Prenom</th>
             <th>Nom</th>
             <th>Points</th>
+            {% if not championship.isUnisex %}
             <th>Category</th>
+            {% endif %}
             <th>Club</th>
         </tr>
         </thead>
@@ -59,6 +61,21 @@
                 </tr>
                     {% set i = i + 1 %}
                 {% endif %}
+            {% endfor %}
+        {% elseif championship.isUnisex %}
+            {% for rank in championship.UnisexRankings %}
+                    <tr>
+                        <td>{{ i }}</td>
+                        <td><a href="{{ path('athlete_show',{"id":rank.athlete.id}) }}">{{ rank.athlete.firstname | capitalize }}</a></td>
+                        <td><a href="{{ path('athlete_show',{"id":rank.athlete.id}) }}">{{ rank.athlete.lastname | upper }}</a></td>
+                        <td>{{ rank.points }}</td>
+                        <td>
+                            {% if rank.athlete.registrations[0] and rank.athlete.registrations[0].club %}
+                                <a href="{{ path('club_show',{'slug':rank.athlete.registrations[0].club.slug}) }}">{{ rank.athlete.registrations[0].club.name | upper }}</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% set i = i + 1 %}
             {% endfor %}
         {% else %}
             {% for rank in championship.rankings %}

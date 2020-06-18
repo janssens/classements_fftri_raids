@@ -41,11 +41,14 @@
             {% endif %}
             {% if registration.teams | length %}
                 {% for team in registration.teams %}
-                    <li>
+                    <li>{{ team.race.date|date('Y') }}
                         <a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race.name }}</a> -
                         <a href="{{ path('team_show',{'id':team.id}) }}">{{ team.name }}</a>
                         {% if (team.officialTeamRanking) %}
-                            (#{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }} = {{ team.officialTeamRanking.points }}pts)
+                            ({% for championship in team.officialTeamRanking.race.championships %}
+                                <a href="{{ path('championship_show',{'id': championship.id }) }}">{{ championship.shortName }}</a>
+                            {% endfor %}
+                            #{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }} = {{ team.officialTeamRanking.points }}pts)
                         {% endif %}
                     </li>
                 {% endfor %}
@@ -60,11 +63,24 @@
     {% if athlete.rankings | length %}
         <h3>Championnats</h3>
         <ul>
-            {% for ranking in athlete.rankings %}
-                <li><a href="{{ path('championship_show',{'id':ranking.championship.id}) }}">{{ ranking.championship.name }}</a> {{ ranking.championship.season }} <a href="{{ path('championship_show',{'id':ranking.championship.id,'category':ranking.category}) }}">categorie {{ ranking.categoryHuman }}</a> ({{ ranking.points }}pts)</li>
+            {% for championship in championships %}
+                {% if athlete.rankings(championship) | length  %}
+                    <li><a href="{{ path('championship_show',{'id':championship.id}) }}">{{ championship.name }} ({{ championship.shortName }})</a> {{ championship.season }}
+                        {% if not championship.isUnisex %}
+                            <ul>
+                            {% for ranking in athlete.rankings(championship) %}
+                                <li>Categorie <a href="{{ path('championship_show',{'id':ranking.championship.id,'category':ranking.category}) }}">{{ ranking.categoryHuman }}</a> : {{ ranking.points }}pts</li>
+                            {% endfor %}
+                            </ul>
+                        {% else %}
+                            <ul><li>Toutes catégories : {{ athlete.UnisexRankingsForChampionship(championship).Points }}pts</li></ul>
+                        {% endif %}
+                    </li>
+                {% endif %}
             {% endfor %}
         </ul>
     {% endif %}
+
     {% if is_granted('ROLE_SUPER_ADMIN') %}
     {{ include('athlete/_delete_form.html.twig') }}
     {% endif %}

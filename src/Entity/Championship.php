@@ -36,6 +36,7 @@ class Championship
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Race", inversedBy="championships")
+     * @ORM\OrderBy({"date" = "ASC"})
      */
     private $races;
 
@@ -50,6 +51,12 @@ class Championship
      * @ORM\OrderBy({"points" = "DESC","athlete" = "DESC"})
      */
     private $rankings;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UnisexRanking", mappedBy="championship")
+     * @ORM\OrderBy({"points" = "DESC","athlete" = "DESC"})
+     */
+    private $unisex_rankings;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\OverallRanking", mappedBy="championship")
@@ -67,9 +74,21 @@ class Championship
      */
     private $final_registration_due_date;
 
+    /**
+     * @ORM\Column(type="string", length=15, nullable=true)
+     */
+    private $short_name;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_unisex;
+
     public function __construct()
     {
         $this->races = new ArrayCollection();
+        $this->rankins = new ArrayCollection();
+        $this->unisex_rankings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -134,6 +153,14 @@ class Championship
     }
 
     /**
+     * @return Collection|UnisexRanking[]
+     */
+    public function getUnisexRankings(): Collection
+    {
+        return $this->unisex_rankings;
+    }
+
+    /**
      * @return Collection|Ranking[]
      */
     public function getOverallRankings(): Collection
@@ -187,6 +214,30 @@ class Championship
     public function setFinalRegistrationDueDate(\DateTime $date): self
     {
         $this->final_registration_due_date = $date;
+
+        return $this;
+    }
+
+    public function getShortName(): ?string
+    {
+        return $this->short_name;
+    }
+
+    public function setShortName(?string $short_name): self
+    {
+        $this->short_name = $short_name;
+
+        return $this;
+    }
+
+    public function getIsUnisex(): ?bool
+    {
+        return $this->is_unisex;
+    }
+
+    public function setIsUnisex(bool $is_unisex): self
+    {
+        $this->is_unisex = $is_unisex;
 
         return $this;
     }

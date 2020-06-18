@@ -61,6 +61,11 @@ class Athlete
     private $rankings;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UnisexRanking", mappedBy="athlete")
+     */
+    private $unisex_rankings;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Racer", mappedBy="parent")
      */
     private $racer;
@@ -76,6 +81,7 @@ class Athlete
     {
         $this->registrations = new ArrayCollection();
         $this->rankins = new ArrayCollection();
+        $this->unisex_rankings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -190,11 +196,36 @@ class Athlete
     }
 
     /**
+     * @param Championship $championship
      * @return Collection|Ranking[]
      */
-    public function getRankings(): Collection
+    public function getRankings(Championship $championship = null): Collection
     {
-        return $this->rankings;
+        if (!$championship) {
+            return $this->rankings;
+        }else{
+            $rankings = $this->rankings->filter(function (Ranking $ranking) use ($championship) {
+                return ($ranking->getChampionship() === $championship);
+            });
+            return $rankings;
+        }
+    }
+
+    /**
+     * @return Collection|UnisexRanking[] | UnisexRanking
+     */
+    public function getUnisexRankings(): ?Collection
+    {
+        return $this->unisex_rankings;
+    }
+
+    /**
+     * @param Championship $championship
+     * @return UnisexRanking
+     */
+    public function getUnisexRankingsForChampionship(Championship $championship = null): ?UnisexRanking
+    {
+        return $this->unisex_rankings->first();
     }
 
     /**

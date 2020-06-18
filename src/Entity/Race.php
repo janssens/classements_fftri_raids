@@ -106,6 +106,11 @@ class Race
         return $this;
     }
 
+    public function getDateAndName(): ?string
+    {
+        return $this->date->format('d-m-Y').' '.$this->name;
+    }
+
     public function getLat()
     {
         return $this->lat;

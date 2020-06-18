@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Athlete;
+use App\Entity\Championship;
 use App\Entity\Outsider;
 use App\Form\AthleteType;
 use App\Repository\AthleteRepository;
@@ -35,8 +36,11 @@ class AthleteController extends AbstractController
      */
     public function show(Athlete $athlete): Response
     {
+        $em = $this->getDoctrine()->getManager();
+        $championships = $em->getRepository(Championship::class)->findAll();
         return $this->render('athlete/show.html.twig', [
-            'athlete' => $athlete
+            'athlete' => $athlete,
+            'championships' => $championships
         ]);
     }
 
