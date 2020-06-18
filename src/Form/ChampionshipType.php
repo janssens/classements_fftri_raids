@@ -38,7 +38,8 @@ class ChampionshipType extends AbstractType
                     return $er->createQueryBuilder('r')
                         ->orderBy('r.date', 'ASC');
                 },
-                'choice_label' => 'getDateAndName',])
+                'choice_label' => 'getDateAndName',
+                'required' => false,])
         ;
     }
 
