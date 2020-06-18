@@ -7,6 +7,7 @@ use App\Entity\Race;
 use App\Repository\RaceRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,7 +22,7 @@ class ChampionshipType extends AbstractType
             ->add('registration_due_date')
             ->add('final_registration_due_date', DateType::class, ['widget' => 'single_text',])
             ->add('rank_outsider')
-            ->add('is_unisex')
+            ->add('is_unisex', CheckboxType::class)
             ->add('season')
             ->add('races', EntityType::class, [
                 'class' => Race::class,
