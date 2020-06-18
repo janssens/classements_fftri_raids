@@ -80,7 +80,7 @@ class Championship
     private $short_name;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" : 0})
      */
     private $is_unisex;
 
