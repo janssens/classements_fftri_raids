@@ -22,7 +22,7 @@ class ChampionshipType extends AbstractType
             ->add('registration_due_date')
             ->add('final_registration_due_date', DateType::class, ['widget' => 'single_text',])
             ->add('rank_outsider')
-            ->add('is_unisex', CheckboxType::class)
+            ->add('is_unisex', CheckboxType::class, ['required'=>false])
             ->add('season')
             ->add('races', EntityType::class, [
                 'class' => Race::class,
