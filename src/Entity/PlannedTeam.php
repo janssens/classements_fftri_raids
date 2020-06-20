@@ -180,12 +180,9 @@ class PlannedTeam
     public function getPoints(): int
     {
         $rank = 0;
+        /** @var Athlete $athlete */
         foreach ($this->getAthletes() as $athlete){
-            foreach ($athlete->getRankings() as $ranking){
-                if ($ranking->getChampionship() === $this->getRace()->getFinalOf() && $ranking->getCategory() === $this->getCategory()){
-                    $rank += $ranking->getPoints();
-                }
-            }
+            $rank += $athlete->getOfficialPointsForChampionship($this->getRace()->getFinalOf());
         }
         return $rank;
 

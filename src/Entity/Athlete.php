@@ -196,23 +196,30 @@ class Athlete
     }
 
     /**
-     * @param Championship $championship
      * @return Collection|Ranking[]
      */
-    public function getRankings(Championship $championship = null): Collection
+    public function getRankings(): Collection
     {
-        if (!$championship) {
             return $this->rankings;
-        }else{
-            $rankings = $this->rankings->filter(function (Ranking $ranking) use ($championship) {
-                return ($ranking->getChampionship() === $championship);
-            });
-            return $rankings;
-        }
     }
 
     /**
-     * @return Collection|UnisexRanking[] | UnisexRanking
+     * @param Championship $championship
+     * @return Ranking
+     */
+    public function getRankingForChampionship(Championship $championship = null): ?Ranking
+    {
+        $rankings = $this->getRankings()->filter(function (Ranking $ranking) use ($championship) {
+            return ($ranking->getChampionship() === $championship);
+        });
+        if ($rankings->count())
+            return $rankings->first();
+        else
+            return null;
+    }
+
+    /**
+     * @return Collection|UnisexRanking[]
      */
     public function getUnisexRankings(): ?Collection
     {
@@ -223,9 +230,32 @@ class Athlete
      * @param Championship $championship
      * @return UnisexRanking
      */
-    public function getUnisexRankingsForChampionship(Championship $championship = null): ?UnisexRanking
+    public function getUnisexRankingForChampionship(Championship $championship = null): ?UnisexRanking
     {
-        return $this->unisex_rankings->first();
+        $rankings =  $this->getUnisexRankings()->filter(function (UnisexRanking $ranking) use ($championship) {
+            return ($ranking->getChampionship() === $championship);
+        });
+        if ($rankings->count())
+            return $rankings->first();
+        else
+            return null;
+    }
+
+    /**
+     * @param Championship|null $championship
+     * @return int|null
+     */
+    public function getOfficialPointsForChampionship(Championship $championship = null): ?int
+    {
+        $r = null;
+        if ($championship->getIsUnisex()){
+            $r = $this->getUnisexRankingForChampionship($championship);
+        }else{
+            $r = $this->getRankingForChampionship($championship);
+        }
+        if ($r)
+            return $r->getPoints();
+        return 0;
     }
 
     /**
