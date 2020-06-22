@@ -182,7 +182,7 @@ class PlannedTeam
         $rank = 0;
         /** @var Athlete $athlete */
         foreach ($this->getAthletes() as $athlete){
-            $rank += $athlete->getOfficialPointsForChampionship($this->getRace()->getFinalOf());
+            $rank += $athlete->getOfficialPointsForChampionshipWithCategory($this->getRace()->getFinalOf(),$this->getCategory());
         }
         return $rank;
 

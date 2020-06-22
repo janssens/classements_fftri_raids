@@ -25,13 +25,13 @@
                             <li><b>
                                     <a href="{{ path('athlete_show',{'id':registration.athlete.id}) }}">
                                         {{ registration.athlete.firstname }} {{ registration.athlete.lastname }}
-                                    </a></b>({{ registration.athlete.OfficialPointsForChampionship(race.finalOf) }} pts) {% if is_granted('ROLE_ADMIN') %} [ {{ registration.number }} ]{% endif %}</li>
+                                    </a></b>({{ registration.athlete.OfficialPointsForChampionshipWithCategory(race.finalOf,team.team.category) }} pts) {% if is_granted('ROLE_ADMIN') %} [ {{ registration.number }} ]{% endif %}</li>
                         {% endfor %}
                         {% for request in team.team.requests %}
                             <li><i>
                                     <a href="{{ path('athlete_show',{'id':request.athlete.id}) }}">
                                         {{ request.athlete.firstname }} {{ request.athlete.lastname }}
-                                    </a>({{ request.athlete.OfficialPointsForChampionship(race.finalOf) }} pts) (a confirmer)</i>{% if is_granted('ROLE_ADMIN') %} [ {{ request.number }} ]{% endif %}</li>
+                                    </a>({{ request.athlete.OfficialPointsForChampionshipWithCategory(race.finalOf,team.team.category) }} pts) (a confirmer)</i>{% if is_granted('ROLE_ADMIN') %} [ {{ request.number }} ]{% endif %}</li>
                         {% endfor %}
                     </ul>
                 </li>

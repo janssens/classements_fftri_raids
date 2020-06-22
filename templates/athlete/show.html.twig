@@ -68,12 +68,12 @@
                     <li><a href="{{ path('championship_show',{'id':championship.id}) }}">{{ championship.name }} ({{ championship.shortName }})</a> {{ championship.season }}
                         {% if not championship.isUnisex %}
                             <ul>
-                            {% for ranking in athlete.rankings(championship) %}
+                            {% for ranking in athlete.getRankingsForChampionship(championship) %}
                                 <li>Categorie <a href="{{ path('championship_show',{'id':ranking.championship.id,'category':ranking.category}) }}">{{ ranking.categoryHuman }}</a> : {{ ranking.points }}pts</li>
                             {% endfor %}
                             </ul>
                         {% else %}
-                            <ul><li>Toutes catégories : {{ athlete.UnisexRankingsForChampionship(championship).Points }}pts</li></ul>
+                            <ul><li>Toutes catégories : {{ athlete.UnisexRankingForChampionship(championship).Points }}pts</li></ul>
                         {% endif %}
                     </li>
                 {% endif %}

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Bundle\FrameworkBundle\Tests\Fixtures\Validation\Category;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -205,17 +206,14 @@ class Athlete
 
     /**
      * @param Championship $championship
-     * @return Ranking
+     * @return Collection|Ranking[]
      */
-    public function getRankingForChampionship(Championship $championship = null): ?Ranking
+    public function getRankingsForChampionship(Championship $championship = null): ?Collection
     {
         $rankings = $this->getRankings()->filter(function (Ranking $ranking) use ($championship) {
             return ($ranking->getChampionship() === $championship);
         });
-        if ($rankings->count())
-            return $rankings->first();
-        else
-            return null;
+        return $rankings;
     }
 
     /**
@@ -243,18 +241,44 @@ class Athlete
 
     /**
      * @param Championship|null $championship
-     * @return int|null
+     * @return array
      */
-    public function getOfficialPointsForChampionship(Championship $championship = null): ?int
+    public function getOfficialPointsForChampionship(Championship $championship = null): ?array
     {
-        $r = null;
+        $p = array();
         if ($championship->getIsUnisex()){
-            $r = $this->getUnisexRankingForChampionship($championship);
+            $ranking = $this->getUnisexRankingForChampionship($championship);
+            if ($ranking){
+                $p[0] = $ranking->getPoints();
+            }
         }else{
-            $r = $this->getRankingForChampionship($championship);
+            $rankings = $this->getRankingsForChampionship($championship);
+            foreach ($rankings as $ranking){
+                $p[$ranking->getId()] = $ranking->getPoints();
+            }
         }
-        if ($r)
-            return $r->getPoints();
+        return $p;
+    }
+    /**
+     * @param Championship|null $championship
+     * @param string|null $category
+     * @return int
+     */
+    public function getOfficialPointsForChampionshipWithCategory(Championship $championship = null,string $category = null): ?int
+    {
+        if ($championship->getIsUnisex()){
+            $ranking = $this->getUnisexRankingForChampionship($championship);
+            if ($ranking){
+                return $ranking->getPoints();
+            }
+        }else{
+            $rankings = $this->getRankingsForChampionship($championship);
+            foreach ($rankings as $ranking){
+                if ($category && $ranking->getCategory() == $category){
+                    return $ranking->getPoints();
+                }
+            }
+        }
         return 0;
     }
 
