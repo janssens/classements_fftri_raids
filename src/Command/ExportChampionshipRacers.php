@@ -31,7 +31,7 @@ class ExportChampionshipRacers extends CsvCommand
             ->setDescription('Export championship racer data')
             ->setHelp('This command allows you to export data of racer who race one or more race on a particular championship')
             ->addArgument('file', InputArgument::REQUIRED, 'Csv file destination')
-            ->addOption('values',null,InputOption::VALUE_OPTIONAL,'comma separated values to export','firstname,name,email,club')
+            ->addOption('values',null,InputOption::VALUE_OPTIONAL,'comma separated values to export','firstname,lastname,email')
             ->addOption('delimiter','d',InputOption::VALUE_OPTIONAL,'csv delimiter',';')
         ;
     }
@@ -98,7 +98,7 @@ class ExportChampionshipRacers extends CsvCommand
         fclose($output_file_handler);
 
 
-        $output->writeln(count($racers));
+        $output->writeln(count($racers).' athletes found');
         $output->writeln('');
 
     }
