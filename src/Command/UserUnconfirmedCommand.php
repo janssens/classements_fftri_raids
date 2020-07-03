@@ -37,8 +37,6 @@ class UserUnconfirmedCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $limit= $input->getOption('limit');
-
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine')->getManager();
 
