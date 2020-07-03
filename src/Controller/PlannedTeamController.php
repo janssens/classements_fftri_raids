@@ -58,6 +58,18 @@ class PlannedTeamController extends Controller
     }
 
     /**
+     * @Route("/{id}/resend/", name="planned_team_resend", methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function resend(PlannedTeam $plannedTeam): Response
+    {
+        $session = new Session();
+        $this->eventDispatcher->dispatch(PlannedTeamNewEvent::NAME, new PlannedTeamNewEvent($plannedTeam,(string)$plannedTeam->getCaptain()->getUser()));
+        $session->getFlashBag()->add('success','Équipe relancée !');
+        return $this->redirectToRoute('race_show',array('id'=>$plannedTeam->getRace()->getId()));
+    }
+
+    /**
      * @Route("/{id}/confirm/{code}", name="planned_team_confirm", methods={"GET"})
      */
     public function confirm(PlannedTeam $team,string $code): Response

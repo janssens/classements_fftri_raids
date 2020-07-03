@@ -96,7 +96,7 @@ class EmailingEventListener
             $accepte_url = $this->container->get('router')->generate('planned_team_confirm', array('id' => $pt->getId(),'code' => urlencode($vigenereHelper->encode($email))),UrlGeneratorInterface::ABSOLUTE_URL);
             $decline_url = $this->container->get('router')->generate('planned_team_decline', array('id' => $pt->getId(),'code' => urlencode($vigenereHelper->encode($email))),UrlGeneratorInterface::ABSOLUTE_URL);
 
-            $needInfo = (new \Swift_Message( $author.' t\'invite dans son équipe pour le'.$pt->getRace()->getFinalOf()->getName()))
+            $needInfo = (new \Swift_Message( $author.' t\'invite dans son équipe pour le '.$pt->getRace()->getFinalOf()->getName()))
             ->setFrom($this->fromEmail['address'], $this->fromEmail['sender_name'])
             ->setTo($email)
             ->setBody(
