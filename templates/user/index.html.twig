@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    <h1>Liste des utilisateurs</h1>
+        <table>
+            <thead>
+            <tr>
+                <td>Id</td>
+                <td>Athlete</td>
+                <td>Email</td>
+                <td>Token</td>
+                <td>Action</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{% if user.athlete %}
+                            <a href="{{ path('athlete_show',{'id':user.athlete.id}) }}">{{ user.athlete.firstname }} {{ user.athlete.lastname }}</a>
+                        {% endif %}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.confirmationToken }}</td>
+                    <td>{% if user.confirmationToken %}
+                            <a class="text-warning" href="{{ path('user_resend_token', {'id': user.id}) }}"><i class="fas fa-redo-alt"></i>&nbsp;resend token</a>
+                        {% endif %}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+{% endblock %}

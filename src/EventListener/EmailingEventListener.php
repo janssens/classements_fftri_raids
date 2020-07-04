@@ -8,6 +8,7 @@ use App\Entity\Registration;
 use App\Event\PlannedTeamConfirmEvent;
 use App\Event\PlannedTeamEditEvent;
 use App\Event\PlannedTeamNewEvent;
+use App\Event\UserEvent;
 use App\Helper\Vigenere;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
@@ -188,6 +189,27 @@ class EmailingEventListener
                 );
             $this->mailer->send($needInfo);
         }
+    }
+
+    public function onUserResendToken(UserEvent $event){
+        $user = $event->getUser();
+        $email = $user->getEmail();
+        $url = $this->container->get('router')->generate('fos_user_registration_confirm', array('token' => $user->getConfirmationToken()), UrlGeneratorInterface::ABSOLUTE_URL);
+        $needInfo = (new \Swift_Message( 'Activer ton compte ?'))
+            ->setFrom($this->fromEmail['address'], $this->fromEmail['sender_name'])
+            ->setTo($email)
+            ->setBody(
+                $this->renderView(
+                    'bundles/FOSUserBundle/Registration/email.txt.twig',
+                    array(
+                        'user' => $user,
+                        'confirmationUrl' => $url,
+                    )
+                ),
+                'text/html'
+            );
+        $this->mailer->send($needInfo);
+
     }
 
     /**

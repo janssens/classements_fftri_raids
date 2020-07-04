@@ -76,3 +76,4 @@ services:
             - { name: kernel.event_listener, event: planned_team.delete, method: onPlannedTeamDelete }
             - { name: kernel.event_listener, event: planned_team.confirm, method: onPlannedTeamConfirm }
             - { name: kernel.event_listener, event: planned_team.decline, method: onPlannedTeamDecline }
+            - { name: kernel.event_listener, event: user.resend_token, method: onUserResendToken }
