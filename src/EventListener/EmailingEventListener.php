@@ -195,13 +195,13 @@ class EmailingEventListener
         $user = $event->getUser();
         $email = $user->getEmail();
         $url = $this->container->get('router')->generate('fos_user_registration_confirm', array('token' => $user->getConfirmationToken()), UrlGeneratorInterface::ABSOLUTE_URL);
-        $needInfo = (new \Swift_Message( 'Activer ton compte ?'))
+        $needInfo = (new \Swift_Message( 'Activer ton compte classements FFTRI Raids ?'))
             ->setFrom($this->fromEmail['address'], $this->fromEmail['sender_name'])
             ->setBcc($this->fromEmail['address'])
             ->setTo($email)
             ->setBody(
                 $this->renderView(
-                    'bundles/FOSUserBundle/Registration/email.txt.twig',
+                    'user/resend_token.txt.twig',
                     array(
                         'user' => $user,
                         'confirmationUrl' => $url,
