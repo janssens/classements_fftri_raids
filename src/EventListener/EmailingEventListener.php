@@ -197,6 +197,7 @@ class EmailingEventListener
         $url = $this->container->get('router')->generate('fos_user_registration_confirm', array('token' => $user->getConfirmationToken()), UrlGeneratorInterface::ABSOLUTE_URL);
         $needInfo = (new \Swift_Message( 'Activer ton compte ?'))
             ->setFrom($this->fromEmail['address'], $this->fromEmail['sender_name'])
+            ->setBcc($this->fromEmail['address'])
             ->setTo($email)
             ->setBody(
                 $this->renderView(
