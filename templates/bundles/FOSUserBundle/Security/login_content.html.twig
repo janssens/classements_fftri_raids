@@ -9,14 +9,14 @@
         <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
     {% endif %}
 
-    <label for="_username">Email</label>
-    <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" autocomplete="email" />
+{#    <label for="_username">Email</label>#}
+    <input type="text" placeholder="Adresse email" id="username" name="_username" value="{{ last_username }}" required="required" autocomplete="email" />
     <br>
-    <label for="password">Mot de passe</label>
-    <input type="password" id="password" name="_password" required="required" autocomplete="current-password" />
+{#    <label for="password">Mot de passe</label>#}
+    <input type="password" placeholder="Mot de passe" id="password" name="_password" required="required" autocomplete="current-password" />
     <br>
     <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
     <label for="remember_me">Se souvenir de moi</label>
-
+    <br>
     <input type="submit" id="_submit" name="_submit" value="Connection" class="btn btn-primary" />
 </form>

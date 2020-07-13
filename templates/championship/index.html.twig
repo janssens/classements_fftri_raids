@@ -3,22 +3,32 @@
 {% block title %}Classements des raids : les championnats{% endblock %}
 
 {% block body %}
-    <h1>Liste des championnats</h1>
 
-    <ul>
+    <h1>Les championnats</h1>
+    <div class="row">
         {% for championship in championships %}
-            <li>
-                <a href="{{ path('championship_show', {'id': championship.id}) }}">{{ championship.name }}</a> {{ championship.season | lower }}
-                {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('championship_edit', {'id': championship.id}) }}"><i class="fas fa-edit"></i></a>
-                {% endif %}
-            </li>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card championship-card">
+                    <a href="{{ path('championship_show', {'id': championship.id}) }}" class="img">
+                    <img src="/img/{{ championship.season.EndDate | date('Y') }}.jpg" class="card-img-top" alt="{{ championship.name }}">
+                    <span class="label">{{ championship.season.EndDate | date('Y') }}</span>
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ championship.name }} {{ championship.season.EndDate | date('Y') }}</h5>
+                        <p class="card-text">{{ championship.season | lower }}</p>
+                        <a href="{{ path('championship_show', {'id': championship.id}) }}" class="btn btn-primary"><i class="fas fa-list-ol"></i> Courses et classements</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('championship_edit', {'id': championship.id}) }}" class="btn btn-secondary"><i class="fas fa-edit"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         {% else %}
-            <li>
+            <span>
                 no records found
-            </li>
+            </span>
         {% endfor %}
-    </ul>
+    </div>
     {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('championship_new') }}" class="btn btn-primary"><i class="fas fa-plus"></i>&nbsp;Nouveau championnat</a>
     {% endif %}

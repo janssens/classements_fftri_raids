@@ -7,13 +7,16 @@
     <div style="background-image: url(/img/login.jpg);background-size: cover;height: 100%">
         <div class="container-fluid">
             <div class="row justify-content-center">
-                <div class="col-8 mt-4 text-center">
+                <div class="col-12 col-sm-8 col-md-4 col-xl-3 mt-4 text-center p-3 text-light" style="background: #131313cf;" >
                     {{ include('@FOSUser/Security/login_content.html.twig') }}
-                    <a href="{{ path('fos_user_resetting_request') }}">Mot de passe oublié ?</a>
-                    <br>
-                    <br>
-                    Pas encore membre ?
-                    <a href="{{ path('fos_user_registration_register') }}" class="btn btn-success">Je crée mon compte</a>
+                    <hr>
+                    <a href="{{ path('fos_user_resetting_request') }}" class="text-warning">Mot de passe oublié ?</a>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-12 col-sm-8 col-md-4 col-xl-3 mt-4 text-center p-3 text-light" style="background: #131313cf;" >
+                    Pas encore membre ?<br>
+                    <a href="{{ path('fos_user_registration_register') }}" class="btn btn-success"><i class="fas fa-user-plus"></i> Je crée mon compte</a>
                 </div>
             </div>
         </div>
