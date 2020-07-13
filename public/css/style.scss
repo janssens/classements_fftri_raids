@@ -25,3 +25,18 @@
     font-weight: bold;
   }
 }
+.championship-card{
+  a.img{
+    position: relative;
+    span.label{
+      position: absolute;
+      bottom: 0rem;
+      right: 2rem;
+      color: white;
+      text-shadow: black;
+      //opacity: 0.8;
+      font-size: 4rem;
+      font-weight: bold;
+    }
+  }
+}
