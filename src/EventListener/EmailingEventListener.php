@@ -100,6 +100,7 @@ class EmailingEventListener
             $needInfo = (new \Swift_Message( $author.' t\'invite dans son équipe pour le '.$pt->getRace()->getFinalOf()->getName()))
             ->setFrom($this->fromEmail['address'], $this->fromEmail['sender_name'])
             ->setTo($email)
+            ->setBcc($this->fromEmail['address'])
             ->setBody(
                 $this->renderView(
                     'emails/confirmPlanningTeam.html.twig',
