@@ -30,6 +30,7 @@
         {% endfor %}
     </div>
     {% if is_granted('ROLE_ADMIN') %}
+        <br>
     <a href="{{ path('championship_new') }}" class="btn btn-primary"><i class="fas fa-plus"></i>&nbsp;Nouveau championnat</a>
     {% endif %}
 {% endblock %}
