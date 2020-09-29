@@ -26,8 +26,19 @@
     </div>
 
     {% if is_granted('ROLE_SUPER_ADMIN') %}
-        <a href="{{ path('athlete_edit', {'id': athlete.id}) }}">edit</a>
-        <a href="{{ path('athlete_index') }}">back to list</a>
+        <a class="btn btn-primary" href="{{ path('athlete_edit', {'id': athlete.id}) }}">edit</a>
+        <a class="btn btn-secondary" href="{{ path('athlete_index') }}">back to list</a>
+    {% endif %}
+
+    {% if is_granted('ROLE_ADMIN') %}
+        {% if not (athlete.rankings | length) %}
+            <ul>
+                {% for registration in athlete.registrations %}
+                        <li>{{ registration.id }} {{ registration.number }} <small>{{ registration.startDate|date('d-m-Y') }} -> {{ registration.endDate|date('d-m-Y') }} ({{ registration.date|date('d-m-Y') }})</small>
+                            {% if registration.isRacing %}COMPETITION{% elseif registration.isLoisir %}<b>LOISIR</b>{% endif %}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     {% endif %}
 
     {% if (athlete.rankings | length) %}
