@@ -3,6 +3,8 @@
 Outil pour calculer et afficher les classements FFTRI raid 
 à partir des licences et des résultats chargés dans l'application.
 
+running at : https://classements.raidsaventure.fr/championship/
+
 ## Requis
 * PHP (version 7+)
 * [Composer](https://getcomposer.org/)
