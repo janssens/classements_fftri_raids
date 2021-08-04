@@ -108,7 +108,7 @@ class RegistrationRepository extends ServiceEntityRepository
             )
             ->andWhere('r.end_date >= :race_start')
             ->setParameter('nb', $number.'%')
-            ->setParameter('race_start', date_create_from_format('d/m/Y H:i:s',$race->getDate()->format('d/m/Y').' 00:00:00'))
+            ->setParameter('race_start', date_create_from_format('d/m/Y H:i:s',$race->getDate()->format('d/m/Y').' 23:59:59')) //ok if licence is validated the Dday
             ->setParameter('race_start_year', $race->getDate()->format('Y'))
             ->setParameter('race_start_month', $race->getDate()->format('m'))
             ->orderBy('r.date','DESC')
