@@ -112,7 +112,7 @@ class Registration
         $this->planned_teams_requests = new ArrayCollection();
     }
 
-    public function __toString(): ?string
+    public function _toString(): ?string
     {
         return $this->getNumber();
     }

@@ -4,11 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: 'en'
-    from_email:
-        address: "%env(FROM_EMAIL)%"
-        sender_name: "%env(FROM_EMAIL)%"
-    secret: "%env(APP_SECRET)%"
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -32,48 +28,3 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    App\Helper\:
-        resource: '../src/Helper'
-        arguments: ['@service_container']
-        tags: ['controller.service_arguments']
-
-    app.form.registration:
-        class: App\Form\RegistrationFormType
-        tags:
-            - { name: form.type, alias: app_user_registration }
-
-    join_athlete:
-        class: App\EventListener\JoinAthleteListener
-        public: true
-        arguments:
-            $entity_manager: "@doctrine.orm.entity_manager"
-            $router: "@router"
-            $token_storage: '@security.token_storage'
-        tags:
-            - { name: doctrine.event_listener, event: prePersist }
-
-    set_password:
-        class: App\EventListener\SetFirstPasswordListener
-        public: true
-        arguments:
-            $entity_manager: "@doctrine.orm.entity_manager"
-            $router: "@router"
-            $token_storage: '@security.token_storage'
-        tags:
-            - { name: doctrine.event_listener, event: prePersist }
-            - { name: kernel.event_listener, event: kernel.request, method: forcePasswordChange }
-            - { name: kernel.event_listener, event: fos_user.change_password.edit.completed, method: onPasswordChanged }
-
-    emailing_event_listener:
-        class: App\EventListener\EmailingEventListener
-        arguments:
-            $mailer: "@mailer"
-            $container: "@service_container"
-            $fromEmail: "%from_email%"
-        tags:
-            - { name: kernel.event_listener, event: planned_team.new, method: onPlannedTeamNew }
-            - { name: kernel.event_listener, event: planned_team.edit, method: onPlannedTeamEdit }
-            - { name: kernel.event_listener, event: planned_team.delete, method: onPlannedTeamDelete }
-            - { name: kernel.event_listener, event: planned_team.confirm, method: onPlannedTeamConfirm }
-            - { name: kernel.event_listener, event: planned_team.decline, method: onPlannedTeamDecline }
-            - { name: kernel.event_listener, event: user.resend_token, method: onUserResendToken }

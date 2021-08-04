@@ -16,6 +16,7 @@ class RaceType extends AbstractType
             ->add('lat')
             ->add('lon')
             ->add('date')
+            ->add('coefficient')
             ->add('athletes_per_team')
         ;
     }

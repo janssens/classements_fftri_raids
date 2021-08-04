@@ -53,13 +53,13 @@
             {% if registration.teams | length %}
                 {% for team in registration.teams %}
                     <li>{{ team.race.date|date('Y') }}
-                        <a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race.name }}</a> -
+                        <a href="{{ path('race_show',{'id':team.race.id}) }}">{{ team.race.name }}</a> [coef. x{{ team.race.coefficient }}] -
                         <a href="{{ path('team_show',{'id':team.id}) }}">{{ team.name }}</a>
                         {% if (team.officialTeamRanking) %}
                             ({% for championship in team.officialTeamRanking.race.championships %}
                                 <a href="{{ path('championship_show',{'id': championship.id }) }}">{{ championship.shortName }}</a>
                             {% endfor %}
-                            #{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }} = {{ team.officialTeamRanking.points }}pts)
+                            #{{ team.officialTeamRanking.categoryPosition }} {{ team.officialTeam.categoryHuman }} = {% if team.race.coefficient > 1 %} {{ team.race.coefficient }}x{{ team.officialTeamRanking.points }} = {% endif %}{{ team.race.coefficient * team.officialTeamRanking.points }}pts)
                         {% endif %}
                     </li>
                 {% endfor %}

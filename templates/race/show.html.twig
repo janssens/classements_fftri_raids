@@ -5,6 +5,7 @@
 {% block body %}
     <h1>{{ race.name }}</h1>
     <h2>{{ race.date ? race.date|date('d M Y') : '' }}</h2>
+    <h3>coefficient : {{ race.coefficient }}</h3>
 
     {% if race.finalOf %}
         <h3>Finale de championnat</h3>

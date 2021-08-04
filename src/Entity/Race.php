@@ -76,6 +76,11 @@ class Race
      */
     private $official_team_rankings;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $coefficient = 1;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
@@ -275,6 +280,18 @@ class Race
     public function getOfficialTeamRankings(): Collection
     {
         return $this->official_team_rankings;
+    }
+
+    public function getCoefficient(): ?int
+    {
+        return $this->coefficient;
+    }
+
+    public function setCoefficient(int $coefficient): self
+    {
+        $this->coefficient = $coefficient;
+
+        return $this;
     }
 
 }

@@ -7,7 +7,7 @@
         <ul>
         {% for race in races %}
             <li>
-                <a href="{{ path('race_show', {'id': race.id}) }}">{{ race.name }}</a>
+                <a href="{{ path('race_show', {'id': race.id}) }}">{{ race.name }}</a> [coef. x{{ race.coefficient }}]
                 {{ race.date ? race.date|date('d M Y') : '' }}
                 {% if is_granted('ROLE_SUPER_ADMIN') %}
                     <a href="{{ path('race_edit', {'id': race.id}) }}">edit</a>
