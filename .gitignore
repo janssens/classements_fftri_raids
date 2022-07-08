@@ -17,3 +17,6 @@
 
 /.idea/
 /data/
+/local_update.sh
+/*.sql
+/.env.local
