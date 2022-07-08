@@ -5,13 +5,13 @@
 {% block body %}
     <h1>{{ championship.name }} {{ championship.season | lower }}</h1>
     <h2>Les manches</h2>
-    <table >
-        <tr>
-            {% for race in championship.races %}
-                <td>{{ include('race/_card.html.twig',{'race':race}) }}</td>
-            {% endfor %}
-        </tr>
-    </table>
+
+    <div class="race-list">
+        {% for race in championship.races %}
+            {{ include('race/_card.html.twig',{'race':race}) }}
+        {% endfor %}
+    </div>
+
     {% if championship.final %}
     <h2>La finale</h2>
     <table>
