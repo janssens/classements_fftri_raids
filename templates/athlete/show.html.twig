@@ -84,7 +84,9 @@
                             {% endfor %}
                             </ul>
                         {% else %}
-                            <ul><li>Toutes catégories : {{ athlete.UnisexRankingForChampionship(championship).Points }}pts</li></ul>
+                            {% if athlete.UnisexRankingForChampionship(championship) is not null %}
+                                <ul><li>Toutes catégories : {{ athlete.UnisexRankingForChampionship(championship).Points }}pts</li></ul>
+                            {% endif %}
                         {% endif %}
                     </li>
                 {% endif %}

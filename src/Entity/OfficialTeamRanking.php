@@ -52,6 +52,9 @@ class OfficialTeamRanking
 
     public function getPoints(): ?int
     {
+//        $new_ranking_take_place = new \DateTime('2021-09-01 0:0:0');
+//        if ($this->getRace()->getDate() > $new_ranking_take_place)
+//            return 666;
         return $this->points;
     }
 
