@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+
+  mariadb:
+    image: mariadb:10.3
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: classement
+      MYSQL_USER: classement
+      MYSQL_PASSWORD: classement
+
+  php:
+    build:
+      dockerfile: './docker/php/Dockerfile'
+      context: '.'
+    depends_on:
+      - mariadb
+    volumes:
+      - './:/var/www/html:cached'
+    cap_add:
+      - SYS_ADMIN
+
+  nginx:
+    image: 'nginx:1.11-alpine'
+    depends_on:
+      - php
+    ports:
+      - '80:80'
+    volumes:
+      - './docker/nginx/conf.d:/etc/nginx/conf.d:ro'
+      - './public:/var/www/html/public:ro'
+      - './vendor:/var/www/html/vendor:ro'
+
+volumes:
+  mariadb_data:

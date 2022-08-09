@@ -49,4 +49,4 @@ get all firstname,lastname and email of racers
 new calc
 
 
-point = ((femal) ? 1.2 : 1) * min((nb_of_team > 150) ? 150 : nb_of_team ) - (rank - 1) , 1) 
+point = min((nb_of_team > 150) ? 150 : nb_of_team ) - (rank - 1) , 1) 
