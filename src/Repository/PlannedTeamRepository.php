@@ -6,6 +6,7 @@ use App\Entity\Athlete;
 use App\Entity\PlannedTeam;
 use App\Entity\Race;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -16,7 +17,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class PlannedTeamRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PlannedTeam::class);
     }

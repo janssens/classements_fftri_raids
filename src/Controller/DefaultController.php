@@ -20,7 +20,6 @@ use FOS\UserBundle\Model\UserManagerInterface;
 use Ornicar\GravatarBundle\GravatarApi;
 use Ornicar\GravatarBundle\Templating\Helper\GravatarHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -32,7 +31,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
     private $eventDispatcher;
 

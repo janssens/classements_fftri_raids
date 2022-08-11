@@ -11,6 +11,8 @@ services:
       MYSQL_DATABASE: classement
       MYSQL_USER: classement
       MYSQL_PASSWORD: classement
+    ports:
+      - '3306:3306'
 
   php:
     build:
@@ -22,6 +24,9 @@ services:
       - './:/var/www/html:cached'
     cap_add:
       - SYS_ADMIN
+    links:
+      - mariadb
+      - mariadb:localhost
 
   nginx:
     image: 'nginx:1.11-alpine'

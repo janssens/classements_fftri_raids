@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ChampionshipRepository")
@@ -83,6 +85,12 @@ class Championship
      * @ORM\Column(type="boolean", options={"default" : 0})
      */
     private $is_unisex;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     * @Assert\Unique
+     */
+    private $secret;
 
     public function __construct()
     {
@@ -238,6 +246,18 @@ class Championship
     public function setIsUnisex(bool $is_unisex): self
     {
         $this->is_unisex = $is_unisex;
+
+        return $this;
+    }
+
+    public function getSecret(): ?string
+    {
+        return $this->secret;
+    }
+
+    public function setSecret(string $secret): self
+    {
+        $this->secret = $secret;
 
         return $this;
     }

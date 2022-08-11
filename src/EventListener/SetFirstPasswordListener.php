@@ -9,7 +9,9 @@ use FOS\UserBundle\Event\UserEvent;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\UsageTrackingTokenStorage;
 
 class SetFirstPasswordListener{
 
@@ -20,7 +22,7 @@ class SetFirstPasswordListener{
      */
     private $em;
     /**
-     * @var TokenStorage
+     * @var UsageTrackingTokenStorage
      */
     private $token_storage;
     /**
@@ -29,7 +31,7 @@ class SetFirstPasswordListener{
     private $router;
 
 
-    public function __construct(EntityManagerInterface $entity_manager, TokenStorage $token_storage,Router $router)
+    public function __construct(EntityManagerInterface $entity_manager, UsageTrackingTokenStorage $token_storage,Router $router)
     {
         $this->em = $entity_manager;
         $this->token_storage = $token_storage;
@@ -61,7 +63,7 @@ class SetFirstPasswordListener{
         $this->em->flush();
     }
 
-    function forcePasswordChange(GetResponseEvent $event){
+    function forcePasswordChange(RequestEvent $event){
 
         $token = $this->token_storage->getToken();
         if ($token){

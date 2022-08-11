@@ -20,7 +20,7 @@ class UnisexRanking
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Athlete", inversedBy="rankings")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Athlete", inversedBy="unisex_rankings")
      * @ORM\JoinColumn(name="athlete_id", referencedColumnName="id")
      */
     private $athlete;
@@ -31,7 +31,7 @@ class UnisexRanking
     private $points;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Championship", inversedBy="rankings")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Championship", inversedBy="unisex_rankings")
      */
     private $championship;
 

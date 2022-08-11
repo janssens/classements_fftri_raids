@@ -10,7 +10,6 @@ use App\Form\PlannedTeamType;
 use App\Form\RaceType;
 use App\Repository\RaceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/race")
  */
-class RaceController extends Controller
+class RaceController extends AbstractController
 {
 
     private $eventDispatcher;

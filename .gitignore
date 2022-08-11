@@ -20,3 +20,8 @@
 /local_update.sh
 /*.sql
 /.env.local
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

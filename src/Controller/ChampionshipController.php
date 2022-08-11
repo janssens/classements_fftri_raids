@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Championship;
+use App\Entity\Race;
+use App\Form\ChampionshipRaceType;
 use App\Form\ChampionshipType;
 use App\Repository\ChampionshipRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -55,6 +57,33 @@ class ChampionshipController extends AbstractController
     public function show(Championship $championship): Response
     {
         return $this->render('championship/show.html.twig', ['championship' => $championship]);
+    }
+
+    /**
+     * @Route("/{id}/new_race", name="championship_add_race", methods="GET|POST")
+     */
+    public function addRace(Request $request,Championship $championship): Response
+    {
+        $form = $this->createForm(ChampionshipRaceType::class,new Race());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->getData()->getSecret() !== $championship->getSecret()){
+
+                return $this->render('championship/new_race.html.twig', [
+                    'championship' => $championship,
+                    'form' => $form->createView(),
+                ]);
+            }
+
+
+            return $this->redirectToRoute('championship_show', ['id' => $championship->getId()]);
+        }
+
+        return $this->render('championship/new_race.html.twig', [
+            'championship' => $championship,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**

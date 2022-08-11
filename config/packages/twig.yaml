@@ -3,7 +3,3 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     form_themes: ['forms/fields.html.twig']
-ornicar_gravatar:
-    rating: g
-    size: 80
-    default: mm

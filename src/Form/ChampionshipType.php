@@ -24,6 +24,7 @@ class ChampionshipType extends AbstractType
             ->add('rank_outsider')
             ->add('is_unisex', CheckboxType::class, ['required'=>false])
             ->add('season')
+            ->add('secret')
             ->add('races', EntityType::class, [
                 'class' => Race::class,
                 'query_builder' => function (RaceRepository $er) {

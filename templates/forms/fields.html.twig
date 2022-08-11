@@ -3,7 +3,6 @@
 {% block autocomplete_registration_widget %}
     <div class="registration_widget card bg-light" id="registration_{{ id }}">
         <div class="card-body text-center">
-        {% spaceless %}
             {% set attr = attr|merge({class: (attr.class|default('') ~ 'registration_autocomplete')|trim}) %}
     {#        {{ form_label(form) }}#}
             {{ form_errors(form) }}
@@ -22,7 +21,6 @@
             <div id="{{ id }}_number"></div>
             <div id="{{ id }}_club" class="club"></div>
             <div id="{{ id }}_ligue"></div>
-        {% endspaceless %}
         </div>
     </div>
     <script>
