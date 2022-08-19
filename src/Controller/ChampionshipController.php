@@ -90,7 +90,7 @@ class ChampionshipController extends AbstractController
             $doctrine->getManager()->persist($race);
             $doctrine->getManager()->flush();
 
-            $session->getFlashBag()->add('success', 'Merci, votre course et son classement on bien été enregistré');
+            $session->getFlashBag()->add('success', 'Merci, votre course et son classement ont bien été enregistrés');
 
             return $this->redirectToRoute('race_show', ['id' => $race->getId()]);
         }
