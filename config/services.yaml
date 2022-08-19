@@ -47,8 +47,6 @@ services:
         public: true
         arguments:
             $entity_manager: "@doctrine.orm.entity_manager"
-            $router: "@router"
-            $token_storage: '@security.token_storage'
         tags:
             - { name: doctrine.event_listener, event: prePersist }
 

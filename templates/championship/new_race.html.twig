@@ -3,12 +3,18 @@
 {% block title %}New Race{% endblock %}
 
 {% block body %}
-    <h1>Nouvelle course pour cette saison</h1>
+    <h1>Nouvelle course pour <b>{{ championship.name }}</b></h1>
 
     {{ form_start(form) }}
     {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Valider') }}</button>
+    <br>
+    <div style="background: lightgray; padding: 2rem;">
+    <p>Le classement doit etre au format .csv</p>
+    <p>voici le modèle : <a href="/races/model.csv">model.csv</a></p>
+    </div>
+    <br>
+    <button class="btn btn-primary">{{ button_label|default('Valider') }}</button><br>
     {{ form_end(form) }}
-
-    <a href="{{ path('race_index') }}">Voir toutes les courses</a>
+    <br><br>
+    <a href="{{ path('race_index') }}">Retour aux courses</a>
 {% endblock %}

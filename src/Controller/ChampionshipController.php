@@ -7,9 +7,11 @@ use App\Entity\Race;
 use App\Form\ChampionshipRaceType;
 use App\Form\ChampionshipType;
 use App\Repository\ChampionshipRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -62,13 +64,19 @@ class ChampionshipController extends AbstractController
     /**
      * @Route("/{id}/new_race", name="championship_add_race", methods="GET|POST")
      */
-    public function addRace(Request $request,Championship $championship): Response
+    public function addRace(Request $request,Championship $championship,ManagerRegistry $doctrine): Response
     {
-        $form = $this->createForm(ChampionshipRaceType::class,new Race());
+        $race = new Race();
+        $form = $this->createForm(ChampionshipRaceType::class,$race);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->getData()->getSecret() !== $championship->getSecret()){
+            $session = new Session();
+
+            $code = $form->get("code")->getData();
+            if ($code !== $championship->getSecret()){
+
+                $session->getFlashBag()->add('error', 'Le code secret n\'est pas bon');
 
                 return $this->render('championship/new_race.html.twig', [
                     'championship' => $championship,
@@ -77,7 +85,14 @@ class ChampionshipController extends AbstractController
             }
 
 
-            return $this->redirectToRoute('championship_show', ['id' => $championship->getId()]);
+            $race->addChampionship($championship);
+
+            $doctrine->getManager()->persist($race);
+            $doctrine->getManager()->flush();
+
+            $session->getFlashBag()->add('success', 'Merci, votre course et son classement on bien été enregistré');
+
+            return $this->redirectToRoute('race_show', ['id' => $race->getId()]);
         }
 
         return $this->render('championship/new_race.html.twig', [

@@ -1,0 +1,7 @@
+Classement scratch,Equipe,Prenom 1,Nom 1,Num Licence 1,Sex 1,Prenom 2,Nom 2,Num Licence 2,Sex 2
+1,Nom equipe 1 (2xhomme licencié),prenom 1,NOM 1,LICENCE1,Homme,prenom 2,NOM 2,LICENCE2,Homme
+2,Nom equipe 2 (1xhomme licencié & 1xhomme non licencié),prenom 1,NOM 1,LICENCE1,Homme,prenom 2,NOM 2,,Homme
+3,Nom equipe 3 (2xhomme non licencié),prenom 1,NOM 1,,Homme,prenom 2,NOM 2,,Homme
+4,Nom equipe 4 (mixte),prenom 1,NOM 1,LICENCE1,Femme,prenom 2,NOM 2,LICENCE2,Homme
+5,Nom equipe 4 (femme),prenom 1,NOM 1,LICENCE1,Femme,prenom 2,NOM 2,LICENCE2,Femme
+...

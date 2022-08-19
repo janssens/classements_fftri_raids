@@ -12,6 +12,8 @@
         {% endfor %}
     </div>
 
+    <a href="{{ path('championship_add_race', {'id': championship.id}) }}" class="btn btn-primary">Ajouter une course</a>
+
     {% if championship.final %}
     <h2>La finale</h2>
     <table>

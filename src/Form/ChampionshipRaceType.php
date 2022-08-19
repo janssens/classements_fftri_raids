@@ -19,7 +19,7 @@ class ChampionshipRaceType extends AbstractType
             ->add('name', TextType::class,['label'=>'nom de la course','required' => true])
             ->add('date', DateType::class)
             ->add('athletes_per_team', IntegerType::class,['label'=>'nombre de coureurs par équipe','required' => true])
-            ->add('code',PasswordType::class,['label'=> 'code secret','required' => true])
+            ->add('code',PasswordType::class,['label'=> 'code secret','required' => true,'mapped'=>false])
             ->add('rankingFile',VichFileType::class,['label'=> 'fichier classement (csv)','required' => true]);
         ;
     }
