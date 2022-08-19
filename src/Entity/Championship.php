@@ -88,7 +88,6 @@ class Championship
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Assert\Unique
      */
     private $secret;
 

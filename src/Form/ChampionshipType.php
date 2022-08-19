@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -24,7 +25,7 @@ class ChampionshipType extends AbstractType
             ->add('rank_outsider')
             ->add('is_unisex', CheckboxType::class, ['required'=>false])
             ->add('season')
-            ->add('secret')
+            ->add('secret',TextType::class)
             ->add('races', EntityType::class, [
                 'class' => Race::class,
                 'query_builder' => function (RaceRepository $er) {
@@ -32,6 +33,7 @@ class ChampionshipType extends AbstractType
                         ->orderBy('r.date', 'ASC');
                 },
                 'multiple' => true,
+                'required' => false,
                 'choice_label' => 'getDateAndName',])
             ->add('final', EntityType::class, [
                 'class' => Race::class,
