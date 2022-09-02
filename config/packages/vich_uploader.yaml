@@ -1,18 +1,10 @@
 vich_uploader:
     db_driver: orm
 
-    #mappings:
-    #    products:
-    #        uri_prefix: /images/products
-    #        upload_destination: '%kernel.project_dir%/public/images/products'
-
-#    metadata:
-#        type: attribute
-
     mappings:
         race:
-            uri_prefix: /races/rankings
-            upload_destination: '%kernel.project_dir%/public/races/rankings'
+            uri_prefix: "%app.path.ranking_files%"
+            upload_destination: '%kernel.project_dir%/public%app.path.ranking_files%'
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
 
             inject_on_load: false

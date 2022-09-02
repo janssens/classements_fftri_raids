@@ -3,19 +3,33 @@
 namespace App\Command;
 
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-abstract class CsvCommand extends ContainerAwareCommand
+abstract class CsvCommand extends Command
 {
     private $_neededFields;
     private $_delimiter = ';';
+    private $container;
 
     const DEFAULT_LABEL = '-- N/A --';
+
+
+
+    public function __construct(ContainerInterface $container)
+    {
+        parent::__construct();
+        $this->container = $container;
+    }
+
+    protected function getContainer(){
+        return $this->container;
+    }
 
     /**
      * @param string $file

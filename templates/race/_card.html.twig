@@ -8,6 +8,8 @@
                 {% if race.date|date("Ymd") > "now"|date("Ymd") %}
                     <a href="{{ path("race_show",{id:race.id}) }}">{{ race.plannedTeams | length }} équipes pré-inscrites</a>
                 {% endif %}
+            {% else %}
+                <a href="{{ path("race_show",{id:race.id}) }}">Aucune équipe</a>
             {% endif %}
         </div>
         <div class="card-footer">

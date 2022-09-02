@@ -7,6 +7,7 @@ use App\Entity\Club;
 use App\Entity\Ligue;
 use App\Entity\Outsider;
 use App\Entity\Registration;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Validator\Constraints\DateTime;
 
-class ImportData extends CsvCommand
+class ImportDataCommand extends CsvCommand
 {
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:import:registrations';
@@ -75,10 +76,10 @@ class ImportData extends CsvCommand
             }else{
                 $this->setMap(explode(',',$map));
             }
-            $confirm = new ConfirmationQuestion('Save this map as default ?', true);
-            if ($this->getHelper('question')->ask($input, $output, $confirm)) {
-                $this->saveMap($file);
-            }
+//                $confirm = new ConfirmationQuestion('Save this map as default ?', true);
+//                if ($this->getHelper('question')->ask($input, $output, $confirm)) {
+//                    $this->saveMap($file);
+//                }
         }
         $output->writeln("<info>MAP : </info>");
         $this->displayMap($output);
@@ -296,7 +297,7 @@ class ImportData extends CsvCommand
             //$progress->finish();
         }
         $output->writeln('');
-
+        return Command::SUCCESS;
     }
 
     public static function createSlug($str, $delimiter = '-'){

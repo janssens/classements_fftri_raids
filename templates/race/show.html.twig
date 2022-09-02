@@ -85,8 +85,13 @@
     {% endif %}
 
     {% if is_granted('ROLE_ADMIN') %}
-    <a href="{{ path('race_index') }}">back to list</a>
-    <a href="{{ path('race_edit', {'id': race.id}) }}">edit</a>
+        <a class="btn btn-secondary" href="{{ path('race_index') }}">back to list</a>
+        <a class="btn btn-secondary" href="{{ path('race_edit', {'id': race.id}) }}">edit</a>
+        {% if race.teams | length %}
+            <a class="btn btn-secondary" href="{{ path('race_import_ranking', {'id': race.id}) }}">re-import</a>
+        {% else %}
+            <a class="btn btn-primary" href="{{ path('race_import_ranking', {'id': race.id}) }}">import</a>
+        {% endif %}
     {% endif %}
 
     {% if is_granted('ROLE_SUPER_ADMIN') %}

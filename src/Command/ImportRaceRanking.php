@@ -151,13 +151,13 @@ class ImportRaceRanking extends CsvCommand
                         $team->setName($team_name);
 
                         $team->setPosition(intval($this->getField('position', $data)));
-                        foreach ($team->getOutsiders() as $outsider){
-                            $team->removeOutsider($outsider);
-                            $em->remove($outsider);
-                        }
-                        foreach ($team->getRegistrations() as $registration){
-                            $team->removeRegistration($registration);
-                        }
+//                        foreach ($team->getOutsiders() as $outsider){
+//                            $team->removeOutsider($outsider);
+//                            $em->remove($outsider);
+//                        }
+//                        foreach ($team->getRegistrations() as $registration){
+//                            $team->removeRegistration($registration);
+//                        }
 
                         for ($i = 0; $i < $race->getAthletesPerTeam(); $i++) {
                             $number = substr($this->getField('number_' . $i, $data),0,6);

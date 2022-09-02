@@ -9,6 +9,7 @@ parameters:
         address: "%env(FROM_EMAIL)%"
         sender_name: "%env(FROM_EMAIL)%"
     secret: "%env(APP_SECRET)%"
+    app.path.ranking_files: "/races/rankings"
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -29,6 +30,10 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    App\Command\:
+        resource: '../src/Command'
+        tags: [ 'console.command' ]
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

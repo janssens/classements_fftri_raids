@@ -1,0 +1,505 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Race ranking import{% endblock %}
+
+{% block body %}
+
+    <style>
+        table{
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+        table tr{
+            line-height: 40px;
+        }
+        table td:not(.full), table th:not(.full){
+            width: 100px;
+            overflow: hidden;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        table th{
+            text-align: left;
+        }
+        tr.head, td.head, th.head {
+            background: #8be05e;
+            color: #333; 
+            padding: 0.5rem;
+        }
+        #file_content th:nth-child(n+{{ 3+4*race.athletesPerTeam }}),
+        #file_content td:nth-child(n+{{ 3+4*race.athletesPerTeam }}){
+            background: red !important;
+        }
+        #file_content th:nth-child(16n+3),
+        #file_content th:nth-child(16n+4),
+        #file_content th:nth-child(16n+5),
+        #file_content th:nth-child(16n+6),
+        #file_content td:nth-child(16n+3),
+        #file_content td:nth-child(16n+4),
+        #file_content td:nth-child(16n+5),
+        #file_content td:nth-child(16n+6),
+        th.athlete td:nth-child(16n+3):before,
+        th.athlete td:nth-child(16n+4):before,
+        th.athlete td:nth-child(16n+5):before,
+        th.athlete td:nth-child(16n+6):before
+        {
+            background: lightcyan;
+        }
+        #file_content th:nth-child(16n+7),
+        #file_content th:nth-child(16n+8),
+        #file_content th:nth-child(16n+9),
+        #file_content th:nth-child(16n+10),
+        #file_content td:nth-child(16n+7),
+        #file_content td:nth-child(16n+8),
+        #file_content td:nth-child(16n+9),
+        #file_content td:nth-child(16n+10),
+        th.athlete td:nth-child(16n+7):before,
+        th.athlete td:nth-child(16n+8):before,
+        th.athlete td:nth-child(16n+9):before,
+        th.athlete td:nth-child(16n+10):before
+        {
+            background: lightyellow;
+        }
+        #file_content th:nth-child(16n+11),
+        #file_content th:nth-child(16n+12),
+        #file_content th:nth-child(16n+13),
+        #file_content th:nth-child(16n+14),
+        #file_content td:nth-child(16n+11),
+        #file_content td:nth-child(16n+12),
+        #file_content td:nth-child(16n+13),
+        #file_content td:nth-child(16n+14),
+        th.athlete td:nth-child(16n+11):before,
+        th.athlete td:nth-child(16n+12):before,
+        th.athlete td:nth-child(16n+13):before,
+        th.athlete td:nth-child(16n+14):before
+        {
+            background: lightskyblue;
+        }
+        #file_content th:nth-child(16n+15),
+        #file_content th:nth-child(16n+16),
+        #file_content th:nth-child(16n+17),
+        #file_content th:nth-child(16n+18),
+        #file_content td:nth-child(16n+15),
+        #file_content td:nth-child(16n+16),
+        #file_content td:nth-child(16n+17),
+        #file_content td:nth-child(16n+18),
+        th.athlete td:nth-child(16n+15):before,
+        th.athlete td:nth-child(16n+16):before,
+        th.athlete td:nth-child(16n+17):before,
+        th.athlete td:nth-child(16n+18):before
+        {
+            background: lightpink;
+        }
+        th.athlete:before{
+            content: '';
+            display: inline-block;
+            padding: 0.5rem;
+            margin-right: 0.2rem;
+        }
+    </style>
+    <style>
+        #file_content {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+        #file_content th,
+        #file_content td {
+            border: 1px solid #ccc;
+        }
+        #file_content th,
+        #file_content td {
+            padding: 0.5rem;
+        }
+        .draggable {
+            cursor: move;
+            user-select: none;
+        }
+        .placeholder {
+            background-color: #edf2f7;
+            border: 2px dashed #cbd5e0;
+        }
+        .clone-list {
+            border-left: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+            display: flex;
+        }
+        .clone-table {
+            border-collapse: collapse;
+            border: none;
+        }
+        .clone-table th,
+        .clone-table td {
+            border: 1px solid #ccc;
+            border-left: none;
+            border-top: none;
+            padding: 0.5rem;
+        }
+        .dragging {
+            background: #fff;
+            border-left: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+            z-index: 999;
+        }
+    </style>
+    fichier à importer : {{ race.rankingFilename }} <br>
+{#    delimiter : <div style="display: inline-block; background: lightgray; padding: 0.2rem 1rem;">{{ delimiter }}</div>#}
+    <input type="text" value="{{ delimiter }}" name="delimiter" disabled="disabled" style="visibility: hidden"> <br>
+    <input type="text" value="{{ map | join(',') }}" name="map" disabled="disabled" style="visibility: hidden"> <br>
+    <table>
+        <thead>
+            <tr class="head">
+                <th class="text-right full">Colonnes attendues ➡️</th>
+
+                <th>Classement scratch</th>
+                <th>Equipe</th>
+
+                {% for i in range(1,race.athletesPerTeam) %}
+                    <th class="athlete">Prenom {{ i }}</th>
+                    <th class="athlete">Nom {{ i }}</th>
+                    <th class="athlete">Licence {{ i }}</th>
+                    <th class="athlete">Sex {{ i }}</th>
+                {% endfor %}
+
+                {% for i in range(race.athletesPerTeam*4+2,(lines[0] | length)-1) %}
+                    <th style="background: orange; color: orangered"> ? </th>
+                {% endfor %}
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th class="full">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th class="text-right head full">Colonnes du fichier source CSV ➡️</th>
+                            </tr>
+                        {% for l in range(1,(lines|length)-1) %}
+                            <tr>
+                                <th class="text-right head full">
+                                    ligne {{ l }}
+                                </th>
+                            </tr>
+                        {% endfor %}
+                            <tr>
+                                <th class="text-right head full">...</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </th>
+                <td class="full" style="vertical-align: top;" colspan="{{ (lines[0] | length) }}">
+                    <table id="file_content">
+                        <thead>
+                            <tr>
+                                <th data-original-index="{{ 0 }}">
+                                    {{ lines[0][0] }}
+                                </th>
+                                <th data-original-index="{{ 1 }}">
+                                    {{ lines[0][1] }}
+                                </th>
+                                {% for i in range(1,race.athletesPerTeam) %}
+                                    <th data-original-index="{{ (i-1)*4 + 2 }}">
+                                        {{ lines[0][(i-1)*4+2] }}
+                                    </th>
+                                    <th data-original-index="{{ (i-1)*4 + 3 }}">
+                                        {{ lines[0][(i-1)*4+3] }}
+                                    </th>
+                                    <th data-original-index="{{ (i-1)*4 + 4 }}">
+                                        {{ lines[0][(i-1)*4+4] }}
+                                    </th>
+                                    <th data-original-index="{{ (i-1)*4 + 5 }}">
+                                        {{ lines[0][(i-1)*4+5] }}
+                                    </th>
+                                {% endfor %}
+                                {% for i in range(race.athletesPerTeam*4+2,(lines[0] | length)-1) %}
+                                    <th data-original-index="{{ i }}">{{ lines[0][i] }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for l in range(1,(lines|length)-1) %}
+                                <tr style="line-height: 40px">
+                                    <td>
+                                        {{ lines[l][0] }}
+                                    </td>
+                                    <td>
+                                        {{ lines[l][1] }}
+                                    </td>
+                                    {% for i in range(1,race.athletesPerTeam) %}
+                                        <td>
+                                            {{ lines[l][(i-1)*4+2] }}
+                                        </td>
+                                        <td>
+                                            {{ lines[l][(i-1)*4+3] }}
+                                        </td>
+                                        <td>
+                                            {{ lines[l][(i-1)*4+4] }}
+                                        </td>
+                                        <td>
+                                            {{ lines[l][(i-1)*4+5] }}
+                                        </td>
+                                    {% endfor %}
+                                    {% for i in range(race.athletesPerTeam*4+2,(lines[0] | length)-1) %}
+                                        <td>{{ lines[l][i] }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">{{ button_label|default('Import') }}</button>
+    {{ form_end(form) }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Query the table
+            const table = document.getElementById('file_content');
+            let draggingEle; // The dragging element
+            let isDraggingStarted = false;
+            let list;
+            let draggingColumnIndex;
+            let placeholder;
+            let map = [{{ map|join(',') }}];
+            document.querySelector('input[name="import[delimiter]"]').value = "{{ delimiter }}";
+            document.querySelector('input[name="import[map]"]').value = map.join(',');
+
+            // The current position of mouse relative to the dragging element
+            let x = 0;
+            let y = 0;
+
+            // Swap two nodes
+            const swap = function (nodeA, nodeB) {
+                const parentA = nodeA.parentNode;
+                const siblingA = nodeA.nextSibling === nodeB ? nodeA : nodeA.nextSibling;
+
+                // Move `nodeA` to before the `nodeB`
+                nodeB.parentNode.insertBefore(nodeA, nodeB);
+
+                // Move `nodeB` to before the sibling of `nodeA`
+                parentA.insertBefore(nodeB, siblingA);
+            };
+
+            // Check if `nodeA` is on the left of `nodeB`
+            const isOnLeft = function (nodeA, nodeB) {
+                // Get the bounding rectangle of nodes
+                const rectA = nodeA.getBoundingClientRect();
+                const rectB = nodeB.getBoundingClientRect();
+
+                return rectA.left + rectA.width / 2 < rectB.left + rectB.width / 2;
+            };
+
+            const mouseDownHandler = function (e) {
+                if (e.button === 0) {
+                    draggingColumnIndex = [].slice.call(table.querySelectorAll('th')).indexOf(e.target);
+
+                    // Determine the mouse position
+                    x = e.clientX - e.target.offsetLeft;
+                    y = e.clientY - e.target.offsetTop;
+
+                    // Attach the listeners to `document`
+                    document.addEventListener('mousemove', mouseMoveHandler);
+                    document.addEventListener('mouseup', mouseUpHandler);
+                }
+            };
+
+            const mouseUpHandler = function () {
+                // // Remove the placeholder
+                placeholder && placeholder.parentNode.removeChild(placeholder);
+
+                draggingEle.classList.remove('dragging');
+                draggingEle.style.removeProperty('top');
+                draggingEle.style.removeProperty('left');
+                draggingEle.style.removeProperty('position');
+
+                // Get the end index
+                const endColumnIndex = [].slice.call(list.children).indexOf(draggingEle);
+
+                // console.log("col #"+draggingColumnIndex+" to "+endColumnIndex);
+                // let min = Math.min(draggingColumnIndex,endColumnIndex);
+                // console.log("min "+min);
+                // let max = Math.max(draggingColumnIndex,endColumnIndex);
+                // console.log("min "+max);
+                // let newmap = [];
+                // for (let i=0;i<min && i<map.length;i++){
+                //     newmap.push(map[i]);
+                // }
+                // if (min < map.length && min===endColumnIndex)
+                //     newmap.push(map[draggingColumnIndex]);
+                // for (let i = min+1;i<max && i<map.length;i++){
+                //     newmap.push(map[i]);
+                // }
+                // if (max < map.length && max===endColumnIndex)
+                //     newmap.push(map[draggingColumnIndex]);
+                // for (let i = max+1;i<map.length;i++){
+                //     newmap.push(map[i]);
+                // }
+                // for (let i = newmap.length;i<map.length;i++){
+                //     console.log("missing"+i);
+                // }
+                // console.log(newmap);
+
+                isDraggingStarted = false;
+
+                // Remove the `list` element
+                list.parentNode.removeChild(list);
+
+                // Move the dragged column to `endColumnIndex`
+                table.querySelectorAll('tr').forEach(function (row) {
+                    const cells = [].slice.call(row.querySelectorAll('th, td'));
+                    draggingColumnIndex > endColumnIndex
+                        ? cells[endColumnIndex].parentNode.insertBefore(
+                            cells[draggingColumnIndex],
+                            cells[endColumnIndex]
+                        )
+                        : cells[endColumnIndex].parentNode.insertBefore(
+                            cells[draggingColumnIndex],
+                            cells[endColumnIndex].nextSibling
+                        );
+                });
+
+                let newmap = [];
+                table.querySelectorAll('th').forEach(function (col) {
+                    newmap.push(parseInt(col.getAttribute('data-original-index')));
+                })
+                //console.log(newmap.slice(0,map.length));
+                map = newmap.slice(0,map.length);
+                document.querySelector('input[name="import[map]"]').value = map.join(',');
+
+                // Bring back the table
+                table.style.removeProperty('visibility');
+
+                // Remove the handlers of `mousemove` and `mouseup`
+                document.removeEventListener('mousemove', mouseMoveHandler);
+                document.removeEventListener('mouseup', mouseUpHandler);
+            };
+
+
+            const mouseMoveHandler = function (e) {
+                if (!isDraggingStarted) {
+                    isDraggingStarted = true;
+
+                    cloneTable();
+
+                    draggingEle = [].slice.call(list.children)[draggingColumnIndex];
+                    draggingEle.classList.add('dragging');
+
+                    // Let the placeholder take the height of dragging element
+                    // So the next element won't move to the left or right
+                    // to fill the dragging element space
+                    placeholder = document.createElement('div');
+                    placeholder.classList.add('placeholder');
+                    draggingEle.parentNode.insertBefore(placeholder, draggingEle.nextSibling);
+                    placeholder.style.width = `${draggingEle.offsetWidth}px`;
+                }
+
+                // Set position for dragging element
+                draggingEle.style.position = 'absolute';
+                draggingEle.style.top = `${draggingEle.offsetTop + e.clientY - y}px`;
+                draggingEle.style.left = `${draggingEle.offsetLeft + e.clientX - x}px`;
+
+                // Reassign the position of mouse
+                x = e.clientX;
+                y = e.clientY;
+
+                // The current order
+                // prevEle
+                // draggingEle
+                // placeholder
+                // nextEle
+                const prevEle = draggingEle.previousElementSibling;
+                const nextEle = placeholder.nextElementSibling;
+
+                // // The dragging element is above the previous element
+                // // User moves the dragging element to the left
+                if (prevEle && isOnLeft(draggingEle, prevEle)) {
+                    // The current order    -> The new order
+                    // prevEle              -> placeholder
+                    // draggingEle          -> draggingEle
+                    // placeholder          -> prevEle
+                    swap(placeholder, draggingEle);
+                    swap(placeholder, prevEle);
+                    return;
+                }
+
+                // The dragging element is below the next element
+                // User moves the dragging element to the bottom
+                if (nextEle && isOnLeft(nextEle, draggingEle)) {
+                    // The current order    -> The new order
+                    // draggingEle          -> nextEle
+                    // placeholder          -> placeholder
+                    // nextEle              -> draggingEle
+                    swap(nextEle, placeholder);
+                    swap(nextEle, draggingEle);
+                }
+            };
+
+            // Query all header cells
+            table.querySelectorAll('th').forEach(function (headerCell) {
+                headerCell.classList.add('draggable');
+                headerCell.addEventListener('mousedown', mouseDownHandler);
+            });
+
+            const cloneTable = function () {
+                const rect = table.getBoundingClientRect();
+
+                list = document.createElement('div');
+                list.classList.add('clone-list');
+                list.style.position = 'absolute';
+                list.style.left = `${rect.left}px`;
+                list.style.top = `${rect.top}px`;
+                table.parentNode.insertBefore(list, table);
+
+                // Hide the original table
+                table.style.visibility = 'hidden';
+
+                // Get all cells
+                const originalCells = [].slice.call(table.querySelectorAll('tbody td'));
+
+                const originalHeaderCells = [].slice.call(table.querySelectorAll('th'));
+                const numColumns = originalHeaderCells.length;
+
+                // Loop through the header cells
+                originalHeaderCells.forEach(function (headerCell, headerIndex) {
+                    const width = parseInt(window.getComputedStyle(headerCell).width);
+
+                    // Create a new table from given row
+                    const item = document.createElement('div');
+                    item.classList.add('draggable');
+
+                    const newTable = document.createElement('table');
+                    newTable.setAttribute('class', 'clone-table');
+                    newTable.style.width = `${width}px`;
+
+                    // Header
+                    const th = headerCell.cloneNode(true);
+                    let newRow = document.createElement('tr');
+                    newRow.appendChild(th);
+                    newTable.appendChild(newRow);
+
+                    const cells = originalCells.filter(function (c, idx) {
+                        return (idx - headerIndex) % numColumns === 0;
+                    });
+                    cells.forEach(function (cell) {
+                        const newCell = cell.cloneNode(true);
+                        newCell.style.width = `${width}px`;
+                        newRow = document.createElement('tr');
+                        newRow.appendChild(newCell);
+                        newTable.appendChild(newRow);
+                    });
+
+                    item.appendChild(newTable);
+                    list.appendChild(item);
+                });
+
+            };
+        });
+    </script>
+
+{% endblock %}

@@ -13,6 +13,7 @@ use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Mailer\TwigSwiftMailer;
 use http\Client\Curl\User;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,7 +23,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Validator\Constraints\DateTime;
 
-class UserUnconfirmedCommand extends ContainerAwareCommand
+class UserUnconfirmedCommand extends Command
 {
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:user:unconfirmed';

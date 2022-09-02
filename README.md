@@ -34,6 +34,7 @@ Edit ``.env`` to setup the database connexion information
 In case too heavy to handle (out of memory error)
 
 ``for VAR in {0..58000..1000}; do php bin/console app:import:registrations PATH/TO/FILE.csv --map "2,3,4,5,6,17,30,31,32,33,37,38" -l 1000 -s $VAR; done``
+``for VAR in {0..59000..500}; do docker-compose exec php php bin/console app:import:registrations ./data/2022/licences-2022.csv --map 1,2,3,5,6,18,27,29,30,31,35,36  -l 500 -s $VAR; done``
 
 ### Race data
 
