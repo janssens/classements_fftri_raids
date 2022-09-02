@@ -141,10 +141,9 @@
             z-index: 999;
         }
     </style>
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
     fichier à importer : {{ race.rankingFilename }} <br>
-{#    delimiter : <div style="display: inline-block; background: lightgray; padding: 0.2rem 1rem;">{{ delimiter }}</div>#}
-    <input type="text" value="{{ delimiter }}" name="delimiter" disabled="disabled" style="visibility: hidden"> <br>
-    <input type="text" value="{{ map | join(',') }}" name="map" disabled="disabled" style="visibility: hidden"> <br>
+    {% endif %}
     <table>
         <thead>
             <tr class="head">
@@ -160,10 +159,11 @@
                     <th class="athlete">Sex {{ i }}</th>
                 {% endfor %}
 
-                {% for i in range(race.athletesPerTeam*4+2,(lines[0] | length)-1) %}
-                    <th style="background: orange; color: orangered"> ? </th>
-                {% endfor %}
-
+                {% if (lines[0] | length) > race.athletesPerTeam*4+2 %}
+                    {% for i in range(race.athletesPerTeam*4+3,(lines[0] | length)) %}
+                        <th style="background: orange; color: orangered"> ? </th>
+                    {% endfor %}
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -211,9 +211,11 @@
                                         {{ lines[0][(i-1)*4+5] }}
                                     </th>
                                 {% endfor %}
-                                {% for i in range(race.athletesPerTeam*4+2,(lines[0] | length)-1) %}
-                                    <th data-original-index="{{ i }}">{{ lines[0][i] }}</th>
-                                {% endfor %}
+                                {% if (lines[0] | length) > race.athletesPerTeam*4+2 %}
+                                    {% for i in range(race.athletesPerTeam*4+3,(lines[0] | length)) %}
+                                        <th data-original-index="{{ i-1 }}">{{ lines[0][i-1] }}</th>
+                                    {% endfor %}
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody>
@@ -239,9 +241,11 @@
                                             {{ lines[l][(i-1)*4+5] }}
                                         </td>
                                     {% endfor %}
-                                    {% for i in range(race.athletesPerTeam*4+2,(lines[0] | length)-1) %}
-                                        <td>{{ lines[l][i] }}</td>
-                                    {% endfor %}
+                                    {% if (lines[0] | length) > race.athletesPerTeam*4+2 %}
+                                        {% for i in range(race.athletesPerTeam*4+3,(lines[0] | length)) %}
+                                            <td>{{ lines[l][i-1] }}</td>
+                                        {% endfor %}
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                         </tbody>

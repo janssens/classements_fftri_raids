@@ -92,7 +92,7 @@ class ChampionshipController extends AbstractController
 
             $session->getFlashBag()->add('success', 'Merci, votre course et son classement ont bien été enregistrés');
 
-            return $this->redirectToRoute('race_show', ['id' => $race->getId()]);
+            return $this->redirectToRoute('race_import_ranking', ['id' => $race->getId()]);
         }
 
         return $this->render('championship/new_race.html.twig', [
