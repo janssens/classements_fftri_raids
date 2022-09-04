@@ -46,8 +46,7 @@ get all firstname,lastname and email of racers
 
 ``SELECT a.firstname, a.lastname , a.email FROM `view_racer` AS r JOIN athlete AS a ON r.parent_id = a.id WHERE outsider = 0``
 
-
-new calc
-
-
-point = min((nb_of_team > 150) ? 150 : nb_of_team ) - (rank - 1) , 1) 
+``SELECT club as club_id, SUM(points) as points,championship_id
+FROM my_view_official_ranking
+WHERE championship_id = 3
+GROUP BY CONCAT(club);``
