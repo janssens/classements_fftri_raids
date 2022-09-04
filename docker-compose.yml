@@ -11,6 +11,7 @@ services:
       MYSQL_DATABASE: classement
       MYSQL_USER: classement
       MYSQL_PASSWORD: classement
+    container_name: 'mariadb'
     ports:
       - '3306:3306'
 
@@ -18,8 +19,6 @@ services:
     build:
       dockerfile: './docker/php/Dockerfile'
       context: '.'
-    depends_on:
-      - mariadb
     volumes:
       - './:/var/www/html:cached'
     cap_add:

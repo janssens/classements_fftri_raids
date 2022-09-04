@@ -36,6 +36,11 @@ class Ranking
     private $category;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Club", inversedBy="rankings")
+     */
+    private $club;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Championship", inversedBy="rankings")
      */
     private $championship;
@@ -76,6 +81,11 @@ class Ranking
     public function getAthlete(): ?Athlete
     {
         return $this->athlete;
+    }
+
+    public function getClub(): ?Club
+    {
+        return $this->club;
     }
 
     public function getChampionship(): ?Championship

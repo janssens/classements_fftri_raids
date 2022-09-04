@@ -33,6 +33,12 @@ class Club
      */
     private $slug;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Ranking", mappedBy="club")
+     * @ORM\OrderBy({"points" = "DESC","athlete" = "DESC"})
+     */
+    private $rankings;
+
     private $_athletes;
 
     public function __construct()
@@ -120,6 +126,14 @@ class Club
         return $this->getAthletes()->filter(function ($athlete) {
             return !$athlete->getLastRegistration()->isValidForDate(new \DateTime('now'));
         });
+    }
+
+    /**
+     * @return Collection|Ranking[]
+     */
+    public function getRankings(): Collection
+    {
+        return $this->rankings;
     }
 
     public function getSlug(): ?string
