@@ -69,13 +69,13 @@
                     {% for registration in team.registrations %}
                         <li><b>
                                 <a href="{{ path('athlete_show',{'id':registration.athlete.id}) }}">
-                                    {{ registration.athlete.firstname }} {{ registration.athlete.lastname }}
+                                    {{ registration.athlete.firstname }} {{ registration.athlete.lastname }} {% if is_granted('ROLE_ADMIN') %}{% if (registration.athlete.gender == 1) %}♂{% else %}♀{% endif %}{% endif %}
                                 </a></b>{% if is_granted('ROLE_ADMIN') %} [ {{ registration.number }} ]{% endif %}</li>
                     {% endfor %}
                     {% for outsider in team.outsiders %}
                         <li {% if outsider.number %}style="color: red"{% endif %}>
                             <a href="{{ path('outsider_show',{'uid':outsider.uid}) }}">
-                                {{ outsider.firstname }} {{ outsider.lastname }}
+                                {{ outsider.firstname }} {{ outsider.lastname }} {% if is_granted('ROLE_ADMIN') %}{% if (outsider.gender == 1) %}♂{% else %}♀{% endif %}{% endif %}
                             </a>{% if outsider.number %} [ {{ outsider.number }} ]{% endif %}</li>
                     {% endfor %}
                 </ul>

@@ -149,7 +149,7 @@ class RaceController extends AbstractController
                                         $outsider = new Outsider();
                                         $outsider->setFirstname($csvHelper->getField('firstname_' . $i, $data));
                                         $outsider->setLastname($csvHelper->getField('lastname_' . $i, $data));
-                                        $outsider->setGender((($csvHelper->getField('gender_' . $i, $data) == 'm')||($csvHelper->getField('gender_' . $i, $data) == 'h')) ? Athlete::MALE : Athlete::FEMALE);
+                                        $outsider->setGender($csvHelper::isMale($csvHelper->getField('gender_' . $i, $data)) ? Athlete::MALE : Athlete::FEMALE);
                                         $outsider->setNumber($csvHelper->getField('number_' . $i, $data));
                                         $outsider->setTeam($team);
                                         $em->persist($outsider);
@@ -159,7 +159,7 @@ class RaceController extends AbstractController
                                     $outsider = new Outsider();
                                     $outsider->setFirstname($csvHelper->getField('firstname_' . $i, $data));
                                     $outsider->setLastname($csvHelper->getField('lastname_' . $i, $data));
-                                    $outsider->setGender((($csvHelper->getField('gender_' . $i, $data) == 'm')||($csvHelper->getField('gender_' . $i, $data) == 'h')) ? Athlete::MALE : Athlete::FEMALE);
+                                    $outsider->setGender($csvHelper::isMale($csvHelper->getField('gender_' . $i, $data)) ? Athlete::MALE : Athlete::FEMALE);
                                     $outsider->setNumber(null);
                                     $outsider->setTeam($team);
                                     $em->persist($outsider);

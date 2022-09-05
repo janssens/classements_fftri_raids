@@ -50,3 +50,9 @@ get all firstname,lastname and email of racers
 FROM my_view_official_ranking
 WHERE championship_id = 3
 GROUP BY CONCAT(club);``
+
+
+$ sed -i "s/classements/classement/" dump.sql
+$ docker cp dump.sql 06662ecb2126:/tmp/dump.sql
+$ docker-compose exec mariadb bash -c "mysql classement -uroot -proot < /tmp/dump.sql"
+$ docker-compose exec php php bin/console doctrine:migration:migrate

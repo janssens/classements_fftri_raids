@@ -13,6 +13,8 @@
     </div>
 
     <a href="{{ path('championship_add_race', {'id': championship.id}) }}" class="btn btn-primary">Ajouter une course</a>
+    <br>
+    <br>
 
     {% if championship.final %}
     <h2>La finale</h2>
@@ -99,10 +101,29 @@
         </tbody>
     </table>
 
+    <h2>Classement des clubs - {{ championship.name }} {{ championship.season.EndDate | date('Y') }}</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Club</th>
+                <th scope="col">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for ranking in championship.clubRankings %}
+            <tr>
+                <td><a href="{{ path('club_show',{'slug':ranking.club.slug}) }}">{{ ranking.club.name | upper }}</a></td>
+                <td>{{ ranking.points }}</td>
+            </tr>
+        {% endfor%}
+        </tbody>
+    </table>
+
     <a href="{{ path('championship_index') }}">Retour à la liste des championnats</a>
 
     {% if is_granted('ROLE_SUPER_ADMIN') %}
-        <a href="{{ path('championship_edit', {'id': championship.id}) }}">edit</a>
+        <br>
+        <a class="btn btn-primary" href="{{ path('championship_edit', {'id': championship.id}) }}">edit</a>
         {{ include('championship/_delete_form.html.twig') }}
     {% endif %}
 

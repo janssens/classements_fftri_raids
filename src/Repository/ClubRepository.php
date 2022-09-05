@@ -63,4 +63,24 @@ class ClubRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getPointsByChampionshipId($championship_id,$club_id): ?int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('SUM(r.points)')
+            ->leftJoin('view_official_team_ranking','r','c.id = r.club')
+            ->andWhere('r.championship_id = :championship_id')
+            ->andWhere('c.id = :club_id')
+            ->setParameter('championship_id', $championship_id)
+            ->setParameter('club_id', $club_id)
+            ->groupBy('CONCAT(c.id)')
+            ->getQuery()
+            ->getScalarResult()
+            ;
+    }
+
+//``SELECT club as club_id, SUM(points) as points,championship_id
+//FROM my_view_official_ranking
+//WHERE championship_id = 3
+//GROUP BY CONCAT(club);``
+
 }

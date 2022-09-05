@@ -41,9 +41,15 @@ class Club
 
     private $_athletes;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ClubRanking::class, mappedBy="club")
+     */
+    private $clubRankings;
+
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
+        $this->clubRankings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -144,6 +150,36 @@ class Club
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ClubRanking>
+     */
+    public function getClubRankings(): Collection
+    {
+        return $this->clubRankings;
+    }
+
+    public function addClubRanking(ClubRanking $clubRanking): self
+    {
+        if (!$this->clubRankings->contains($clubRanking)) {
+            $this->clubRankings[] = $clubRanking;
+            $clubRanking->setClub($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClubRanking(ClubRanking $clubRanking): self
+    {
+        if ($this->clubRankings->removeElement($clubRanking)) {
+            // set the owning side to null (unless already changed)
+            if ($clubRanking->getClub() === $this) {
+                $clubRanking->setClub(null);
+            }
+        }
 
         return $this;
     }

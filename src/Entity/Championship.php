@@ -91,11 +91,18 @@ class Championship
      */
     private $secret;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ClubRanking::class, mappedBy="championship")
+     * @ORM\OrderBy({"points" = "DESC","club" = "DESC"})
+     */
+    private $clubRankings;
+
     public function __construct()
     {
         $this->races = new ArrayCollection();
         $this->rankins = new ArrayCollection();
         $this->unisex_rankings = new ArrayCollection();
+        $this->clubRankings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -259,5 +266,13 @@ class Championship
         $this->secret = $secret;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, ClubRanking>
+     */
+    public function getClubRankings(): Collection
+    {
+        return $this->clubRankings;
     }
 }

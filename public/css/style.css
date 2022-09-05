@@ -1,47 +1,43 @@
 .container {
   width: auto;
   max-width: 680px;
-  padding: 0 15px;
-}
+  padding: 0 15px; }
 
 .container-fluid {
-  padding: 0 15px;
-}
+  padding: 0 15px; }
 
 .footer {
-  background-color: #f5f5f5;
-}
+  background-color: #f5f5f5; }
 
 .alert-error {
   color: #850400;
   background-color: #ffe3a0;
-  border-color: #ff422b;
-}
+  border-color: #ff422b; }
 
 .registration_widget .registration_widget_remove {
   position: absolute;
   top: 5px;
-  right: 5px;
-}
+  right: 5px; }
 .registration_widget .club {
-  font-weight: bold;
-}
+  font-weight: bold; }
 
 .championship-card a.img {
-  position: relative;
-}
-.championship-card a.img span.label {
-  position: absolute;
-  bottom: 0rem;
-  right: 2rem;
-  color: white;
-  text-shadow: black;
-  font-size: 4rem;
-  font-weight: bold;
-}
+  position: relative; }
+  .championship-card a.img span.label {
+    position: absolute;
+    bottom: 0rem;
+    right: 2rem;
+    color: white;
+    text-shadow: black;
+    font-size: 4rem;
+    font-weight: bold; }
 
 .race-list {
   width: 100%;
-}
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; }
+  .race-list > div {
+    margin: 0.5rem 1rem 0.5rem 0; }
 
 /*# sourceMappingURL=style.css.map */

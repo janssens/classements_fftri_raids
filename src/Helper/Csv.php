@@ -45,6 +45,11 @@ class Csv
         return $d;
     }
 
+    static function isMale($label){
+        $label = trim(strtolower($label));
+        return in_array($label,['h','male','homme','m']);
+    }
+
     /**
      * @param string $delimiter
      */

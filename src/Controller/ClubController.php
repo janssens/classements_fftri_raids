@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Championship;
 use App\Entity\Club;
 use App\Form\ClubType;
 use App\Repository\ClubRepository;
