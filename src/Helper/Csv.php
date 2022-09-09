@@ -131,6 +131,8 @@ class Csv
 
         fclose($f);
 
+        $lines = mb_convert_encoding($lines, "UTF-8", "auto");
+
         return $lines;
     }
 }

@@ -125,7 +125,13 @@ class RaceController extends AbstractController
 
             $row = 0;
             if (($handle = fopen($file, "r")) !== FALSE) {
-                while (($data = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
+                while (($row_data = fgets($handle, 1000)) !== FALSE) {
+
+                    // convert encoding
+                    $encoded_data = mb_convert_encoding($row_data, "UTF-8", "auto");
+                    // str_getcsv
+                    $data = str_getcsv($encoded_data,$delimiter);
+
                     $row++;
                     if ($row > 1) { //skip first line
 
